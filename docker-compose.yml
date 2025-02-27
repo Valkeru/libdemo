@@ -1,0 +1,30 @@
+services:
+  libdemo:
+    container_name: app_libdemo
+    ports:
+      - "58080:${SERVER_PORT:-8080}"
+      - "59010:9010"
+    image: openjdk:21-jdk
+    volumes:
+      - ./target/libdemo-0.0.1.jar:/app/app.jar
+      - /usr/share/fonts:/app/fonts:ro
+    working_dir: /app
+    entrypoint: [
+      "java",
+      "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:9010",
+      "-Djava.security.egd=file:/dev/urandom",
+      "-Djava.awt.headless=true",
+      "-Xmx1G",
+      "-jar",
+      "/app/app.jar"
+    ]
+#    environment:
+#      - APPLICATION_UID=$(uuid)
+    env_file:
+      - .env
+#    logging:
+#      driver: fluentd
+#      options:
+#        fluentd-address: fluentd.local
+#        tag: tag.libdemo
+

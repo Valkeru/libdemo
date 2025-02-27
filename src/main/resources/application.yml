@@ -1,0 +1,92 @@
+server:
+  forward-headers-strategy: framework
+  tomcat:
+    accept-count: 1000
+    threads:
+      max: 1000
+spring:
+  application:
+    name: libdemo
+  jackson:
+    deserialization:
+      # https://www.houseoftalents.nl/integrationapplicationtalents/blog/making-spring-boot-applications-return-bad-request-jsonview-ignored-properties
+      fail-on-unexpected-view-properties: true
+    mapper:
+      default-view-inclusion: false
+  datasource:
+    hikari:
+      maximum-pool-size: 100
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    create-schemas: true
+    table: flyway_library_schema_history
+    schemas:
+      - public
+      - library
+  jpa:
+    properties:
+      hibernate:
+        integrator_provider: ru.valkeru.libdemo.config.persistence.ClassImportIntegratorProvider
+#        enable_lazy_load_no_trans: true
+    open-in-view: false
+  main:
+    banner-mode: off
+logging:
+  config: classpath:logback-spring.xml
+  pattern:
+    console: "[%X{requestId:-no-request-id}] %clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd'T'HH:mm:ss.SSSXXX}}){faint} \
+               %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} \
+               %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"
+  level:
+    tracer: trace
+    ru:
+      valkeru:
+        libdemo: debug
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  open-api:
+    info:
+      version: 0.0.1-alpha
+      title: Вавилонская библиотека
+      license:
+        name: WTFPL
+        url: https://natribu.org
+  swagger-ui:
+    filter: true
+    syntax-highlight:
+      theme: idea
+    default-model-expand-depth: 50
+app:
+  system:
+    is-debug-mode: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    hikari:
+      maximum-pool-size: 5
+app:
+  system:
+    is-debug-mode: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev,pre-production,test
+logging:
+  level:
+    net:
+      ttddyy:
+        dsproxy:
+          listener: trace
+    ru:
+      valkeru:
+        libdemo:
+          config:
+            persistence:
+              ClassImportIntegratorProvider: debug
