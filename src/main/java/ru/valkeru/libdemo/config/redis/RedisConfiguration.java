@@ -10,11 +10,11 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 
 import java.time.Duration;
 
-@Configuration
+//@Configuration
 public class RedisConfiguration {
 
-    @Bean
-    public RedisCacheConfiguration cacheConfiguration(ObjectMapper mapper) {
+//    @Bean
+    public RedisCacheConfiguration redisCacheConfiguration(ObjectMapper mapper) {
         ObjectMapper objectMapper = mapper.copy()
                 .activateDefaultTyping(
                         mapper.getPolymorphicTypeValidator(),

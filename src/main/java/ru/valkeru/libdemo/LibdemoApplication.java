@@ -11,7 +11,7 @@ import ru.valkeru.libdemo.constants.AppEnvironment;
 import java.util.UUID;
 
 @EnableAsync
-@EnableCaching
+//@EnableCaching
 @SpringBootApplication
 @EnableConfigurationProperties({
         SystemConfiguration.class

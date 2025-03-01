@@ -27,7 +27,14 @@ spring:
     properties:
       hibernate:
         integrator_provider: ru.valkeru.libdemo.config.persistence.ClassImportIntegratorProvider
-#        enable_lazy_load_no_trans: true
+#        cache:
+#          use_second_level_cache: true
+#          region:
+#            factory_class: org.hibernate.cache.jcache.internal.JCacheRegionFactory
+#        javax:
+#          cache:
+#            provider: org.ehcache.jsr107.EhcacheCachingProvider
+    #        enable_lazy_load_no_trans: true
     open-in-view: false
   main:
     banner-mode: off
