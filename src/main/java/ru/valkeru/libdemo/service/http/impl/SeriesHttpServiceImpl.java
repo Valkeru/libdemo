@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.http;
+package ru.valkeru.libdemo.service.http.impl;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.service.SeriesService;
+import ru.valkeru.libdemo.service.http.SeriesHttpService;
 
 import java.util.List;
 

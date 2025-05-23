@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service;
+package ru.valkeru.libdemo.service.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,7 @@ import ru.valkeru.libdemo.mapper.BookMapper;
 import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.model.entity.Book;
 import ru.valkeru.libdemo.repository.jpa.BookRepository;
+import ru.valkeru.libdemo.service.BookService;
 import ru.valkeru.libdemo.util.SqlUtil;
 
 import java.util.ArrayList;

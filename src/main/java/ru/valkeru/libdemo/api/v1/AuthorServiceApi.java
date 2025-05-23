@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.controller.v1;
+package ru.valkeru.libdemo.api.v1;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

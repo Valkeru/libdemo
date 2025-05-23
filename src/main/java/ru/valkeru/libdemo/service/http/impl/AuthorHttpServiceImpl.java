@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.http;
+package ru.valkeru.libdemo.service.http.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 import ru.valkeru.libdemo.service.AuthorService;
+import ru.valkeru.libdemo.service.http.AuthorHttpService;
 
 import java.util.Collection;
 

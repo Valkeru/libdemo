@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.controller.v1;
+package ru.valkeru.libdemo.api.v1;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,21 +17,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.api.definition.ApiDefinition.SchemaIdDescription;
 import ru.valkeru.libdemo.api.definition.ApiDefinition.StatusCodes;
-import ru.valkeru.libdemo.api.definition.SeriesDefinition.Summary;
-import ru.valkeru.libdemo.api.definition.SeriesDefinition.Tags;
-import ru.valkeru.libdemo.model.dto.SeriesDto;
+import ru.valkeru.libdemo.api.definition.BookDefinition.Summary;
+import ru.valkeru.libdemo.api.definition.BookDefinition.Tags;
+import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.model.view.SeriesView;
+import ru.valkeru.libdemo.model.view.BookView;
 
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/v1/series")
-public interface SeriesApi {
+@RequestMapping("/v1/books")
+public interface BookApi {
 
     @Operation(
-            summary = Summary.Series.SUMMARY_CREATE,
-            tags = Tags.SERIES,
+            summary = Summary.Book.SUMMARY_CREATE,
+            tags = Tags.BOOK,
             responses = {
                     @ApiResponse(
                             responseCode = StatusCodes.CREATED,
@@ -45,8 +45,8 @@ public interface SeriesApi {
                             }
                     ),
                     @ApiResponse(
-                            responseCode = StatusCodes.CONFLICT,
-                            description = StatusCodes.Description.DATA_INTEGRITY_CONFLICT,
+                            responseCode = StatusCodes.NOT_FOUND,
+                            description = StatusCodes.Description.NOT_FOUND,
                             content = {
                                     @Content(schema = @Schema(implementation = ErrorDto.class))
                             }
@@ -54,18 +54,24 @@ public interface SeriesApi {
             }
     )
     @PostMapping
-    @JsonView(SeriesView.SeriesSingleView.class)
-    ResponseEntity<SeriesDto> createSeries(@RequestBody
-                                           @Validated(SeriesView.SeriesCreateView.class)
-                                           @JsonView(SeriesView.SeriesCreateView.class) SeriesDto series);
+    @JsonView(BookView.BookSingleView.class)
+    ResponseEntity<BookDto> addBook(@RequestBody
+                                    @Validated(BookView.BookCreateView.class)
+                                    @JsonView(BookView.BookCreateView.class) BookDto book);
 
     @Operation(
-            summary = Summary.Series.SUMMARY_UPDATE,
-            tags = Tags.SERIES,
+            summary = Summary.Book.SUMMARY_UPDATE,
+            tags = Tags.BOOK,
             responses = {
                     @ApiResponse(
                             responseCode = StatusCodes.OK,
                             description = StatusCodes.Description.OK
+                    ),
+                    @ApiResponse(
+                            responseCode = StatusCodes.BAD_REQUEST,
+                            description = StatusCodes.Description.BAD_REQUEST,
+                            content = {
+                                    @Content(schema = @Schema(implementation = ErrorDto.class))}
                     ),
                     @ApiResponse(
                             responseCode = StatusCodes.NOT_FOUND,
@@ -73,34 +79,30 @@ public interface SeriesApi {
                             content = {
                                     @Content(schema = @Schema(implementation = ErrorDto.class))
                             }
-                    ),
-                    @ApiResponse(
-                            responseCode = StatusCodes.CONFLICT,
-                            description = StatusCodes.Description.DATA_INTEGRITY_CONFLICT
                     )
             }
     )
-    @PatchMapping("/{seriesId}")
-    @JsonView(SeriesView.SeriesSingleView.class)
-    ResponseEntity<SeriesDto> updateSeries(@PathVariable(name = "seriesId")
-                                           @Schema(description = SchemaIdDescription.SERIES_ID,
-                                                   type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
-                                                   format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id,
-                                           @RequestBody
-                                           @Validated(SeriesView.SeriesUpdateView.class)
-                                           @JsonView(SeriesView.SeriesUpdateView.class) SeriesDto series);
+    @PatchMapping("/{bookId}")
+    @JsonView(BookView.BookSingleView.class)
+    ResponseEntity<BookDto> updateBook(@PathVariable(name = "bookId")
+                                       @Schema(description = SchemaIdDescription.BOOK_ID,
+                                               type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
+                                               format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id,
+                                       @RequestBody
+                                       @Validated(BookView.BookUpdateView.class)
+                                       @JsonView(BookView.BookUpdateView.class) BookDto book);
 
+    @Operation(
+            summary = Summary.Book.SUMMARY_VIEW_LIST,
+            tags = Tags.BOOK
+    )
     @GetMapping
-    @Operation(
-            summary = Summary.Series.SUMMARY_VIEW_LIST,
-            tags = Tags.SERIES
-    )
-    @JsonView(SeriesView.SeriesListView.class)
-    ResponseEntity<Collection<SeriesDto>> listAllSeries();
+    @JsonView(BookView.BookListView.class)
+    ResponseEntity<Collection<BookDto>> getAllBooks();
 
     @Operation(
-            summary = Summary.Series.SUMMARY_VIEW,
-            tags = Tags.SERIES,
+            summary = Summary.Book.SUMMARY_VIEW,
+            tags = Tags.BOOK,
             responses = {
                     @ApiResponse(
                             responseCode = StatusCodes.OK,
@@ -115,16 +117,16 @@ public interface SeriesApi {
                     )
             }
     )
-    @GetMapping("/{seriesId}")
-    @JsonView(SeriesView.SeriesSingleView.class)
-    ResponseEntity<SeriesDto> getSeries(@PathVariable(name = "seriesId")
-                                        @Schema(description = SchemaIdDescription.SERIES_ID,
+    @GetMapping("/{bookId}")
+    @JsonView(BookView.BookSingleView.class)
+    ResponseEntity<BookDto> getBookById(@PathVariable(name = "bookId")
+                                        @Schema(description = SchemaIdDescription.BOOK_ID,
                                                 type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
                                                 format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id);
 
     @Operation(
-            summary = Summary.Series.SUMMARY_DELETE,
-            tags = Tags.SERIES,
+            summary = Summary.Book.SUMMARY_DELETE,
+            tags = Tags.BOOK,
             responses = {
                     @ApiResponse(
                             responseCode = StatusCodes.NO_CONTENT,
@@ -136,19 +138,12 @@ public interface SeriesApi {
                             content = {
                                     @Content(schema = @Schema(implementation = ErrorDto.class))
                             }
-                    ),
-                    @ApiResponse(
-                            responseCode = StatusCodes.CONFLICT,
-                            description = StatusCodes.Description.DATA_INTEGRITY_CONFLICT,
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
                     )
             }
     )
-    @DeleteMapping("/{seriesId}")
-    ResponseEntity<Void> deleteSeries(@PathVariable(name = "seriesId")
-                                      @Schema(description = SchemaIdDescription.SERIES_ID,
-                                              type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
-                                              format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id);
+    @DeleteMapping("/{bookId}")
+    ResponseEntity<Void> deleteBookById(@PathVariable(name = "bookId")
+                                        @Schema(description = SchemaIdDescription.BOOK_ID,
+                                                type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
+                                                format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id);
 }

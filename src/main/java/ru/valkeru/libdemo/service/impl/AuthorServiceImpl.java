@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service;
+package ru.valkeru.libdemo.service.impl;
 
 import jakarta.annotation.Nonnull;
 import lombok.AccessLevel;
@@ -17,6 +17,7 @@ import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 import ru.valkeru.libdemo.repository.elasticsearch.AuthorElasticsearchRepository;
 import ru.valkeru.libdemo.repository.jpa.AuthorRepository;
+import ru.valkeru.libdemo.service.AuthorService;
 import ru.valkeru.libdemo.util.ElasticsearchUtil;
 import ru.valkeru.libdemo.util.SqlUtil;
 

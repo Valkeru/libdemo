@@ -1,10 +1,14 @@
-package ru.valkeru.libdemo.controller.v1;
+package ru.valkeru.libdemo.api.v1;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,21 +21,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.api.definition.ApiDefinition.SchemaIdDescription;
 import ru.valkeru.libdemo.api.definition.ApiDefinition.StatusCodes;
-import ru.valkeru.libdemo.api.definition.ApiDefinition.Summary;
-import ru.valkeru.libdemo.api.definition.ApiDefinition.Tags;
-import ru.valkeru.libdemo.model.dto.CycleDto;
+import ru.valkeru.libdemo.api.definition.AuthorDefinition.Summary;
+import ru.valkeru.libdemo.api.definition.AuthorDefinition.Tags;
+import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.model.view.CycleView;
+import ru.valkeru.libdemo.model.request.author.AuthorFilter;
+import ru.valkeru.libdemo.model.view.AuthorView;
 
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/v1/cycle")
-public interface CycleApi {
+@RequestMapping("/v1/author")
+public interface AuthorApi {
 
     @Operation(
-            summary = Summary.Cycle.SUMMARY_CREATE,
-            tags = Tags.CYCLE,
+            summary = Summary.Author.SUMMARY_CREATE,
+            tags = Tags.AUTHOR,
             responses = {
                     @ApiResponse(
                             responseCode = StatusCodes.CREATED,
@@ -54,14 +59,14 @@ public interface CycleApi {
             }
     )
     @PostMapping
-    @JsonView(CycleView.CycleSingleView.class)
-    ResponseEntity<CycleDto> addCycle(@RequestBody
-                                      @Validated(CycleView.CycleCreateView.class)
-                                      @JsonView(CycleView.CycleCreateView.class) CycleDto cycleDto);
+    @JsonView(AuthorView.AuthorSingleView.class)
+    ResponseEntity<AuthorDto> createAuthor(@RequestBody
+                                           @Validated(AuthorView.AuthorCreateView.class)
+                                           @JsonView(AuthorView.AuthorCreateView.class) AuthorDto author);
 
     @Operation(
-            summary = Summary.Cycle.SUMMARY_UPDATE,
-            tags = Tags.CYCLE,
+            summary = Summary.Author.SUMMARY_UPDATE,
+            tags = Tags.AUTHOR,
             responses = {
                     @ApiResponse(
                             responseCode = StatusCodes.OK,
@@ -80,43 +85,30 @@ public interface CycleApi {
                             content = {
                                     @Content(schema = @Schema(implementation = ErrorDto.class))
                             }
-                    ),
-                    @ApiResponse(
-                            responseCode = StatusCodes.CONFLICT,
-                            description = StatusCodes.Description.DATA_INTEGRITY_CONFLICT,
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
                     )
             }
     )
-    @PatchMapping("/{cycleId}")
-    @JsonView(CycleView.CycleListView.class)
-    ResponseEntity<CycleDto> updateCycle(@PathVariable(name = "cycleId")
-                                         @Schema(description = SchemaIdDescription.CYCLE_ID,
-                                                 type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
-                                                 format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id,
-                                         @RequestBody
-                                         @Validated(CycleView.CycleUpdateView.class)
-                                         @JsonView(CycleView.CycleUpdateView.class) CycleDto cycleDto);
+    @PatchMapping("/{authorId}")
+    @JsonView(AuthorView.AuthorSingleView.class)
+    ResponseEntity<AuthorDto> updateAuthor(@PathVariable(name = "authorId")
+                                           @Schema(description = SchemaIdDescription.AUTHOR_ID,
+                                                   type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
+                                                   format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id,
+                                           @RequestBody
+                                           @Validated(AuthorView.AuthorUpdateView.class)
+                                           @JsonView(AuthorView.AuthorUpdateView.class) AuthorDto author);
 
     @Operation(
-            summary = Summary.Cycle.SUMMARY_VIEW_LIST,
-            tags = Tags.CYCLE,
-            responses = {
-                    @ApiResponse(
-                            responseCode = StatusCodes.OK,
-                            description = StatusCodes.Description.OK
-                    )
-            }
+            summary = Summary.Author.SUMMARY_VIEW_LIST,
+            tags = Tags.AUTHOR
     )
     @GetMapping
-    @JsonView(CycleView.CycleSingleView.class)
-    ResponseEntity<Collection<CycleDto>> listCycles();
+    @JsonView(AuthorView.AuthorListView.class)
+    ResponseEntity<Collection<AuthorDto>> listAllAuthors(@ParameterObject AuthorFilter filter, @ParameterObject @PageableDefault Pageable pageable);
 
     @Operation(
-            summary = Summary.Cycle.SUMMARY_VIEW,
-            tags = Tags.CYCLE,
+            summary = Summary.Author.SUMMARY_VIEW,
+            tags = Tags.AUTHOR,
             responses = {
                     @ApiResponse(
                             responseCode = StatusCodes.OK,
@@ -131,20 +123,23 @@ public interface CycleApi {
                     )
             }
     )
-    @GetMapping("/{cycleId}")
-    @JsonView(CycleView.CycleSingleView.class)
-    ResponseEntity<CycleDto> getCycle(@PathVariable(name = "cycleId")
-                                      @Schema(description = SchemaIdDescription.CYCLE_ID,
-                                              type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
-                                              format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id);
+    @GetMapping("/{authorId}")
+    @JsonView(AuthorView.AuthorSingleView.class)
+    ResponseEntity<AuthorDto> getAuthor(@PathVariable(name = "authorId")
+                                        @Schema(description = SchemaIdDescription.AUTHOR_ID,
+                                                type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
+                                                format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id);
 
     @Operation(
-            summary = Summary.Cycle.SUMMARY_DELETE,
-            tags = Tags.CYCLE,
+            summary = Summary.Author.SUMMARY_DELETE,
+            tags = Tags.AUTHOR,
             responses = {
                     @ApiResponse(
                             responseCode = StatusCodes.NO_CONTENT,
-                            description = StatusCodes.Description.OK
+                            description = StatusCodes.Description.OK,
+                            content = {
+                                    @Content(schema = @Schema(implementation = ErrorDto.class))
+                            }
                     ),
                     @ApiResponse(
                             responseCode = StatusCodes.NOT_FOUND,
@@ -162,9 +157,12 @@ public interface CycleApi {
                     )
             }
     )
-    @DeleteMapping("/{cycleId}")
-    ResponseEntity<Void> deleteCycle(@PathVariable(name = "cycleId")
-                                     @Schema(description = SchemaIdDescription.CYCLE_ID,
-                                             type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
-                                             format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id);
+    @DeleteMapping("/{authorId}")
+    ResponseEntity<Void> deleteAuthor(@PathVariable(name = "authorId")
+                                      @Schema(description = SchemaIdDescription.AUTHOR_ID,
+                                              type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
+                                              format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id);
+
+    @GetMapping("/apageable")
+    ResponseEntity<Page<AuthorDto>> getPageableAuthors();
 }

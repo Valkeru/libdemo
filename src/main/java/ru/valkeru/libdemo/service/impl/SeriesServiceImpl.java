@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service;
+package ru.valkeru.libdemo.service.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +11,7 @@ import ru.valkeru.libdemo.mapper.SeriesMapper;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.entity.Series;
 import ru.valkeru.libdemo.repository.jpa.SeriesRepository;
+import ru.valkeru.libdemo.service.SeriesService;
 import ru.valkeru.libdemo.util.SqlUtil;
 
 import java.util.List;

@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import ru.valkeru.libdemo.api.v1.CycleApi;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.service.http.CycleHttpService;
 

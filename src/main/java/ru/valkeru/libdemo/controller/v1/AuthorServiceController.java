@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import ru.valkeru.libdemo.api.v1.AuthorServiceApi;
 import ru.valkeru.libdemo.service.http.AuthorHttpService;
 
 @Component

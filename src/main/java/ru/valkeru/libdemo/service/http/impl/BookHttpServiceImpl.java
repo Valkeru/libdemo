@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.http;
+package ru.valkeru.libdemo.service.http.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.service.BookService;
+import ru.valkeru.libdemo.service.http.BookHttpService;
 
 import java.util.Collection;
 
