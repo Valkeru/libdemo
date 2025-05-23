@@ -36,7 +36,7 @@ class AuthorControllerTest {
     )
     void testCreateAuthorBadRequest() throws Exception {
         mockMvc.perform(
-                        post("/author")
+                        post("/v1/author")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -59,7 +59,7 @@ class AuthorControllerTest {
     )
     void testCreateAuthorOk() throws Exception {
         mockMvc.perform(
-                        post("/author")
+                        post("/v1/author")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -90,7 +90,7 @@ class AuthorControllerTest {
     )
     void testCreateAuthorConflict() throws Exception {
         mockMvc.perform(
-                        post("/author")
+                        post("/v1/author")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -113,7 +113,7 @@ class AuthorControllerTest {
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
     )
     void testGetAuthorNotFound() throws Exception {
-        mockMvc.perform(get("/author/{authorId}", Integer.MAX_VALUE))
+        mockMvc.perform(get("/v1/author/{authorId}", Integer.MAX_VALUE))
                 .andExpect(status().isNotFound())
                 .andDo(print());
     }
@@ -127,7 +127,7 @@ class AuthorControllerTest {
     )
     void testAuthorsListOk() throws Exception {
         mockMvc.perform(
-                get("/author")
+                get("/v1/author")
                         .accept(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())
@@ -147,7 +147,7 @@ class AuthorControllerTest {
     )
     void testGetAuthorOk() throws Exception {
         mockMvc.perform(
-                        get("/author/{id}", 1)
+                        get("/v1/author/{id}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -166,7 +166,7 @@ class AuthorControllerTest {
     )
     void testUpdateAuthorNotFound() throws Exception {
         mockMvc.perform(
-                        patch("/author/{authorId}", 1)
+                        patch("/v1/author/{authorId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -191,14 +191,14 @@ class AuthorControllerTest {
     )
     void testUpdateAuthorBadRequest() throws Exception {
         mockMvc.perform(
-                        get("/author/1")
+                        get("/v1/author/1")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andDo(print());
 
         mockMvc.perform(
-                        patch("/author/{authorId}", 1)
+                        patch("/v1/author/{authorId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -223,14 +223,14 @@ class AuthorControllerTest {
     )
     void testUpdateAuthorOk() throws Exception {
         mockMvc.perform(
-                        get("/author/{authorId}", 1)
+                        get("/v1/author/{authorId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andDo(print());
 
         mockMvc.perform(
-                        patch("/author/{authorId}", 1)
+                        patch("/v1/author/{authorId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -258,7 +258,7 @@ class AuthorControllerTest {
     )
     void deleteAuthorNotFound() throws Exception {
         mockMvc.perform(
-                        delete("/author/{authorId}", 1)
+                        delete("/v1/author/{authorId}", 1)
                 )
                 .andExpect(status().isNotFound())
                 .andDo(print());
@@ -276,7 +276,7 @@ class AuthorControllerTest {
     )
     void deleteAuthorConflict() throws Exception {
         mockMvc.perform(
-                        delete("/author/{authorId}", 1)
+                        delete("/v1/author/{authorId}", 1)
                 )
                 .andExpect(status().isConflict())
                 .andDo(print());
@@ -291,7 +291,7 @@ class AuthorControllerTest {
     )
     void deleteAuthorOk() throws Exception {
         mockMvc.perform(
-                        delete("/author/{authorId}", 1)
+                        delete("/v1/author/{authorId}", 1)
                 )
                 .andExpect(status().isNoContent())
                 .andDo(print());

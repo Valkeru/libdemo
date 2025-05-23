@@ -18,6 +18,7 @@ public class Database {
         public static final String BOOK_ID = "book_id_gen";
         public static final String SERIES_ID = "series_id_gen";
         public static final String CYCLE_ID = "cycle_id_gen";
+        public static final String USER_ID = "user_id_gen";
     }
 
     @UtilityClass
@@ -26,10 +27,16 @@ public class Database {
         public static final String BOOK_ID_SEQUENCE = "book_id_seq";
         public static final String SERIES_ID_SEQUENCE = "series_id_seq";
         public static final String CYCLE_ID_SEQUENCE = "cycle_id_seq";
+        public static final String USER_ID_SEQUENCE = "user_id_seq";
     }
 
     @UtilityClass
     public class Table {
+
+        @UtilityClass
+        public class User {
+            public static final String TABLE_NAME = "user";
+        }
 
         @UtilityClass
         public class Author {

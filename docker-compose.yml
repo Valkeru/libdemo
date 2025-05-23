@@ -5,8 +5,10 @@ services:
       - "58080:${SERVER_PORT:-8080}"
       - "59010:9010"
     image: openjdk:21-jdk
+    user: "1000"
     volumes:
-      - ./target/libdemo-0.0.1.jar:/app/app.jar
+#      - ./target/lib:/app/lib
+      - ./target/libdemo-1.0.jar:/app/app.jar
       - /usr/share/fonts:/app/fonts:ro
     working_dir: /app
     entrypoint: [
@@ -15,8 +17,11 @@ services:
       "-Djava.security.egd=file:/dev/urandom",
       "-Djava.awt.headless=true",
       "-Xmx1G",
+#      "-cp",
       "-jar",
       "/app/app.jar"
+#      "-Dloader.path=/app/lib",
+#      "org.springframework.boot.loader.launch.PropertiesLauncher"
     ]
 #    environment:
 #      - APPLICATION_UID=$(uuid)

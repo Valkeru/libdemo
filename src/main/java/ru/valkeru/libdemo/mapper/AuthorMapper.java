@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
+import ru.valkeru.libdemo.model.document.AuthorDocument;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.entity.Author;
 
@@ -14,6 +15,10 @@ import java.util.List;
 public interface AuthorMapper {
 
     AuthorDto toDto(Author entity);
+
+    AuthorDto toDto(AuthorDocument document);
+
+    AuthorDocument toDocument(Author entity);
 
     List<AuthorDto> toDtoList(Collection<Author> authorCollection);
 

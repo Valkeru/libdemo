@@ -4,22 +4,17 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
-import ru.valkeru.libdemo.mapper.qualifier.AuthorsByDtoList;
-import ru.valkeru.libdemo.mapper.qualifier.CycleById;
-import ru.valkeru.libdemo.mapper.qualifier.SeriesById;
-import ru.valkeru.libdemo.mapper.util.MapperUtil;
 import ru.valkeru.libdemo.model.dto.BookDto;
+import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.model.entity.Book;
+import ru.valkeru.libdemo.model.entity.Cycle;
+import ru.valkeru.libdemo.model.entity.Series;
 
 import java.util.Collection;
+import java.util.List;
 
 @Mapper(
-        componentModel = MappingConstants.ComponentModel.SPRING,
-        uses = {
-                MapperUtil.class,
-                AuthorMapper.class,
-                SeriesMapper.class
-        }
+        componentModel = MappingConstants.ComponentModel.SPRING
 )
 public interface BookMapper {
 
@@ -27,11 +22,11 @@ public interface BookMapper {
 
     Collection<BookDto> toDtoCollection(Collection<Book> books);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "series", source = "series.id", qualifiedBy = SeriesById.class)
-    @Mapping(target = "cycle", source = "cycle.id", qualifiedBy = CycleById.class)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "authors", source = "authors", qualifiedBy = AuthorsByDtoList.class)
-    void updateBookEntity(BookDto dto, @MappingTarget Book entity);
+    @Mapping(target = "name", source = "dto.name")
+    @Mapping(target = "series", source = "series")
+    @Mapping(target = "cycle", source = "cycle")
+    @Mapping(target = "authors", source = "authors")
+    void updateBookEntity(BookDto dto, Series series, Cycle cycle, List<Author> authors, @MappingTarget Book entity);
 }

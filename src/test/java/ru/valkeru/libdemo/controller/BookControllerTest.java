@@ -39,7 +39,7 @@ class BookControllerTest {
     )
     void testCreateBookBadRequestAuthorNotSet() throws Exception {
         mockMvc.perform(
-                        post("/books")
+                        post("/v1/books")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -62,7 +62,7 @@ class BookControllerTest {
     )
     void testCreateBookBadRequestInvalidIsbn() throws Exception {
         mockMvc.perform(
-                        post("/books")
+                        post("/v1/books")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -90,7 +90,7 @@ class BookControllerTest {
     )
     void testCreateBookAuthorNotFound() throws Exception {
         mockMvc.perform(
-                        post("/books")
+                        post("/v1/books")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -119,7 +119,7 @@ class BookControllerTest {
     )
     void testCreateBookSeriesNotFound() throws Exception {
         mockMvc.perform(
-                        post("/books")
+                        post("/v1/books")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -151,7 +151,7 @@ class BookControllerTest {
     )
     void testCreateBookCycleNotFound() throws Exception {
         mockMvc.perform(
-                        post("/books")
+                        post("/v1/books")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -185,7 +185,7 @@ class BookControllerTest {
     )
     void testCreateBookOk() throws Exception {
         mockMvc.perform(
-                        post("/books")
+                        post("/v1/books")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -232,7 +232,7 @@ class BookControllerTest {
     )
     void testListBooksEmptyList() throws Exception {
         mockMvc.perform(
-                        get("/books")
+                        get("/v1/books")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -253,7 +253,7 @@ class BookControllerTest {
     )
     void testListBooksOk() throws Exception {
         mockMvc.perform(
-                        get("/books")
+                        get("/v1/books")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -277,7 +277,7 @@ class BookControllerTest {
     )
     void testGetBookNotFound() throws Exception {
         mockMvc.perform(
-                        get("/books/{id}", 1)
+                        get("/v1/books/{id}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound())
@@ -296,7 +296,7 @@ class BookControllerTest {
     )
     void testGetBookOk() throws Exception {
         mockMvc.perform(
-                        get("/books/{id}", 1)
+                        get("/v1/books/{id}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -322,7 +322,7 @@ class BookControllerTest {
     )
     void testUpdateBookBadRequestAuthorsNotSet() throws Exception {
         mockMvc.perform(
-                        get("/books/{id}", 1)
+                        get("/v1/books/{id}", 1)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("test_d29827772a"))
@@ -335,7 +335,7 @@ class BookControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        patch("/books/{id}", 1)
+                        patch("/v1/books/{id}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -368,7 +368,7 @@ class BookControllerTest {
     )
     void testUpdateBookBadRequestInvalidIsbn() throws Exception {
         mockMvc.perform(
-                        get("/books/{id}", 1)
+                        get("/v1/books/{id}", 1)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("test_d29827772a"))
@@ -381,7 +381,7 @@ class BookControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        patch("/books/{id}", 1)
+                        patch("/v1/books/{id}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -453,7 +453,7 @@ class BookControllerTest {
     })
     void testUpdateBookNotFound(String value) throws Exception {
         mockMvc.perform(
-                        get("/books/{id}", 1)
+                        get("/v1/books/{id}", 1)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("test_d29827772a"))
@@ -466,7 +466,7 @@ class BookControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        patch("/books/{id}", 1)
+                        patch("/v1/books/{id}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(value)
@@ -488,7 +488,7 @@ class BookControllerTest {
     )
     void testUpdateBookOk() throws Exception {
         mockMvc.perform(
-                        get("/books/{id}", 1)
+                        get("/v1/books/{id}", 1)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("test_d29827772a"))
@@ -501,7 +501,7 @@ class BookControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        patch("/books/{id}", 1)
+                        patch("/v1/books/{id}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -555,7 +555,7 @@ class BookControllerTest {
     )
     void testDeleteBookNotFound() throws Exception {
         mockMvc.perform(
-                        delete("/books/{id}", 10)
+                        delete("/v1/books/{id}", 10)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound())
@@ -574,7 +574,7 @@ class BookControllerTest {
     )
     void testDeleteBookOk() throws Exception {
         mockMvc.perform(
-                        delete("/books/{id}", 1)
+                        delete("/v1/books/{id}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNoContent())

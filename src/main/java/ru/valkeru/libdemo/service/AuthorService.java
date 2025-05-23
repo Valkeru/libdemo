@@ -1,8 +1,10 @@
 package ru.valkeru.libdemo.service;
 
 import jakarta.annotation.Nonnull;
+import org.springframework.data.domain.Pageable;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.entity.Author;
+import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 
 import java.util.Collection;
 
@@ -10,7 +12,7 @@ public interface AuthorService {
 
     AuthorDto createOrUpdateAuthor(AuthorDto authorDto);
 
-    Collection<AuthorDto> getAuthors();
+    Collection<AuthorDto> getAuthors(AuthorFilter filter, Pageable pageable);
 
     /**
      * Проверка отсутствия записей с переданными ID
@@ -28,5 +30,5 @@ public interface AuthorService {
 
     void deleteAuthorById(Long id);
 
-    Author getAuthor(Long id);
+    void reindexAuthors();
 }

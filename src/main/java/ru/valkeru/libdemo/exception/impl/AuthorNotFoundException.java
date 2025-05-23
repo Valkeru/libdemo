@@ -18,6 +18,6 @@ public final class AuthorNotFoundException extends NotFoundException {
     }
 
     public static AuthorNotFoundException authorsNotFound(Collection<Long> ids) {
-        return new AuthorNotFoundException(String.format(AUTHORS_NOT_FOUND, joinIdCollection(ids)));
+        return new AuthorNotFoundException(String.format(AUTHORS_NOT_FOUND, NotFoundException.joinIdCollection(ids)));
     }
 }

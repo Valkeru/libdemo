@@ -36,7 +36,7 @@ class CycleControllerTest {
     )
     void testCreateCycleBadRequest() throws Exception {
         mockMvc.perform(
-                        post("/cycle")
+                        post("/v1/cycle")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -58,7 +58,7 @@ class CycleControllerTest {
     )
     void testCreateCycleOk() throws Exception {
         mockMvc.perform(
-                        get("/cycle")
+                        get("/v1/cycle")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -66,7 +66,7 @@ class CycleControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        post("/cycle")
+                        post("/v1/cycle")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -90,7 +90,7 @@ class CycleControllerTest {
     )
     void testGetCycleNotFound() throws Exception {
         mockMvc.perform(
-                        get("/cycle/{cycleId}", Integer.MAX_VALUE)
+                        get("/v1/cycle/{cycleId}", Integer.MAX_VALUE)
                 )
                 .andExpect(status().isNotFound())
                 .andDo(print());
@@ -106,7 +106,7 @@ class CycleControllerTest {
     )
     void testGetCyclesOk() throws Exception {
         mockMvc.perform(
-                        get("/cycle/{cycleId}", 1)
+                        get("/v1/cycle/{cycleId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -123,7 +123,7 @@ class CycleControllerTest {
     )
     void testUpdateCycleNotFound() throws Exception {
         mockMvc.perform(
-                        patch("/cycle/{cycleId}", 10)
+                        patch("/v1/cycle/{cycleId}", 10)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -146,7 +146,7 @@ class CycleControllerTest {
     )
     void testUpdateCycleOk() throws Exception {
         mockMvc.perform(
-                        patch("/cycle/{cycleId}", 1)
+                        patch("/v1/cycle/{cycleId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -164,7 +164,7 @@ class CycleControllerTest {
     @Sql(value = {"classpath:delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void testDeleteCycleNotFound() throws Exception {
         mockMvc.perform(
-                        delete("/cycle/{cycleId}", 1)
+                        delete("/v1/cycle/{cycleId}", 1)
                 )
                 .andExpect(status().isNotFound())
                 .andDo(print());
@@ -177,7 +177,7 @@ class CycleControllerTest {
     )
     void testDeleteCycleSeriesConflict() throws Exception {
         mockMvc.perform(
-                        delete("/cycle/{cycleId}", 1)
+                        delete("/v1/cycle/{cycleId}", 1)
                 )
                 .andExpect(status().isConflict())
                 .andDo(print());
@@ -194,7 +194,7 @@ class CycleControllerTest {
     )
     void testDeleteCycleBookConflict() throws Exception {
         mockMvc.perform(
-                        delete("/cycle/{cycleId}", 1)
+                        delete("/v1/cycle/{cycleId}", 1)
                 )
                 .andExpect(status().isConflict())
                 .andDo(print());
@@ -209,7 +209,7 @@ class CycleControllerTest {
     )
     void testDeleteCycleOk() throws Exception {
         mockMvc.perform(
-                        delete("/cycle/{cycleId}", 1)
+                        delete("/v1/cycle/{cycleId}", 1)
                 )
                 .andExpect(status().isNoContent())
                 .andDo(print());

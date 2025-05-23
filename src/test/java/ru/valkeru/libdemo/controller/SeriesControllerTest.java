@@ -36,7 +36,7 @@ class SeriesControllerTest {
     )
     void testCreateSeriesBadRequest() throws Exception {
         mockMvc.perform(
-                        post("/series")
+                        post("/v1/series")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -57,7 +57,7 @@ class SeriesControllerTest {
     )
     void testCreateSeriesCycleNotFound() throws Exception {
         mockMvc.perform(
-                        post("/series")
+                        post("/v1/series")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -81,7 +81,7 @@ class SeriesControllerTest {
     )
     void testCreateSeriesNoCycleOk() throws Exception {
         mockMvc.perform(
-                        post("/series")
+                        post("/v1/series")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -108,7 +108,7 @@ class SeriesControllerTest {
     )
     void testCreateSeriesOk() throws Exception {
         mockMvc.perform(
-                        post("/series")
+                        post("/v1/series")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -137,7 +137,7 @@ class SeriesControllerTest {
     )
     void testUpdateSeriesBadRequest() throws Exception {
         mockMvc.perform(
-                        patch("/series/{seriesId}", 1)
+                        patch("/v1/series/{seriesId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -161,7 +161,7 @@ class SeriesControllerTest {
     )
     void testUpdateSeriesCycleNotFound() throws Exception {
         mockMvc.perform(
-                        get("/series")
+                        get("/v1/series")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -171,7 +171,7 @@ class SeriesControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        patch("/series/{seriesId}", 1)
+                        patch("/v1/series/{seriesId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -198,7 +198,7 @@ class SeriesControllerTest {
     )
     void testUpdateSeriesOk() throws Exception {
         mockMvc.perform(
-                        get("/series")
+                        get("/v1/series")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -208,7 +208,7 @@ class SeriesControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        patch("/series/{seriesId}", 1)
+                        patch("/v1/series/{seriesId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -241,7 +241,7 @@ class SeriesControllerTest {
     )
     void testUpdateSeriesNoCycleOk() throws Exception {
         mockMvc.perform(
-                        get("/series")
+                        get("/v1/series")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -251,7 +251,7 @@ class SeriesControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        patch("/series/{seriesId}", 1)
+                        patch("/v1/series/{seriesId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -276,7 +276,7 @@ class SeriesControllerTest {
     )
     void testGetSeriesNotFound() throws Exception {
         mockMvc.perform(
-                        get("/series")
+                        get("/v1/series")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -285,7 +285,7 @@ class SeriesControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        get("/series/{seriesId}", 1)
+                        get("/v1/series/{seriesId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound())
@@ -301,7 +301,7 @@ class SeriesControllerTest {
     )
     void testGetSeriesOk() throws Exception {
         mockMvc.perform(
-                        get("/series")
+                        get("/v1/series")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -310,7 +310,7 @@ class SeriesControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        get("/series/{seriesId}", 1)
+                        get("/v1/series/{seriesId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -326,7 +326,7 @@ class SeriesControllerTest {
     )
     void testDeleteSeriesNotFound() throws Exception {
         mockMvc.perform(
-                        delete("/series/{seriesId}", 1)
+                        delete("/v1/series/{seriesId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound())
@@ -345,7 +345,7 @@ class SeriesControllerTest {
     )
     void testDeleteSeriesConflict() throws Exception {
         mockMvc.perform(
-                        delete("/series/{seriesId}", 1)
+                        delete("/v1/series/{seriesId}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isConflict())
@@ -362,7 +362,7 @@ class SeriesControllerTest {
     )
     void testDeleteSeriesOk() throws Exception {
         mockMvc.perform(
-                        delete("/series/{id}", 1)
+                        delete("/v1/series/{id}", 1)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNoContent())
