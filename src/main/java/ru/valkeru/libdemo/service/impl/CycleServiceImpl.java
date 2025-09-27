@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.exception.impl.CycleNotFoundException;
-import ru.valkeru.libdemo.exception.impl.CycleViolationException;
 import ru.valkeru.libdemo.mapper.CycleMapper;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.entity.Cycle;
@@ -52,14 +51,6 @@ public class CycleServiceImpl implements CycleService {
     @Transactional
     @Override
     public void deleteCycleById(Long id) {
-        if (cycleContainsBooks(id)) {
-            throw CycleViolationException.cycleContainsBooks(id);
-        }
-
-        if (cycleHasSeries(id)) {
-            throw CycleViolationException.cycleContainsSeries(id);
-        }
-
         if (cycleRepository.deleteCycleById(id) == 0) {
             throw CycleNotFoundException.cycleNotFound(id);
         }
@@ -74,13 +65,5 @@ public class CycleServiceImpl implements CycleService {
     private Cycle getCycleEntity(Long id) {
         return cycleRepository.findById(id)
                 .orElseThrow(() -> CycleNotFoundException.cycleNotFound(id));
-    }
-
-    private boolean cycleContainsBooks(Long cycleId) {
-        return cycleRepository.countBooksByCycleId(cycleId) > 0;
-    }
-
-    private boolean cycleHasSeries(Long cycleId) {
-        return cycleRepository.countSeriesByCycleId(cycleId) > 0;
     }
 }

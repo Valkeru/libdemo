@@ -12,6 +12,4 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
     @Transactional
     @Query("delete from Series s where s.id = :id")
     int deleteSeriesById(Long id);
-
-    int countByCycleId(Long cycleId);
 }

@@ -53,11 +53,6 @@ public class SeriesServiceImpl implements SeriesService {
         }
     }
 
-    @Override
-    public int countSeriesByCycleId(Long cycleId) {
-        return seriesRepository.countByCycleId(cycleId);
-    }
-
     @NonNull
     @Override
     public Series getSeriesEntity(Long id) {

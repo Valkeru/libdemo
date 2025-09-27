@@ -1,5 +1,6 @@
 package ru.valkeru.libdemo.controller;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -9,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.valkeru.libdemo.ApplicationTestConfiguration;
+import ru.valkeru.libdemo.web.api.v1.AuthorApi;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,9 +36,10 @@ class AuthorControllerTest {
                     "classpath:delete/00.truncate.sql"
             }
     )
+    @DisplayName("Добавить автора - некорректный запрос")
     void testCreateAuthorBadRequest() throws Exception {
         mockMvc.perform(
-                        post("/v1/author")
+                        post(AuthorApi.AUTHOR_V1_URL)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -57,9 +60,10 @@ class AuthorControllerTest {
                     "classpath:delete/00.truncate.sql"
             }
     )
+    @DisplayName("Добавить автора - успешно")
     void testCreateAuthorOk() throws Exception {
         mockMvc.perform(
-                        post("/v1/author")
+                        post(AuthorApi.AUTHOR_V1_URL)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -88,9 +92,10 @@ class AuthorControllerTest {
                     "classpath:01.create_author.sql"
             }
     )
+    @DisplayName("Добавить автора - конфликт данных")
     void testCreateAuthorConflict() throws Exception {
         mockMvc.perform(
-                        post("/v1/author")
+                        post(AuthorApi.AUTHOR_V1_URL)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -112,8 +117,9 @@ class AuthorControllerTest {
             },
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
     )
+    @DisplayName("Получить данные об авторе по ID - автор не найден")
     void testGetAuthorNotFound() throws Exception {
-        mockMvc.perform(get("/v1/author/{authorId}", Integer.MAX_VALUE))
+        mockMvc.perform(get("/v1/author/{id}", Integer.MAX_VALUE))
                 .andExpect(status().isNotFound())
                 .andDo(print());
     }
@@ -125,16 +131,18 @@ class AuthorControllerTest {
                     "classpath:01.create_author.sql"
             }
     )
+    @DisplayName("Получить список авторов")
     void testAuthorsListOk() throws Exception {
         mockMvc.perform(
-                get("/v1/author")
+                get(AuthorApi.AUTHOR_V1_URL)
                         .accept(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.size()").value(3))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].fullName").value("test_9b844b884b test_90321cca80 test_6012cf646d"))
+                .andExpect(jsonPath("$.content").exists())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.size()").value(3))
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].fullName").value("test_9b844b884b test_90321cca80 test_6012cf646d"))
                 .andDo(print());
     }
 
@@ -145,9 +153,10 @@ class AuthorControllerTest {
                     "classpath:01.create_author.sql"
             }
     )
+    @DisplayName("Получить данные об авторе по ID - успешно")
     void testGetAuthorOk() throws Exception {
         mockMvc.perform(
-                        get("/v1/author/{id}", 1)
+                        get("%s/{id}".formatted(AuthorApi.AUTHOR_V1_URL), 1)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -164,9 +173,10 @@ class AuthorControllerTest {
                     "classpath:delete/00.truncate.sql"
             }
     )
+    @DisplayName("Обновить данные об авторе - 404")
     void testUpdateAuthorNotFound() throws Exception {
         mockMvc.perform(
-                        patch("/v1/author/{authorId}", 1)
+                        patch("%s/{id}".formatted(AuthorApi.AUTHOR_V1_URL), 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -189,16 +199,10 @@ class AuthorControllerTest {
                     "classpath:01.create_author.sql"
             }
     )
+    @DisplayName("Обновить данные об авторе - 400")
     void testUpdateAuthorBadRequest() throws Exception {
         mockMvc.perform(
-                        get("/v1/author/1")
-                                .accept(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andDo(print());
-
-        mockMvc.perform(
-                        patch("/v1/author/{authorId}", 1)
+                        patch("%s/{id}".formatted(AuthorApi.AUTHOR_V1_URL), 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -221,16 +225,17 @@ class AuthorControllerTest {
                     "classpath:01.create_author.sql"
             }
     )
+    @DisplayName("Обновить данные об авторе - успешно")
     void testUpdateAuthorOk() throws Exception {
         mockMvc.perform(
-                        get("/v1/author/{authorId}", 1)
+                        get("%s/{id}".formatted(AuthorApi.AUTHOR_V1_URL), 1)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andDo(print());
 
         mockMvc.perform(
-                        patch("/v1/author/{authorId}", 1)
+                        patch("%s/{id}".formatted(AuthorApi.AUTHOR_V1_URL), 1)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -256,29 +261,12 @@ class AuthorControllerTest {
                     "classpath:delete/00.truncate.sql"
             }
     )
+    @DisplayName("Удалить данные об авторе - 404")
     void deleteAuthorNotFound() throws Exception {
         mockMvc.perform(
-                        delete("/v1/author/{authorId}", 1)
+                        delete("%s/{id}".formatted(AuthorApi.AUTHOR_V1_URL), 1)
                 )
                 .andExpect(status().isNotFound())
-                .andDo(print());
-    }
-
-    @Test
-    @Sql(
-            value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql",
-                    "classpath:02.create_cycle.sql",
-                    "classpath:03.create_series.sql",
-                    "classpath:04.create_book.sql"
-            }
-    )
-    void deleteAuthorConflict() throws Exception {
-        mockMvc.perform(
-                        delete("/v1/author/{authorId}", 1)
-                )
-                .andExpect(status().isConflict())
                 .andDo(print());
     }
 
@@ -289,9 +277,10 @@ class AuthorControllerTest {
                     "classpath:01.create_author.sql"
             }
     )
+    @DisplayName("Удалить данные об авторе - успешно")
     void deleteAuthorOk() throws Exception {
         mockMvc.perform(
-                        delete("/v1/author/{authorId}", 1)
+                        delete("%s/{id}".formatted(AuthorApi.AUTHOR_V1_URL), 1)
                 )
                 .andExpect(status().isNoContent())
                 .andDo(print());

@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
@@ -26,7 +27,7 @@ public class AuthorHttpServiceImpl implements AuthorHttpService {
     }
 
     @Override
-    public Collection<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable) {
+    public Page<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable) {
         return authorService.getAuthors(filter, pageable);
     }
 

@@ -12,8 +12,4 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Modifying
     @Query("delete from Book b where b.id = :id")
     int deleteBookById(Long id);
-
-    int countBooksByAuthorsId(Long authorId);
-
-    int countBooksByCycleId(Long cycleId);
 }

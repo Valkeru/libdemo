@@ -1,10 +1,10 @@
-package ru.valkeru.libdemo.api.definition;
+package ru.valkeru.libdemo.web.api.definition;
 
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.experimental.UtilityClass;
-import ru.valkeru.libdemo.api.definition.BookDefinition.Tags;
+import ru.valkeru.libdemo.web.api.definition.BookDefinition.Tags;
 
 @UtilityClass
 @OpenAPIDefinition(

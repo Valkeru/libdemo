@@ -1,15 +1,13 @@
-package ru.valkeru.libdemo.api.v1;
+package ru.valkeru.libdemo.web.api.v1;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.valkeru.libdemo.api.definition.ApiDefinition;
+import ru.valkeru.libdemo.web.api.definition.ApiDefinition;
 
-@RestController
-@RequestMapping("/v1/service")
+//@RestController
+//@RequestMapping("/v1/service")
 public interface AuthorServiceApi {
 
     @Operation(

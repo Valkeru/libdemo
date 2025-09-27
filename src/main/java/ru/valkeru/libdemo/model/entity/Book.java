@@ -11,7 +11,6 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -72,14 +71,4 @@ public class Book extends TimestampedEntity {
     )
     @ToString.Exclude
     Set<Author> authors;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cycle_id", foreignKey = @ForeignKey(name = Database.Table.Book.CYCLE_FK))
-    @ToString.Exclude
-    private Cycle cycle;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "series_id", foreignKey = @ForeignKey(name = Database.Table.Book.SERIES_FK))
-    @ToString.Exclude
-    private Series series;
 }

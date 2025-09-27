@@ -30,7 +30,7 @@ public class BookServiceImpl implements BookService {
     public BookDto createOrUpdateBook(BookDto bookDto) {
         Book book = getBookEntity(bookDto);
 
-        bookMapper.updateBookEntity(bookDto, null, null, new ArrayList<>(), book);
+        bookMapper.updateBookEntity(bookDto, book);
 
         return bookMapper.toDto(bookRepository.save(book));
     }
@@ -55,16 +55,6 @@ public class BookServiceImpl implements BookService {
         if (bookRepository.deleteBookById(id) == 0) {
             throw BookNotFoundException.bookNotFound(id);
         }
-    }
-
-    @Override
-    public int countBooksByAuthorId(Long authorId) {
-        return bookRepository.countBooksByAuthorsId(authorId);
-    }
-
-    @Override
-    public int countBooksByCycleId(Long cycleId) {
-        return bookRepository.countBooksByCycleId(cycleId);
     }
 
     private Book getBookEntity(Long id) {

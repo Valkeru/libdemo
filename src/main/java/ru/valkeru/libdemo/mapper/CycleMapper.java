@@ -14,8 +14,6 @@ public interface CycleMapper {
 
     CycleDto toDto(Cycle entity);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "books", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     void updateCycle(CycleDto dto, @MappingTarget Cycle cycle);

@@ -12,6 +12,7 @@ import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import ru.valkeru.libdemo.config.serialization.SecretIntrospector;
 import ru.valkeru.libdemo.util.RequestExecutionContext;
 
 import java.time.ZoneId;
@@ -41,7 +42,8 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
                     .addModule(new JavaTimeModule())
                     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                     .defaultTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()))
-                    .build();
+                    .build()
+                    .setAnnotationIntrospector(new SecretIntrospector());
 
     @SneakyThrows
     protected void buildMessageWithParameters(HttpServletRequest request, StringBuilder requestLogMessageBuilder) {

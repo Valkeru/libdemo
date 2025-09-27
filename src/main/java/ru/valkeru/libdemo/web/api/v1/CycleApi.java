@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.api.v1;
+package ru.valkeru.libdemo.web.api.v1;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,20 +13,18 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.valkeru.libdemo.api.definition.ApiDefinition.SchemaIdDescription;
-import ru.valkeru.libdemo.api.definition.ApiDefinition.StatusCodes;
-import ru.valkeru.libdemo.api.definition.ApiDefinition.Summary;
-import ru.valkeru.libdemo.api.definition.ApiDefinition.Tags;
+import ru.valkeru.libdemo.web.api.definition.ApiDefinition.SchemaIdDescription;
+import ru.valkeru.libdemo.web.api.definition.ApiDefinition.StatusCodes;
+import ru.valkeru.libdemo.web.api.definition.CycleDefinition.Summary;
+import ru.valkeru.libdemo.web.api.definition.CycleDefinition.Tags;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
 import ru.valkeru.libdemo.model.view.CycleView;
 
 import java.util.Collection;
 
-@RestController
-@RequestMapping("/v1/cycle")
+//@RestController
+//@RequestMapping("/v1/cycle")
 public interface CycleApi {
 
     @Operation(

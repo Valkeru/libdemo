@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
-import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.repository.qdsl.base.AuthorDslRepository;
 
@@ -43,10 +42,4 @@ public interface AuthorRepository extends JpaRepository<Author, Long>, AuthorDsl
     @Modifying
     @Query("delete from Author where id = :id")
     int deleteAuthorById(Long id);
-
-    @Query("select a from Author a join a.books b where b.id = :#{#bookDto.id}")
-    Collection<Author> getAllByBook(BookDto bookDto);
-
-    @Query("select count(b.id) from Author a inner join Book b where a.id = :authorId")
-    int countBooksByAuthorId(Long authorId);
 }

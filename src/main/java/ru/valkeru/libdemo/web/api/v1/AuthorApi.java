@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.api.v1;
+package ru.valkeru.libdemo.web.api.v1;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,22 +18,35 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.valkeru.libdemo.api.definition.ApiDefinition.SchemaIdDescription;
-import ru.valkeru.libdemo.api.definition.ApiDefinition.StatusCodes;
-import ru.valkeru.libdemo.api.definition.AuthorDefinition.Summary;
-import ru.valkeru.libdemo.api.definition.AuthorDefinition.Tags;
+import ru.valkeru.libdemo.web.api.definition.ApiDefinition.SchemaIdDescription;
+import ru.valkeru.libdemo.web.api.definition.ApiDefinition.StatusCodes;
+import ru.valkeru.libdemo.web.api.definition.AuthorDefinition.Summary;
+import ru.valkeru.libdemo.web.api.definition.AuthorDefinition.Tags;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 import ru.valkeru.libdemo.model.view.AuthorView;
 
-import java.util.Collection;
-
-@RestController
-@RequestMapping("/v1/author")
+@RequestMapping(AuthorApi.AUTHOR_V1_URL)
 public interface AuthorApi {
 
+    String AUTHOR_V1_URL = "/v1/author";
+
+    /**
+     * Постраничный просмотр списка авторов
+     */
+    @Operation(
+            summary = Summary.Author.SUMMARY_VIEW_LIST,
+            tags = Tags.AUTHOR
+    )
+    @GetMapping
+    @JsonView(AuthorView.AuthorListView.class)
+    ResponseEntity<Page<AuthorDto>> listAllAuthors(@ParameterObject AuthorFilter filter,
+                                                   @ParameterObject @PageableDefault Pageable pageable);
+
+    /**
+     * Создание записи об авторе
+     */
     @Operation(
             summary = Summary.Author.SUMMARY_CREATE,
             tags = Tags.AUTHOR,
@@ -64,48 +77,9 @@ public interface AuthorApi {
                                            @Validated(AuthorView.AuthorCreateView.class)
                                            @JsonView(AuthorView.AuthorCreateView.class) AuthorDto author);
 
-    @Operation(
-            summary = Summary.Author.SUMMARY_UPDATE,
-            tags = Tags.AUTHOR,
-            responses = {
-                    @ApiResponse(
-                            responseCode = StatusCodes.OK,
-                            description = StatusCodes.Description.OK
-                    ),
-                    @ApiResponse(
-                            responseCode = StatusCodes.NOT_FOUND,
-                            description = StatusCodes.Description.NOT_FOUND,
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    ),
-                    @ApiResponse(
-                            responseCode = StatusCodes.BAD_REQUEST,
-                            description = StatusCodes.Description.BAD_REQUEST,
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    )
-            }
-    )
-    @PatchMapping("/{authorId}")
-    @JsonView(AuthorView.AuthorSingleView.class)
-    ResponseEntity<AuthorDto> updateAuthor(@PathVariable(name = "authorId")
-                                           @Schema(description = SchemaIdDescription.AUTHOR_ID,
-                                                   type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
-                                                   format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id,
-                                           @RequestBody
-                                           @Validated(AuthorView.AuthorUpdateView.class)
-                                           @JsonView(AuthorView.AuthorUpdateView.class) AuthorDto author);
-
-    @Operation(
-            summary = Summary.Author.SUMMARY_VIEW_LIST,
-            tags = Tags.AUTHOR
-    )
-    @GetMapping
-    @JsonView(AuthorView.AuthorListView.class)
-    ResponseEntity<Collection<AuthorDto>> listAllAuthors(@ParameterObject AuthorFilter filter, @ParameterObject @PageableDefault Pageable pageable);
-
+    /**
+     * Получить запись об авторе по id
+     */
     @Operation(
             summary = Summary.Author.SUMMARY_VIEW,
             tags = Tags.AUTHOR,
@@ -130,6 +104,9 @@ public interface AuthorApi {
                                                 type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
                                                 format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id);
 
+    /**
+     * Удалить запись об авторе
+     */
     @Operation(
             summary = Summary.Author.SUMMARY_DELETE,
             tags = Tags.AUTHOR,
@@ -163,6 +140,40 @@ public interface AuthorApi {
                                               type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
                                               format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id);
 
-    @GetMapping("/apageable")
-    ResponseEntity<Page<AuthorDto>> getPageableAuthors();
+    /**
+     * Обновление записи об авторе
+     */
+    @Operation(
+            summary = Summary.Author.SUMMARY_UPDATE,
+            tags = Tags.AUTHOR,
+            responses = {
+                    @ApiResponse(
+                            responseCode = StatusCodes.OK,
+                            description = StatusCodes.Description.OK
+                    ),
+                    @ApiResponse(
+                            responseCode = StatusCodes.NOT_FOUND,
+                            description = StatusCodes.Description.NOT_FOUND,
+                            content = {
+                                    @Content(schema = @Schema(implementation = ErrorDto.class))
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = StatusCodes.BAD_REQUEST,
+                            description = StatusCodes.Description.BAD_REQUEST,
+                            content = {
+                                    @Content(schema = @Schema(implementation = ErrorDto.class))
+                            }
+                    )
+            }
+    )
+    @PatchMapping("/{id}")
+    @JsonView(AuthorView.AuthorSingleView.class)
+    ResponseEntity<AuthorDto> updateAuthor(@PathVariable
+                                           @Schema(description = SchemaIdDescription.AUTHOR_ID,
+                                                   type = SchemaIdDescription.DEFAULT_PATH_ID_TYPE,
+                                                   format = SchemaIdDescription.DEFAULT_PATH_ID_FORMAT) Long id,
+                                           @RequestBody
+                                           @Validated(AuthorView.AuthorUpdateView.class)
+                                           @JsonView(AuthorView.AuthorUpdateView.class) AuthorDto author);
 }

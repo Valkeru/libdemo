@@ -19,6 +19,4 @@ public interface SeriesService {
     Series getSeriesEntity(Long id);
 
     void deleteSeriesById(@NonNull Long id);
-
-    int countSeriesByCycleId(Long cycleId);
 }

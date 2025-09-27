@@ -47,8 +47,8 @@ public class Cycle extends TimestampedEntity {
     @Column(name = "name", columnDefinition = "text")
     private String name;
 
-    @OneToMany(mappedBy = "cycle", fetch = FetchType.EAGER)
-    @Fetch(FetchMode.JOIN)
-    @ToString.Exclude
-    private Set<Book> books;
+//    @OneToMany(mappedBy = "cycle", fetch = FetchType.EAGER)
+//    @Fetch(FetchMode.JOIN)
+//    @ToString.Exclude
+//    private Set<Book> books;
 }

@@ -13,8 +13,4 @@ public interface BookService {
     BookDto getBookById(Long id);
 
     void deleteBookById(Long id);
-
-    int countBooksByAuthorId(Long authorId);
-
-    int countBooksByCycleId(Long cycleId);
 }

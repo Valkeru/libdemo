@@ -20,10 +20,4 @@ public interface CycleRepository extends JpaRepository<Cycle, Long> {
     Collection<CycleDto> getCycles(Sort sort);
 
     int deleteCycleById(Long id);
-
-    @Query("select count(b.id) from Cycle c inner join Book b where c.id = :cycleId")
-    int countBooksByCycleId(Long cycleId);
-
-    @Query("select count(s.id) from Cycle c inner join Series s where c.id = :cycleId")
-    int countSeriesByCycleId(Long cycleId);
 }

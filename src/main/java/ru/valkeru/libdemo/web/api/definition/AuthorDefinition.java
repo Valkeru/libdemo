@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.api.definition;
+package ru.valkeru.libdemo.web.api.definition;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.tags.Tag;

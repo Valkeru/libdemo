@@ -1,39 +1,44 @@
 package ru.valkeru.libdemo.service.impl;
 
 import jakarta.annotation.Nonnull;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.exception.impl.AuthorNotFoundException;
-import ru.valkeru.libdemo.exception.impl.AuthorViolationException;
 import ru.valkeru.libdemo.mapper.AuthorMapper;
 import ru.valkeru.libdemo.model.document.AuthorDocument;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
-import ru.valkeru.libdemo.repository.elasticsearch.AuthorElasticsearchRepository;
+import ru.valkeru.libdemo.repository.elasticsearch.base.AuthorElasticsearchRepository;
+import ru.valkeru.libdemo.repository.facade.AuthorRepositoryFacade;
 import ru.valkeru.libdemo.repository.jpa.AuthorRepository;
 import ru.valkeru.libdemo.service.AuthorService;
 import ru.valkeru.libdemo.util.ElasticsearchUtil;
-import ru.valkeru.libdemo.util.SqlUtil;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthorServiceImpl implements AuthorService {
 
-    AuthorRepository authorRepository;
-    AuthorMapper authorMapper;
-    AuthorElasticsearchRepository authorElasticsearchRepository;
+    private final AuthorRepository authorRepository;
+    private final AuthorMapper authorMapper;
+    private final AuthorElasticsearchRepository authorElasticsearchRepository;
+    private final AuthorRepositoryFacade authorRepositoryFacade;
+
+    public AuthorServiceImpl(AuthorRepository authorRepository, AuthorMapper authorMapper,
+                             AuthorElasticsearchRepository authorElasticsearchRepository,
+                             AuthorRepositoryFacade authorRepositoryFacade) {
+
+        this.authorRepository = authorRepository;
+        this.authorMapper = authorMapper;
+        this.authorElasticsearchRepository = authorElasticsearchRepository;
+        this.authorRepositoryFacade = authorRepositoryFacade;
+    }
 
     @Transactional
     @Override
@@ -45,21 +50,10 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Collection<AuthorDto> getAuthors(AuthorFilter filter, Pageable pageable) {
+    public Page<AuthorDto> getAuthors(AuthorFilter filter, Pageable pageable) {
 //        return authorRepository.getAuthors(SqlUtil.sortByCreatedAtAsc());
 
-        return authorRepository.listAllAuthors(filter, pageable);
-    }
-
-    @Override
-    public Collection<Long> checkNotExistedIds(Collection<Long> testedIds) {
-        return authorRepository.getIdNotExisted(testedIds);
-    }
-
-    @Nonnull
-    @Override
-    public Collection<Author> getAllById(Collection<Long> ids) {
-        return authorRepository.getAuthorsByIdIn(ids, SqlUtil.sortByIdAsc());
+        return authorRepositoryFacade.listAllAuthors(filter, pageable);
     }
 
     @Nonnull
@@ -72,10 +66,6 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     @Override
     public void deleteAuthorById(Long id) {
-        if (authorHasBooks(id)) {
-            throw AuthorViolationException.unableToDeleteHasBooks();
-        }
-
         if (authorRepository.deleteAuthorById(id) == 0) {
             throw AuthorNotFoundException.authorNotFound(id);
         }
@@ -102,9 +92,5 @@ public class AuthorServiceImpl implements AuthorService {
     private Author getAuthorEntity(Long id) {
         return authorRepository.findById(id)
                 .orElseThrow(() -> AuthorNotFoundException.authorNotFound(id));
-    }
-
-    private boolean authorHasBooks(Long authorId) {
-        return authorRepository.countBooksByAuthorId(authorId) > 0;
     }
 }

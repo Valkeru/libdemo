@@ -48,11 +48,11 @@ public class Series extends TimestampedEntity {
     @Column(name = "name", nullable = false, columnDefinition = "text")
     String name;
 
-    @OneToMany(mappedBy = "series", fetch = FetchType.LAZY)
-    @ToString.Exclude
-    Set<Book> books;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cycle_id", foreignKey = @ForeignKey(name = Database.Table.Series.CYCLE_FK))
-    Cycle cycle;
+//    @OneToMany(mappedBy = "series", fetch = FetchType.LAZY)
+//    @ToString.Exclude
+//    Set<Book> books;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "cycle_id", foreignKey = @ForeignKey(name = Database.Table.Series.CYCLE_FK))
+//    Cycle cycle;
 }

@@ -1,32 +1,25 @@
-package ru.valkeru.libdemo.api.definition;
+package ru.valkeru.libdemo.web.api.definition;
 
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.experimental.UtilityClass;
-import ru.valkeru.libdemo.api.definition.ApiDefinition.Tags;
 
 @UtilityClass
-@OpenAPIDefinition(
-        // Порядок тегов в списке определяет порядок в Swagger UI
-        tags = {
-                @Tag(name = Tags.CYCLE, description = Tags.Description.CYCLE),
-                @Tag(name = Tags.SERVICE, description = Tags.Description.SERVICE)
-        }
-)
+//@OpenAPIDefinition(
+//        tags = {
+//                @Tag(name = Tags.SERVICE, description = Tags.Description.SERVICE)
+//        }
+//)
 public class ApiDefinition {
 
     @UtilityClass
     public static class Tags {
 
-        public static final String CYCLE = "cycle";
         public static final String SERVICE = "service";
         public static final String SECURITY = "security";
 
         @UtilityClass
         static class Description {
 
-            static final String CYCLE = "Циклы";
             static final String SERVICE = "Служебные";
             static final String SECURITY = "Безопасность";
         }
@@ -39,16 +32,6 @@ public class ApiDefinition {
         public static final class Security {
 
             public static final String SIGN_UP = "Регистрация";
-        }
-
-        @UtilityClass
-        public static final class Cycle {
-
-            public static final String SUMMARY_CREATE = "Добавить цикл";
-            public static final String SUMMARY_UPDATE = "Обновить цикл";
-            public static final String SUMMARY_VIEW_LIST = "Получить все циклы";
-            public static final String SUMMARY_VIEW = "Получить цикл";
-            public static final String SUMMARY_DELETE = "Удалить цикл";
         }
 
         @UtilityClass
