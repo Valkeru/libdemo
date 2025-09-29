@@ -8,7 +8,8 @@ services:
     user: "1000"
     volumes:
 #      - ./target/lib:/app/lib
-      - ./target/libdemo-1.0.jar:/app/app.jar
+      - ./api/target/api-1.0.jar:/app/api.jar
+      - ./core/target/core-1.0.jar:/app/core.jar
       - /usr/share/fonts:/app/fonts:ro
     working_dir: /app
     entrypoint: [
@@ -17,9 +18,10 @@ services:
       "-Djava.security.egd=file:/dev/urandom",
       "-Djava.awt.headless=true",
       "-Xmx1G",
-#      "-cp",
+      "-cp",
+      "/app/api.jar",
       "-jar",
-      "/app/app.jar"
+      "/app/core.jar"
 #      "-Dloader.path=/app/lib",
 #      "org.springframework.boot.loader.launch.PropertiesLauncher"
     ]
