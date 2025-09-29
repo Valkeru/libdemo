@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.http;
+package ru.valkeru.libdemo.service.web.base;
 
 import jakarta.validation.constraints.NotNull;
 import ru.valkeru.libdemo.model.dto.SeriesDto;

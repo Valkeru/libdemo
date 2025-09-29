@@ -1,12 +1,12 @@
-package ru.valkeru.libdemo.service.http.impl;
+package ru.valkeru.libdemo.service.web.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.model.dto.CycleDto;
-import ru.valkeru.libdemo.service.CycleService;
-import ru.valkeru.libdemo.service.http.CycleHttpService;
+import ru.valkeru.libdemo.service.base.CycleService;
+import ru.valkeru.libdemo.service.web.base.CycleHttpService;
 
 import java.util.Collection;
 

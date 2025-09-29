@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.http;
+package ru.valkeru.libdemo.service.web.base;
 
 import ru.valkeru.libdemo.model.dto.CycleDto;
 

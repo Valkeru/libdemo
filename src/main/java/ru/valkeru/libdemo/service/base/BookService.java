@@ -1,12 +1,12 @@
-package ru.valkeru.libdemo.service.http;
+package ru.valkeru.libdemo.service.base;
 
 import ru.valkeru.libdemo.model.dto.BookDto;
 
 import java.util.Collection;
 
-public interface BookHttpService {
+public interface BookService {
 
-    BookDto createOrUpdateBook(Long id, BookDto bookDto);
+    BookDto createOrUpdateBook(BookDto bookDto);
 
     Collection<BookDto> getAllBooks();
 
@@ -14,4 +14,3 @@ public interface BookHttpService {
 
     void deleteBookById(Long id);
 }
-

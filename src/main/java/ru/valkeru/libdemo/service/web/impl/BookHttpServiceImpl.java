@@ -1,19 +1,19 @@
-package ru.valkeru.libdemo.service.http.impl;
+package ru.valkeru.libdemo.service.web.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.model.dto.BookDto;
-import ru.valkeru.libdemo.service.BookService;
-import ru.valkeru.libdemo.service.http.BookHttpService;
+import ru.valkeru.libdemo.service.base.BookService;
+import ru.valkeru.libdemo.service.web.base.BookWebService;
 
 import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class BookHttpServiceImpl implements BookHttpService {
+public class BookHttpServiceImpl implements BookWebService {
 
     BookService bookService;
 

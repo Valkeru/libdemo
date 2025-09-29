@@ -10,7 +10,7 @@ import ru.valkeru.libdemo.mapper.CycleMapper;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.repository.jpa.CycleRepository;
-import ru.valkeru.libdemo.service.CycleService;
+import ru.valkeru.libdemo.service.base.CycleService;
 import ru.valkeru.libdemo.util.SqlUtil;
 
 import java.util.Collection;

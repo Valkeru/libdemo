@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service;
+package ru.valkeru.libdemo.service.base;
 
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.entity.Cycle;

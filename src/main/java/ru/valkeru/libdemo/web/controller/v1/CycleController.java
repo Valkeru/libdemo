@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.web.api.v1.CycleApi;
 import ru.valkeru.libdemo.model.dto.CycleDto;
-import ru.valkeru.libdemo.service.http.CycleHttpService;
+import ru.valkeru.libdemo.service.web.base.CycleHttpService;
 
 import java.util.Collection;
 

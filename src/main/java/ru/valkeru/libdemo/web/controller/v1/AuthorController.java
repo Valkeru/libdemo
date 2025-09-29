@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.web.api.v1.AuthorApi;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
-import ru.valkeru.libdemo.service.http.AuthorHttpService;
+import ru.valkeru.libdemo.service.web.base.AuthorWebService;
 
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthorController implements AuthorApi {
 
-    AuthorHttpService authorService;
+    AuthorWebService authorService;
 
     @Override
     public ResponseEntity<Page<AuthorDto>> listAllAuthors(AuthorFilter filter, Pageable pageable) {

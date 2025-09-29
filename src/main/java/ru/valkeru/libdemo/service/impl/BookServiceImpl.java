@@ -10,10 +10,9 @@ import ru.valkeru.libdemo.mapper.BookMapper;
 import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.model.entity.Book;
 import ru.valkeru.libdemo.repository.jpa.BookRepository;
-import ru.valkeru.libdemo.service.BookService;
+import ru.valkeru.libdemo.service.base.BookService;
 import ru.valkeru.libdemo.util.SqlUtil;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 

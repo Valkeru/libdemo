@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.web.api.v1.SeriesApi;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
-import ru.valkeru.libdemo.service.http.SeriesHttpService;
+import ru.valkeru.libdemo.service.web.base.SeriesHttpService;
 
 import java.util.Collection;
 

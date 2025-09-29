@@ -15,7 +15,7 @@ import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 import ru.valkeru.libdemo.repository.elasticsearch.base.AuthorElasticsearchRepository;
 import ru.valkeru.libdemo.repository.facade.AuthorRepositoryFacade;
 import ru.valkeru.libdemo.repository.jpa.AuthorRepository;
-import ru.valkeru.libdemo.service.AuthorService;
+import ru.valkeru.libdemo.service.base.AuthorService;
 import ru.valkeru.libdemo.util.ElasticsearchUtil;
 
 import java.util.List;

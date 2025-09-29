@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service;
+package ru.valkeru.libdemo.service.base;
 
 import org.springframework.lang.NonNull;
 import ru.valkeru.libdemo.model.dto.SeriesDto;

@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.controller;
+package ru.valkeru.libdemo.web.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

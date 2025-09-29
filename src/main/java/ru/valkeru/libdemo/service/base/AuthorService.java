@@ -1,21 +1,21 @@
-package ru.valkeru.libdemo.service.http;
+package ru.valkeru.libdemo.service.base;
 
+import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Async;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 
-public interface AuthorHttpService {
+public interface AuthorService {
 
     AuthorDto createOrUpdateAuthor(AuthorDto authorDto);
 
-    Page<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable);
+    Page<AuthorDto> getAuthors(AuthorFilter filter, Pageable pageable);
 
+    @Nonnull
     AuthorDto getAuthorById(Long id);
 
-    void deleteAuthor(Long id);
+    void deleteAuthorById(Long id);
 
-    @Async
     void reindexAuthors();
 }

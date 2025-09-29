@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.web.api.v1.BookApi;
 import ru.valkeru.libdemo.model.dto.BookDto;
-import ru.valkeru.libdemo.service.http.BookHttpService;
+import ru.valkeru.libdemo.service.web.base.BookWebService;
 
 import java.util.Collection;
 
@@ -17,7 +17,7 @@ import java.util.Collection;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BookController implements BookApi {
 
-    BookHttpService bookService;
+    BookWebService bookService;
 
     @Override
     public ResponseEntity<BookDto> addBook(BookDto book) {
