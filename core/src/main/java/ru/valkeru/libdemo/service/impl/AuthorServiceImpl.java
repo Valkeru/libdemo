@@ -20,6 +20,7 @@ import ru.valkeru.libdemo.util.ElasticsearchUtil;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -51,21 +52,19 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Page<AuthorDto> getAuthors(AuthorFilter filter, Pageable pageable) {
-//        return authorRepository.getAuthors(SqlUtil.sortByCreatedAtAsc());
-
         return authorRepositoryFacade.listAllAuthors(filter, pageable);
     }
 
     @Nonnull
     @Override
-    public AuthorDto getAuthorById(Long id) {
+    public AuthorDto getAuthorById(UUID id) {
         return Optional.ofNullable(authorRepository.getAuthorById(id))
                 .orElseThrow(() -> AuthorNotFoundException.authorNotFound(id));
     }
 
     @Transactional
     @Override
-    public void deleteAuthorById(Long id) {
+    public void deleteAuthorById(UUID id) {
         if (authorRepository.deleteAuthorById(id) == 0) {
             throw AuthorNotFoundException.authorNotFound(id);
         }
@@ -89,7 +88,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .orElse(new Author());
     }
 
-    private Author getAuthorEntity(Long id) {
+    private Author getAuthorEntity(UUID id) {
         return authorRepository.findById(id)
                 .orElseThrow(() -> AuthorNotFoundException.authorNotFound(id));
     }

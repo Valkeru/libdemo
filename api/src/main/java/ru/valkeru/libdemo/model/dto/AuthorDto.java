@@ -13,6 +13,8 @@ import ru.valkeru.libdemo.annotation.Secret;
 import ru.valkeru.libdemo.model.view.AuthorView;
 import ru.valkeru.libdemo.model.view.BookView;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,7 +22,7 @@ import ru.valkeru.libdemo.model.view.BookView;
 @Schema(description = "Автор")
 public class AuthorDto {
 
-    public AuthorDto(Long id, String firstName, String middleName, String lastName) {
+    public AuthorDto(UUID id, String firstName, String middleName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -38,8 +40,8 @@ public class AuthorDto {
             AuthorView.AuthorListView.class,
             BookView.BookCreateView.class,
     })
-    @Schema(description = "ID записи", example = "1")
-    private Long id;
+    @Schema(description = "ID записи")
+    private UUID id;
 
     @JsonView({
             AuthorView.AuthorCreateView.class,

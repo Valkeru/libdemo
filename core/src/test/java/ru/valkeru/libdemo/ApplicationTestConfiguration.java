@@ -1,5 +1,6 @@
 package ru.valkeru.libdemo;
 
+import com.redis.testcontainers.RedisContainer;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
@@ -31,5 +32,11 @@ public class ApplicationTestConfiguration {
     public PostgreSQLContainer<?> getPostgresContainer() {
         return new PostgreSQLContainer<>(DockerImageName.parse("postgres:16.1"))
                 .withCommand("-c", "max_connections=1000");
+    }
+
+    @Bean
+    @ServiceConnection
+    public RedisContainer getRedisContainer() {
+        return new RedisContainer(DockerImageName.parse("redis:6.2.6"));
     }
 }

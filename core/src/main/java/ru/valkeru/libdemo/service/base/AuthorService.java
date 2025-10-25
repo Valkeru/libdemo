@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 
+import java.util.UUID;
+
 public interface AuthorService {
 
     AuthorDto createOrUpdateAuthor(AuthorDto authorDto);
@@ -13,9 +15,9 @@ public interface AuthorService {
     Page<AuthorDto> getAuthors(AuthorFilter filter, Pageable pageable);
 
     @Nonnull
-    AuthorDto getAuthorById(Long id);
+    AuthorDto getAuthorById(UUID id);
 
-    void deleteAuthorById(Long id);
+    void deleteAuthorById(UUID id);
 
     void reindexAuthors();
 }

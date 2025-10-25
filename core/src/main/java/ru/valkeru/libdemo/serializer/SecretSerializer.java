@@ -33,12 +33,18 @@ public class SecretSerializer<T> extends JsonSerializer<T> {
      * @return Маскированная строка
      */
     private String getMaskedString(T value) {
-        return switch (value) {
-            case String s -> maskString(s);
-            case Number n -> maskNumber(n);
-            case null -> null;
-            default -> DEFAULT_VALUE;
-        };
+        if (value == null) {
+            return null;
+        }
+
+        return DEFAULT_VALUE;
+
+//        return switch (value) {
+//            case String s -> maskString(s);
+//            case Number n -> maskNumber(n);
+//            case null -> null;
+//            default -> DEFAULT_VALUE;
+//        };
     }
 
     /**

@@ -11,7 +11,8 @@ import lombok.Setter;
 public class SignUpRequest {
 
     @Schema(description = "Имя пользователя")
-    @Size(max = 3, message = "Имя пользователя должно содержать не более {max} символов")
+    @Size(max = 12, message = "Имя пользователя должно содержать не более {max} символов")
+    @Size(min = 3, message = "Имя пользователя должно содержать не менее {min} символов")
     private String username;
 
     @Schema(description = "Пароль")

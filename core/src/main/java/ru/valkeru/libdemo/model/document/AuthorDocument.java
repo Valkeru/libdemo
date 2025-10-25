@@ -8,6 +8,8 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.Setting;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @Document(indexName = "#{@elasticsearchIndexPrefix}_author", createIndex = false)
@@ -17,7 +19,7 @@ import org.springframework.data.elasticsearch.annotations.Setting;
 public class AuthorDocument {
 
     @Id
-    private Long id;
+    private UUID id;
 
     @Field(type = FieldType.Text, fielddata = true)
     private String firstName;

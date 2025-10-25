@@ -6,15 +6,17 @@ import org.springframework.scheduling.annotation.Async;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 
+import java.util.UUID;
+
 public interface AuthorWebService {
 
     AuthorDto createOrUpdateAuthor(AuthorDto authorDto);
 
     Page<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable);
 
-    AuthorDto getAuthorById(Long id);
+    AuthorDto getAuthorById(UUID id);
 
-    void deleteAuthor(Long id);
+    void deleteAuthor(UUID id);
 
     @Async
     void reindexAuthors();

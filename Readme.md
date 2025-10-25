@@ -39,3 +39,6 @@
 # Тесты
 Для тестирования запустить maven c целью test  
 Для создания отчёта о покрытии запускать с профилем `report`  
+
+# Статьи  
+https://habr.com/ru/articles/865180/ - Spring security jwt

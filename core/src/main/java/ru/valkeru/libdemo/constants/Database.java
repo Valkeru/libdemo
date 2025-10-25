@@ -35,7 +35,7 @@ public class Database {
 
         @UtilityClass
         public class User {
-            public static final String TABLE_NAME = "user";
+            public static final String TABLE_NAME = "users";
         }
 
         @UtilityClass

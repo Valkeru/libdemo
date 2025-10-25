@@ -36,7 +36,7 @@ spring:
 #            provider: org.ehcache.jsr107.EhcacheCachingProvider
     #        enable_lazy_load_no_trans: true
   # TODO: Разобраться. Теоретически оставлять true - плохая практика, но иначе ломается сериализация
-#    open-in-view: false
+    open-in-view: false
   main:
     banner-mode: off
 logging:
@@ -66,6 +66,11 @@ springdoc:
       theme: idea
     default-model-expand-depth: 50
 app:
+  security:
+    jwt:
+      secret: uSfKFfguss9AMp7cswFvHEmR4KvqnvfxwE7Fkp4Xj34vof72khNN7cFE7PnWKcLy
+      lifetime: 3600
+      refresh-lifetime: 604800
   system:
     is-debug-mode: false
 
@@ -98,12 +103,3 @@ logging:
           config:
             persistence:
               ClassImportIntegratorProvider: debug
----
-spring:
-  config:
-    activate:
-      on-profile: no-security
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-      - org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration

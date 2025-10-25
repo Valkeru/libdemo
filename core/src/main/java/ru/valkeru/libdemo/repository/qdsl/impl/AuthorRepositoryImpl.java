@@ -22,6 +22,7 @@ import ru.valkeru.libdemo.repository.qdsl.base.AuthorDslRepository;
 import ru.valkeru.libdemo.util.QueryUtil;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Repository
@@ -59,7 +60,7 @@ public class AuthorRepositoryImpl extends QuerydslRepositorySupport implements A
     }
 
     @Override
-    public AuthorDto getAuthorById(Long id) {
+    public AuthorDto getAuthorById(UUID id) {
         return authorMapper.toDto(entityManager.find(Author.class, id, Map.of("id", id)));
     }
 

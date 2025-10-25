@@ -32,6 +32,7 @@ public class ApiDefinition {
         public static final class Security {
 
             public static final String SIGN_UP = "Регистрация";
+            public static final String SIGN_IN = "Вход";
         }
 
         @UtilityClass

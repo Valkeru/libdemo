@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.web.controller;
+package ru.valkeru.libdemo.web.controller.v1;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

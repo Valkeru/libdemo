@@ -9,6 +9,8 @@ import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 import ru.valkeru.libdemo.repository.elasticsearch.base.AuthorElasticsearchRepository;
 import ru.valkeru.libdemo.repository.jpa.AuthorRepository;
 
+import java.util.UUID;
+
 @Slf4j
 @Component
 public class AuthorRepositoryFacade {
@@ -32,7 +34,7 @@ public class AuthorRepositoryFacade {
         }
     }
 
-    public AuthorDto getAuthorById(Long id) {
+    public AuthorDto getAuthorById(UUID id) {
         try {
             return authorElasticsearchRepository.getAuthorById(id);
         } catch (Exception e) {

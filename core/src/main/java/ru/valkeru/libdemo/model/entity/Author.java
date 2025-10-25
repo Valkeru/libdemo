@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import ru.valkeru.libdemo.constants.Database;
 import ru.valkeru.libdemo.model.entity.base.TimestampedEntity;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -36,16 +38,10 @@ import java.util.Set;
 public class Author extends TimestampedEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = Database.Generator.AUTHOR_ID)
-    @SequenceGenerator(
-            name = Database.Generator.AUTHOR_ID,
-            schema = Database.Schema.LIBRARY,
-            sequenceName = Database.Sequence.AUTHOR_ID_SEQUENCE,
-            allocationSize = Database.SEQUENCE_CACHE
-    )
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     @Column(name = "id", nullable = false)
-    Long id;
+    UUID id;
 
     @Column(name = "first_name", nullable = false)
     String firstName;
@@ -55,6 +51,12 @@ public class Author extends TimestampedEntity {
 
     @Column(name = "last_name", nullable = false)
     String lastName;
+
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    @Version
+    @Column(name = "version", nullable = false)
+    private long version = 1L;
 
     @ManyToMany(mappedBy = "authors", fetch = FetchType.EAGER)
     @Fetch(FetchMode.JOIN)

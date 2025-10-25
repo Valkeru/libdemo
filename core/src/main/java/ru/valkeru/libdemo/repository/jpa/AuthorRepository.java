@@ -11,8 +11,9 @@ import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.repository.qdsl.base.AuthorDslRepository;
 
 import java.util.Collection;
+import java.util.UUID;
 
-public interface AuthorRepository extends JpaRepository<Author, Long>, AuthorDslRepository {
+public interface AuthorRepository extends JpaRepository<Author, UUID>, AuthorDslRepository {
 
     @Query(
             nativeQuery = true,
@@ -22,10 +23,10 @@ public interface AuthorRepository extends JpaRepository<Author, Long>, AuthorDsl
                                 FROM (VALUES (:testIds)) AS test_list(id)
                                 WHERE NOT EXISTS(SELECT * FROM library.author a WHERE a.id = test_list.id)
                             """)
-    Collection<Long> getIdNotExisted(Collection<Long> testIds);
+    Collection<Long> getIdNotExisted(Collection<UUID> testIds);
 
     @Nonnull
-    Collection<Author> getAuthorsByIdIn(Collection<Long> ids, Sort sort);
+    Collection<Author> getAuthorsByIdIn(Collection<UUID> ids, Sort sort);
 
     @Query("""
             select new AuthorDto(
@@ -41,5 +42,5 @@ public interface AuthorRepository extends JpaRepository<Author, Long>, AuthorDsl
     @Transactional
     @Modifying
     @Query("delete from Author where id = :id")
-    int deleteAuthorById(Long id);
+    int deleteAuthorById(UUID id);
 }

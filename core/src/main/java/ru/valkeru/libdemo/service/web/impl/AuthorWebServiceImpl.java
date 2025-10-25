@@ -12,6 +12,8 @@ import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 import ru.valkeru.libdemo.service.base.AuthorService;
 import ru.valkeru.libdemo.service.web.base.AuthorWebService;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -31,12 +33,12 @@ public class AuthorWebServiceImpl implements AuthorWebService {
 
     @Cacheable("author")
     @Override
-    public AuthorDto getAuthorById(Long id) {
+    public AuthorDto getAuthorById(UUID id) {
         return authorService.getAuthorById(id);
     }
 
     @Override
-    public void deleteAuthor(Long id) {
+    public void deleteAuthor(UUID id) {
         authorService.deleteAuthorById(id);
     }
 

@@ -8,9 +8,6 @@ import ru.valkeru.libdemo.model.document.AuthorDocument;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.entity.Author;
 
-import java.util.Collection;
-import java.util.List;
-
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface AuthorMapper {
 
@@ -20,9 +17,6 @@ public interface AuthorMapper {
 
     AuthorDocument toDocument(Author entity);
 
-    List<AuthorDto> toDtoList(Collection<Author> authorCollection);
-
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "books", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
