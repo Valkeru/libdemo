@@ -1,22 +1,26 @@
 package ru.valkeru.libdemo.service.base;
 
+import org.springframework.data.domain.Page;
 import org.springframework.lang.NonNull;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
+import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface SeriesService {
 
-    SeriesDto createOrUpdateSeries(SeriesDto dto);
+    Series createOrUpdateSeries(SeriesDto dto, Cycle cycle, Series series);
 
-    List<SeriesDto> listAllSeries();
-
-    @NonNull
-    SeriesDto getSeries(@NonNull Long id);
+    Page<Series> listAllSeries();
 
     @NonNull
-    Series getSeriesEntity(Long id);
+    Series getSeries(@NonNull UUID id);
 
-    void deleteSeriesById(@NonNull Long id);
+    @Deprecated
+    @NonNull
+    Series getSeriesEntity(UUID id);
+
+    void deleteSeriesById(@NonNull UUID id);
 }

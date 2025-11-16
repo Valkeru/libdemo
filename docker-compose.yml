@@ -4,7 +4,7 @@ services:
     ports:
       - "58080:${SERVER_PORT:-8080}"
       - "59010:9010"
-    image: openjdk:21-jdk
+    image: eclipse-temurin:21-jdk
     user: "1000"
     volumes:
 #      - ./target/lib:/app/lib
@@ -19,7 +19,7 @@ services:
       "-Djava.awt.headless=true",
       "-Xmx1G",
       "-cp",
-      "/app/api.jar",
+      "/app/*.jar",
       "-jar",
       "/app/core.jar"
 #      "-Dloader.path=/app/lib",

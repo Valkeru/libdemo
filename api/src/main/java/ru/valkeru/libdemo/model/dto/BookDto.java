@@ -12,6 +12,7 @@ import lombok.experimental.Accessors;
 import ru.valkeru.libdemo.model.view.BookView;
 
 import java.util.Collection;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -24,8 +25,8 @@ public class BookDto {
             BookView.BookSingleView.class
     })
     @NotNull
-    @Schema(description = "ID записи", example = "1")
-    private Long id;
+    @Schema(description = "ID записи", example = "849ee885-e013-485f-a03f-de0be0403210")
+    private UUID id;
 
     @JsonView({
             BookView.BookCreateView.class,

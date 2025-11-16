@@ -1,31 +1,21 @@
 package ru.valkeru.libdemo.component.logger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import ru.valkeru.libdemo.config.serialization.SecretIntrospector;
 import ru.valkeru.libdemo.util.RequestExecutionContext;
 
-import java.time.ZoneId;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TimeZone;
 
 @Slf4j
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
 
     private static final String REQUEST_TEMPLATE = "REQUEST: method = [%s]; path = [%s], IP = [%s]";
@@ -37,16 +27,20 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
     private static final char OPENING_BRACKET = '(';
     private static final char CLOSING_BRACKET = ')';
 
-    private final ObjectMapper mapper =
-            JsonMapper.builder()
-                    .addModule(new JavaTimeModule())
-                    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                    .defaultTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()))
-                    .build()
-                    .setAnnotationIntrospector(new SecretIntrospector());
+    private final ObjectMapper mapper;
+//            JsonMapper.builder()
+//                    .addModule(new JavaTimeModule())
+//                    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+//                    .defaultTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()))
+//                    .build()
+//                    .setAnnotationIntrospector(new SecretIntrospector());
 
-    @SneakyThrows
-    protected void buildMessageWithParameters(HttpServletRequest request, StringBuilder requestLogMessageBuilder) {
+    protected AbstractHttpDebugLogger(ObjectMapper mapper) {
+        this.mapper = mapper.copy();
+        this.mapper.setAnnotationIntrospector(new SecretIntrospector());
+    }
+
+    protected void buildMessageWithParameters(HttpServletRequest request, StringBuilder requestLogMessageBuilder) throws JsonProcessingException {
         Map<String, String> parameters = getParametersMap(request);
 
         formatRequestDataTemplate(request, requestLogMessageBuilder);
@@ -60,10 +54,9 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
         }
     }
 
-    @SneakyThrows
     protected void buildMessageWithRequestBody(Object body, HttpServletRequest request,
                                                StringBuilder requestLogMessageBuilder,
-                                               final Class<?> deserializationView) {
+                                               final Class<?> deserializationView) throws JsonProcessingException {
         formatRequestDataTemplate(request, requestLogMessageBuilder);
         String originalString = RequestExecutionContext.readRequestBody();
 
@@ -78,9 +71,8 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
                 .append(CLOSING_BRACKET);
     }
 
-    @SneakyThrows
     protected void buildMessageWithResponseBody(Object body, HttpServletRequest request, HttpServletResponse response,
-                                                StringBuilder logMessageBuilder, final Class<?> serializationView) {
+                                                StringBuilder logMessageBuilder, final Class<?> serializationView) throws JsonProcessingException {
         formatRequestDataTemplate(request, logMessageBuilder);
 
         logMessageBuilder
@@ -107,6 +99,10 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
         log.debug("Response log: {}", message);
     }
 
+    protected void writeLogFailed(JsonProcessingException jpe) {
+        log.debug("Log failed: {}", jpe.getMessage(), jpe);
+    }
+
     private static void formatRequestDataTemplate(HttpServletRequest request, StringBuilder requestLogMessageBuilder) {
         requestLogMessageBuilder.append(
                 String.format(REQUEST_TEMPLATE, request.getMethod(), request.getRequestURI(), request.getRemoteAddr())
@@ -125,8 +121,7 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
         return parameters;
     }
 
-    @SneakyThrows
-    private String writeBody(final Class<?> view, final Object body) {
+    private String writeBody(final Class<?> view, final Object body) throws JsonProcessingException {
         return Optional.ofNullable(view)
                 .map(mapper::writerWithView)
                 .orElse(mapper.writer())

@@ -3,19 +3,21 @@ package ru.valkeru.libdemo.service.impl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.exception.impl.SeriesNotFoundException;
 import ru.valkeru.libdemo.mapper.SeriesMapper;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
+import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
 import ru.valkeru.libdemo.repository.jpa.SeriesRepository;
 import ru.valkeru.libdemo.service.base.SeriesService;
-import ru.valkeru.libdemo.util.SqlUtil;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,27 +29,26 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Transactional
     @Override
-    public SeriesDto createOrUpdateSeries(SeriesDto dto) {
-        Series seriesEntity = getSeriesEntity(dto);
-        seriesMapper.updateSeries(dto, null, seriesEntity);
+    public Series createOrUpdateSeries(SeriesDto dto, Cycle cycle, Series series) {
+        seriesMapper.updateSeries(dto, cycle, series);
 
-        return seriesMapper.toDto(seriesRepository.save(seriesEntity));
+        return seriesRepository.save(series);
     }
 
     @Override
-    public List<SeriesDto> listAllSeries() {
-        return seriesMapper.toDtoList(seriesRepository.findAll(SqlUtil.sortByIdAsc()));
+    public Page<Series> listAllSeries() {
+        return seriesRepository.findAll(Pageable.unpaged());
     }
 
     @NonNull
     @Override
-    public SeriesDto getSeries(@NonNull Long id) {
-        return seriesMapper.toDto(getSeriesEntity(id));
+    public Series getSeries(@NonNull UUID id) {
+        return getSeriesEntity(id);
     }
 
     @Transactional
     @Override
-    public void deleteSeriesById(@NonNull Long id) {
+    public void deleteSeriesById(@NonNull UUID id) {
         if (seriesRepository.deleteSeriesById(id) == 0) {
             throw SeriesNotFoundException.seriesNotFound(id);
         }
@@ -55,7 +56,7 @@ public class SeriesServiceImpl implements SeriesService {
 
     @NonNull
     @Override
-    public Series getSeriesEntity(Long id) {
+    public Series getSeriesEntity(UUID id) {
         return Optional.ofNullable(id)
                 .map(seriesId -> seriesRepository.findById(seriesId)
                         .orElseThrow(() -> SeriesNotFoundException.seriesNotFound(seriesId)))

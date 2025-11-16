@@ -2,6 +2,7 @@ package ru.valkeru.libdemo.web.api.definition;
 
 
 import lombok.experimental.UtilityClass;
+import org.springframework.http.HttpStatusCode;
 
 @UtilityClass
 //@OpenAPIDefinition(

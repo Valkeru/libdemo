@@ -26,7 +26,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        integrator_provider: ru.valkeru.libdemo.config.persistence.ClassImportIntegratorProvider
+#        integrator_provider: ru.valkeru.libdemo.config.persistence.ClassImportIntegratorProvider
 #        cache:
 #          use_second_level_cache: true
 #          region:
@@ -36,9 +36,13 @@ spring:
 #            provider: org.ehcache.jsr107.EhcacheCachingProvider
     #        enable_lazy_load_no_trans: true
   # TODO: Разобраться. Теоретически оставлять true - плохая практика, но иначе ломается сериализация
-    open-in-view: false
+    open-in-view: true
   main:
     banner-mode: off
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRepositoriesAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
 logging:
   config: classpath:logback-spring.xml
   pattern:
@@ -73,6 +77,10 @@ app:
       refresh-lifetime: 604800
   system:
     is-debug-mode: false
+management:
+  health:
+    elasticsearch:
+      enabled: false
 
 ---
 spring:

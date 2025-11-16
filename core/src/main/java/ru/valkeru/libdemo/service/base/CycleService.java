@@ -4,6 +4,7 @@ import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.entity.Cycle;
 
 import java.util.Collection;
+import java.util.UUID;
 
 public interface CycleService {
 
@@ -11,9 +12,7 @@ public interface CycleService {
 
     Collection<CycleDto> getAllCycles();
 
-    CycleDto getCycleById(Long id);
+    Cycle getCycleById(UUID id);
 
-    Cycle getCycleEntityById(Long id);
-
-    void deleteCycleById(Long id);
+    void deleteCycleById(UUID id);
 }

@@ -3,14 +3,12 @@ package ru.valkeru.libdemo.model.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +16,7 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.UuidGenerator;
 import ru.valkeru.libdemo.constants.Database;
 import ru.valkeru.libdemo.model.entity.base.TimestampedEntity;
 
@@ -31,24 +30,26 @@ import java.util.UUID;
 @Entity
 @Table(schema = Database.Schema.LIBRARY, name = "author", uniqueConstraints = {
         @UniqueConstraint(
-                name = Database.Table.Author.CONSTRAINT_FULL_NAME,
+                name = "author_full_name_uc",
                 columnNames = {"first_name", "middle_name", "last_name"}
         )
 })
 public class Author extends TimestampedEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @UuidGenerator
     @Setter(AccessLevel.NONE)
     @Column(name = "id", nullable = false)
     UUID id;
 
+    @NotBlank
     @Column(name = "first_name", nullable = false)
     String firstName;
 
     @Column(name = "middle_name")
     String middleName;
 
+    @NotBlank
     @Column(name = "last_name", nullable = false)
     String lastName;
 

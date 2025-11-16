@@ -15,14 +15,14 @@ import ru.valkeru.libdemo.util.SqlUtil;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CycleServiceImpl implements CycleService {
 
-    CycleRepository cycleRepository;
-    CycleMapper cycleMapper;
+    private final CycleRepository cycleRepository;
+    private final CycleMapper cycleMapper;
 
     @Transactional
     @Override
@@ -35,22 +35,17 @@ public class CycleServiceImpl implements CycleService {
 
     @Override
     public Collection<CycleDto> getAllCycles() {
-        return cycleRepository.getCycles(SqlUtil.sortByIdAsc());
+        return cycleRepository.findAll().stream().map(cycleMapper::toDto).toList();
     }
 
     @Override
-    public CycleDto getCycleById(Long id) {
-        return cycleMapper.toDto(getCycleEntity(id));
-    }
-
-    @Override
-    public Cycle getCycleEntityById(Long id) {
+    public Cycle getCycleById(UUID id) {
         return getCycleEntity(id);
     }
 
     @Transactional
     @Override
-    public void deleteCycleById(Long id) {
+    public void deleteCycleById(UUID id) {
         if (cycleRepository.deleteCycleById(id) == 0) {
             throw CycleNotFoundException.cycleNotFound(id);
         }
@@ -62,7 +57,7 @@ public class CycleServiceImpl implements CycleService {
                 .orElse(new Cycle());
     }
 
-    private Cycle getCycleEntity(Long id) {
+    private Cycle getCycleEntity(UUID id) {
         return cycleRepository.findById(id)
                 .orElseThrow(() -> CycleNotFoundException.cycleNotFound(id));
     }

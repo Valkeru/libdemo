@@ -1,6 +1,5 @@
 package ru.valkeru.libdemo.web.controller.v1;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,6 +10,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.valkeru.libdemo.ApplicationTestConfiguration;
 
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -19,7 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Import(ApplicationTestConfiguration.class)
@@ -79,7 +79,7 @@ class CycleControllerTest {
                                 )
                 )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.id").isString())
                 .andExpect(jsonPath("$.name").value("test_a480bc0a5a"))
                 .andDo(print());
     }
@@ -92,7 +92,7 @@ class CycleControllerTest {
     )
     void testGetCycleNotFound() throws Exception {
         mockMvc.perform(
-                        get("/v1/cycle/{cycleId}", Integer.MAX_VALUE)
+                        get("/v1/cycle/{cycleId}", "42860c68-21fe-438e-95ae-4555c35f5150")
                 )
                 .andExpect(status().isNotFound())
                 .andDo(print());
@@ -108,11 +108,11 @@ class CycleControllerTest {
     )
     void testGetCyclesOk() throws Exception {
         mockMvc.perform(
-                        get("/v1/cycle/{cycleId}", 1)
+                        get("/v1/cycle/{cycleId}", "7cc6be9b-7649-4955-bff9-8cbf7c4c429a")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.id").value("7cc6be9b-7649-4955-bff9-8cbf7c4c429a"))
                 .andExpect(jsonPath("$.name").value("test_9411799dad"))
                 .andDo(print());
     }
@@ -125,7 +125,7 @@ class CycleControllerTest {
     )
     void testUpdateCycleNotFound() throws Exception {
         mockMvc.perform(
-                        patch("/v1/cycle/{cycleId}", 10)
+                        patch("/v1/cycle/{cycleId}", "42860c68-21fe-438e-95ae-4555c35f5150")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -148,7 +148,7 @@ class CycleControllerTest {
     )
     void testUpdateCycleOk() throws Exception {
         mockMvc.perform(
-                        patch("/v1/cycle/{cycleId}", 1)
+                        patch("/v1/cycle/{cycleId}", "7cc6be9b-7649-4955-bff9-8cbf7c4c429a")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -166,7 +166,7 @@ class CycleControllerTest {
     @Sql(value = {"classpath:delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void testDeleteCycleNotFound() throws Exception {
         mockMvc.perform(
-                        delete("/v1/cycle/{cycleId}", 1)
+                        delete("/v1/cycle/{cycleId}", "7cc6be9b-7649-4955-bff9-8cbf7c4c429a")
                 )
                 .andExpect(status().isNotFound())
                 .andDo(print());
@@ -179,7 +179,7 @@ class CycleControllerTest {
     )
     void testDeleteCycleSeriesConflict() throws Exception {
         mockMvc.perform(
-                        delete("/v1/cycle/{cycleId}", 1)
+                        delete("/v1/cycle/{cycleId}", "7cc6be9b-7649-4955-bff9-8cbf7c4c429a")
                 )
                 .andExpect(status().isConflict())
                 .andDo(print());
@@ -196,7 +196,7 @@ class CycleControllerTest {
     )
     void testDeleteCycleBookConflict() throws Exception {
         mockMvc.perform(
-                        delete("/v1/cycle/{cycleId}", 1)
+                        delete("/v1/cycle/{cycleId}", "7cc6be9b-7649-4955-bff9-8cbf7c4c429a")
                 )
                 .andExpect(status().isConflict())
                 .andDo(print());
@@ -211,7 +211,7 @@ class CycleControllerTest {
     )
     void testDeleteCycleOk() throws Exception {
         mockMvc.perform(
-                        delete("/v1/cycle/{cycleId}", 1)
+                        delete("/v1/cycle/{cycleId}", "7cc6be9b-7649-4955-bff9-8cbf7c4c429a")
                 )
                 .andExpect(status().isNoContent())
                 .andDo(print());

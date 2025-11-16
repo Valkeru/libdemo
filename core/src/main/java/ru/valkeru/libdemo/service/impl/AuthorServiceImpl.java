@@ -12,9 +12,9 @@ import ru.valkeru.libdemo.model.document.AuthorDocument;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
-import ru.valkeru.libdemo.repository.elasticsearch.base.AuthorElasticsearchRepository;
+import ru.valkeru.libdemo.repository.elasticsearch.AuthorElasticsearchRepository;
 import ru.valkeru.libdemo.repository.facade.AuthorRepositoryFacade;
-import ru.valkeru.libdemo.repository.jpa.AuthorRepository;
+import ru.valkeru.libdemo.repository.jpa.author.AuthorRepository;
 import ru.valkeru.libdemo.service.base.AuthorService;
 import ru.valkeru.libdemo.util.ElasticsearchUtil;
 
@@ -43,21 +43,21 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional
     @Override
-    public AuthorDto createOrUpdateAuthor(AuthorDto authorDto) {
+    public Author createOrUpdateAuthor(AuthorDto authorDto) {
         Author author = getAuthorEntity(authorDto);
         authorMapper.updateAuthor(authorDto, author);
 
-        return authorMapper.toDto(authorRepository.save(author));
+        return authorRepository.save(author);
     }
 
     @Override
-    public Page<AuthorDto> getAuthors(AuthorFilter filter, Pageable pageable) {
-        return authorRepositoryFacade.listAllAuthors(filter, pageable);
+    public Page<Author> getAuthors(AuthorFilter filter, Pageable pageable) {
+        return authorRepository.listAllAuthors(filter, pageable);
     }
 
     @Nonnull
     @Override
-    public AuthorDto getAuthorById(UUID id) {
+    public Author getAuthorById(UUID id) {
         return Optional.ofNullable(authorRepository.getAuthorById(id))
                 .orElseThrow(() -> AuthorNotFoundException.authorNotFound(id));
     }

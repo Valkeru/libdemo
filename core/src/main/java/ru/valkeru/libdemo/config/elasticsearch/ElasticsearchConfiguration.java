@@ -18,6 +18,7 @@ import org.elasticsearch.client.RestClient;
 import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -25,6 +26,7 @@ import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableElasticsearchRepositories(basePackages = {"ru.valkeru.libdemo.repository.elasticsearch"})
 public class ElasticsearchConfiguration {
 
     private final ElasticsearchProperties elasticsearchProperties;

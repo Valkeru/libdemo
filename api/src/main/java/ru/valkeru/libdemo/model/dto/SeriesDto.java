@@ -11,6 +11,8 @@ import lombok.experimental.Accessors;
 import ru.valkeru.libdemo.model.view.BookView;
 import ru.valkeru.libdemo.model.view.SeriesView;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -25,7 +27,7 @@ public class SeriesDto {
             SeriesView.SeriesListView.class,
             BookView.BookCreateView.class
     })
-    private Long id;
+    private UUID id;
 
     @NotBlank(groups = {
             SeriesView.SeriesCreateView.class

@@ -1,23 +1,17 @@
 package ru.valkeru.libdemo.repository.jpa;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import ru.valkeru.libdemo.model.dto.CycleDto;
+import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.model.entity.Cycle;
 
-import java.util.Collection;
+import java.util.UUID;
 
-public interface CycleRepository extends JpaRepository<Cycle, Long> {
+public interface CycleRepository extends JpaRepository<Cycle, UUID> {
 
-    @Query("""
-            select new CycleDto(
-                c.id,
-                c.name
-            ) from Cycle c
-            """
-    )
-    Collection<CycleDto> getCycles(Sort sort);
-
-    int deleteCycleById(Long id);
+    @Modifying
+    @Transactional
+    @Query("delete from Cycle c where c.id = :id")
+    int deleteCycleById(UUID id);
 }

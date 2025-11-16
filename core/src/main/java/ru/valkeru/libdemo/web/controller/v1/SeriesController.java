@@ -3,21 +3,22 @@ package ru.valkeru.libdemo.web.controller.v1;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.web.api.v1.SeriesApi;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
-import ru.valkeru.libdemo.service.web.base.SeriesHttpService;
+import ru.valkeru.libdemo.web.service.base.SeriesWebService;
 
-import java.util.Collection;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SeriesController implements SeriesApi {
 
-    SeriesHttpService seriesService;
+    SeriesWebService seriesService;
 
     @Override
     public ResponseEntity<SeriesDto> createSeries(SeriesDto series) {
@@ -26,26 +27,26 @@ public class SeriesController implements SeriesApi {
     }
 
     @Override
-    public ResponseEntity<SeriesDto> updateSeries(Long id, SeriesDto series) {
+    public ResponseEntity<SeriesDto> updateSeries(UUID id, SeriesDto series) {
         series.setId(id);
 
         return ResponseEntity.ok(seriesService.createOrUpdateSeries(series));
     }
 
     @Override
-    public ResponseEntity<Collection<SeriesDto>> listAllSeries() {
+    public ResponseEntity<Page<SeriesDto>> listAllSeries() {
         return ResponseEntity.ok(seriesService.listAllSeries());
     }
 
     @Override
-    public ResponseEntity<SeriesDto> getSeries(Long id) {
+    public ResponseEntity<SeriesDto> getSeries(UUID id) {
         SeriesDto series = seriesService.getSeriesById(id);
 
         return ResponseEntity.ok(series);
     }
 
     @Override
-    public ResponseEntity<Void> deleteSeries(Long id) {
+    public ResponseEntity<Void> deleteSeries(UUID id) {
         seriesService.deleteSeriesById(id);
 
         return ResponseEntity.noContent().build();

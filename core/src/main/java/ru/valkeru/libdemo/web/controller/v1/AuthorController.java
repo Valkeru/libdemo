@@ -5,11 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
-import ru.valkeru.libdemo.service.web.base.AuthorWebService;
+import ru.valkeru.libdemo.web.service.base.AuthorWebService;
 import ru.valkeru.libdemo.web.api.v1.AuthorApi;
 
 import java.util.UUID;

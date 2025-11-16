@@ -130,11 +130,11 @@ class BookControllerTest {
                                           "isbn": "978-5-17-049678-5",
                                           "authors": [
                                             {
-                                              "id": 1
+                                              "id": "84c1599c-21e6-47f3-a03b-12f6071da20b"
                                             }
                                           ],
                                           "series": {
-                                            "id": 1
+                                            "id": "91be1c7e-4b02-4d27-966a-815f9bf20369"
                                           }
                                         }
                                         """
@@ -162,11 +162,11 @@ class BookControllerTest {
                                           "isbn": "978-5-17-049678-5",
                                           "authors": [
                                             {
-                                              "id": 1
+                                              "id": "84c1599c-21e6-47f3-a03b-12f6071da20b"
                                             }
                                           ],
                                           "cycle": {
-                                            "id": 1
+                                            "id": "1b3ab36d-6bb6-4081-9ec3-8d845ce55e5d"
                                           }
                                         }
                                         """
@@ -196,32 +196,32 @@ class BookControllerTest {
                                           "isbn": "978-5-17-049678-5",
                                           "authors": [
                                             {
-                                              "id": 1
+                                              "id": "84c1599c-21e6-47f3-a03b-12f6071da20b"
                                             }
                                           ],
                                           "series": {
-                                            "id": 1
+                                            "id": "697792d6-8d57-4d6f-9ea2-c91b01159612"
                                           },
                                           "cycle": {
-                                            "id": 1
+                                            "id": "7cc6be9b-7649-4955-bff9-8cbf7c4c429a"
                                           }
                                         }
                                         """
                                 )
                 )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.id").isString())
                 .andExpect(jsonPath("$.name").value("test_8ae3cd18ca"))
                 .andExpect(jsonPath("$.isbn").value("978-5-17-049678-5"))
                 .andExpect(jsonPath("$.authors").isArray())
                 .andExpect(jsonPath("$.authors.size()").value(1))
-                .andExpect(jsonPath("$.authors[0].id").value(1))
+                .andExpect(jsonPath("$.authors[0].id").value("84c1599c-21e6-47f3-a03b-12f6071da20b"))
                 .andExpect(jsonPath("$.authors[0].fullName").value("test_9b844b884b test_90321cca80 test_6012cf646d"))
                 .andExpect(jsonPath("$.series").exists())
-                .andExpect(jsonPath("$.series.id").value(1))
+                .andExpect(jsonPath("$.series.id").value("697792d6-8d57-4d6f-9ea2-c91b01159612"))
                 .andExpect(jsonPath("$.series.name").value("test_42db2cab8e"))
                 .andExpect(jsonPath("$.cycle").exists())
-                .andExpect(jsonPath("$.cycle.id").value(1))
+                .andExpect(jsonPath("$.cycle.id").value("7cc6be9b-7649-4955-bff9-8cbf7c4c429a"))
                 .andExpect(jsonPath("$.cycle.name").value("test_9411799dad"))
                 .andDo(print());
     }

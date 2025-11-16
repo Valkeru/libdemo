@@ -1,5 +1,6 @@
 package ru.valkeru.libdemo.model.entity.base;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,9 +15,11 @@ import java.time.Instant;
 public class TimestampedEntity {
 
     @CreationTimestamp
+    @Column(name = "created_at", nullable = false)
     protected Instant createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
     protected Instant updatedAt;
 }
 

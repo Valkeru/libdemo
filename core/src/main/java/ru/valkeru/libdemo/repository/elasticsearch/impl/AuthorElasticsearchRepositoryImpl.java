@@ -17,7 +17,7 @@ import ru.valkeru.libdemo.model.document.AuthorDocument;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.entity.QAuthor;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
-import ru.valkeru.libdemo.repository.elasticsearch.base.AuthorElasticsearchCustomRepository;
+import ru.valkeru.libdemo.repository.elasticsearch.AuthorElasticsearchCustomRepository;
 import ru.valkeru.libdemo.util.QueryUtil;
 
 import java.util.ArrayList;

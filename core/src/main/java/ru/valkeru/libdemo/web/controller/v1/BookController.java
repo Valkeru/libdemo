@@ -8,9 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.web.api.v1.BookApi;
 import ru.valkeru.libdemo.model.dto.BookDto;
-import ru.valkeru.libdemo.service.web.base.BookWebService;
+import ru.valkeru.libdemo.web.service.base.BookWebService;
 
 import java.util.Collection;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class BookController implements BookApi {
     }
 
     @Override
-    public ResponseEntity<BookDto> updateBook(Long id, BookDto book) {
+    public ResponseEntity<BookDto> updateBook(UUID id, BookDto book) {
         return ResponseEntity.ok(bookService.createOrUpdateBook(id, book));
     }
 
@@ -36,12 +37,12 @@ public class BookController implements BookApi {
     }
 
     @Override
-    public ResponseEntity<BookDto> getBookById(Long id) {
+    public ResponseEntity<BookDto> getBookById(UUID id) {
         return ResponseEntity.ok(bookService.getBookById(id));
     }
 
     @Override
-    public ResponseEntity<Void> deleteBookById(Long id) {
+    public ResponseEntity<Void> deleteBookById(UUID id) {
         bookService.deleteBookById(id);
 
         return ResponseEntity.noContent().build();

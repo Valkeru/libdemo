@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.model.dto.security.TokenDto;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
-import ru.valkeru.libdemo.service.web.base.SecurityWebService;
+import ru.valkeru.libdemo.web.service.base.SecurityWebService;
 import ru.valkeru.libdemo.web.api.security.SecurityApi;
 
 @Component

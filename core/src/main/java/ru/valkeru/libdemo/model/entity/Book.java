@@ -4,71 +4,91 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.UuidGenerator;
 import ru.valkeru.libdemo.constants.Database;
 import ru.valkeru.libdemo.model.entity.base.TimestampedEntity;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
 @ToString
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(schema = Database.Schema.LIBRARY, name = "book", indexes = {
-        @Index(name = "book_name_ix", columnList = "name")
+        @Index(name = "book_name_ix", columnList = "name"),
+        @Index(name = "book_cycle_id_ix", columnList = "cycle_id"),
+        @Index(name = "book_series_id_ix", columnList = "series_id")
 })
 public class Book extends TimestampedEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = Database.Generator.BOOK_ID)
-    @SequenceGenerator(
-            name = Database.Generator.BOOK_ID,
-            schema = Database.Schema.LIBRARY,
-            sequenceName = Database.Sequence.BOOK_ID_SEQUENCE,
-            allocationSize = Database.SEQUENCE_CACHE
-    )
+    @UuidGenerator
     @Setter(AccessLevel.NONE)
     @Column(name = "id", nullable = false)
-    Long id;
+    private UUID id;
 
+    @NotBlank
     @Column(name = "name", nullable = false, columnDefinition = "text")
-    String name;
+    private String name;
 
+    @NotBlank
     @Size(max = 17, min = 17)
+    @Pattern(regexp = "\\d{3}-\\d-\\d{2}-\\d{6}-\\d")
     @Column(name = "isbn", nullable = false, columnDefinition = "char(17)")
-    String isbn;
+    private String isbn;
+
+    @ManyToOne
+    @ToString.Exclude
+    @JoinColumn(name = "cycle_id", foreignKey = @ForeignKey(name = "book_cycle_id_fk"))
+    private Cycle cycle;
+
+    @ManyToOne
+    @JoinColumn(name = "series_id", foreignKey = @ForeignKey(name = "book_series_id_fk"))
+    private Series series;
+
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    @Version
+    @Column(name = "version", nullable = false)
+    private long version = 1L;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             schema = Database.Schema.LIBRARY,
             name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),
-            foreignKey = @ForeignKey(name = Database.Table.BookAuthor.BOOK_FK),
+            foreignKey = @ForeignKey(name = "book_author_book_id_fk"),
             inverseJoinColumns = @JoinColumn(name = "author_id"),
-            inverseForeignKey = @ForeignKey(name = Database.Table.BookAuthor.AUTHOR_FK),
+            inverseForeignKey = @ForeignKey(name = "book_author_author_id_fk"),
             uniqueConstraints = {
                     @UniqueConstraint(
-                            name = Database.Table.BookAuthor.CONSTRAINT_BOOK_AUTHOR,
+                            name = "book_author_book_id_author_id_uc",
                             columnNames = {"book_id", "author_id"}
                     )
+            },
+            indexes = {
+                    @Index(name = "book_author_book_id_ix", columnList = "book_id"),
+                    @Index(name = "book_author_author_id_ix", columnList = "author_id")
             }
     )
     @ToString.Exclude
-    Set<Author> authors;
+    private Set<Author> authors;
 }

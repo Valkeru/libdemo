@@ -1,6 +1,5 @@
 package ru.valkeru.libdemo.web.controller.v1;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,7 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(ApplicationTestConfiguration.class)
 @AutoConfigureMockMvc
@@ -66,7 +64,7 @@ class SeriesControllerTest {
                                         {
                                           "name": "test_58c6ac3d30",
                                           "cycle": {
-                                            "id": 1
+                                            "id": "42860c68-21fe-438e-95ae-4555c35f5150"
                                           }
                                         }
                                         """)
@@ -94,8 +92,7 @@ class SeriesControllerTest {
                 )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").isString())
+                .andExpect(jsonPath("$.id").isString())
                 .andExpect(jsonPath("$.name").value("test_23e17f5cca"))
                 .andExpect(jsonPath("$.cycle").isEmpty())
                 .andDo(print());
@@ -117,14 +114,14 @@ class SeriesControllerTest {
                                         {
                                             "name": "test_23e17f5cca",
                                             "cycle": {
-                                              "id": 1
+                                              "id": "7cc6be9b-7649-4955-bff9-8cbf7c4c429a"
                                             }
                                         }
                                         """)
                 )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("test_23e17f5cca"))
-                .andExpect(jsonPath("$.cycle.id").isNumber())
+                .andExpect(jsonPath("$.cycle.id").value("7cc6be9b-7649-4955-bff9-8cbf7c4c429a"))
                 .andExpect(jsonPath("$.cycle.name").value("test_9411799dad"))
                 .andDo(print());
     }
@@ -139,7 +136,7 @@ class SeriesControllerTest {
     )
     void testUpdateSeriesBadRequest() throws Exception {
         mockMvc.perform(
-                        patch("/v1/series/{seriesId}", 1)
+                        patch("/v1/series/{seriesId}", "697792d6-8d57-4d6f-9ea2-c91b01159612")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -173,14 +170,14 @@ class SeriesControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        patch("/v1/series/{seriesId}", 1)
+                        patch("/v1/series/{seriesId}", "697792d6-8d57-4d6f-9ea2-c91b01159612")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
                                           "name": "test_5fed320cf3",
                                           "cycle": {
-                                            "id": 3
+                                            "id": "42860c68-21fe-438e-95ae-4555c35f5150"
                                           }
                                         }
                                         """
@@ -210,14 +207,14 @@ class SeriesControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        patch("/v1/series/{seriesId}", 1)
+                        patch("/v1/series/{seriesId}", "697792d6-8d57-4d6f-9ea2-c91b01159612")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
                                           "name": "test_4233baa1c1",
                                           "cycle": {
-                                            "id": 2
+                                            "id": "7febe13e-19c2-4c12-82cc-b354546d360e"
                                           }
                                         }
                                         """
@@ -225,10 +222,10 @@ class SeriesControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.id").value("697792d6-8d57-4d6f-9ea2-c91b01159612"))
                 .andExpect(jsonPath("$.name").value("test_4233baa1c1"))
                 .andExpect(jsonPath("$.cycle").exists())
-                .andExpect(jsonPath("$.cycle.id").value(2))
+                .andExpect(jsonPath("$.cycle.id").value("7febe13e-19c2-4c12-82cc-b354546d360e"))
                 .andExpect(jsonPath("$.cycle.name").value("test_ba77861515"))
                 .andDo(print());
     }
@@ -253,7 +250,7 @@ class SeriesControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        patch("/v1/series/{seriesId}", 1)
+                        patch("/v1/series/{seriesId}", "697792d6-8d57-4d6f-9ea2-c91b01159612")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
@@ -264,7 +261,7 @@ class SeriesControllerTest {
                                 )
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.id").value("697792d6-8d57-4d6f-9ea2-c91b01159612"))
                 .andExpect(jsonPath("$.name").value("test_b7b7e7577d"))
                 .andExpect(jsonPath("$.cycle").isEmpty())
                 .andDo(print());
@@ -287,7 +284,7 @@ class SeriesControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        get("/v1/series/{seriesId}", 1)
+                        get("/v1/series/{seriesId}", "caa60384-eccf-4c68-973a-5a69421c56ed")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound())
@@ -312,7 +309,7 @@ class SeriesControllerTest {
                 .andDo(print());
 
         mockMvc.perform(
-                        get("/v1/series/{seriesId}", 1)
+                        get("/v1/series/{seriesId}", "697792d6-8d57-4d6f-9ea2-c91b01159612")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -328,7 +325,7 @@ class SeriesControllerTest {
     )
     void testDeleteSeriesNotFound() throws Exception {
         mockMvc.perform(
-                        delete("/v1/series/{seriesId}", 1)
+                        delete("/v1/series/{seriesId}", "697792d6-8d57-4d6f-9ea2-c91b01159612")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound())
@@ -342,12 +339,13 @@ class SeriesControllerTest {
                     "classpath:01.create_author.sql",
                     "classpath:02.create_cycle.sql",
                     "classpath:03.create_series.sql",
-                    "classpath:04.create_book.sql"
+                    "classpath:04.create_book.sql",
+                    "classpath:05.book_to_series.sql"
             }
     )
     void testDeleteSeriesConflict() throws Exception {
         mockMvc.perform(
-                        delete("/v1/series/{seriesId}", 1)
+                        delete("/v1/series/{seriesId}", "697792d6-8d57-4d6f-9ea2-c91b01159612")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isConflict())
@@ -364,7 +362,7 @@ class SeriesControllerTest {
     )
     void testDeleteSeriesOk() throws Exception {
         mockMvc.perform(
-                        delete("/v1/series/{id}", 1)
+                        delete("/v1/series/{id}", "697792d6-8d57-4d6f-9ea2-c91b01159612")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNoContent())

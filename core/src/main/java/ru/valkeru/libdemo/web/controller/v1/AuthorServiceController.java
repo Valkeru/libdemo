@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import ru.valkeru.libdemo.web.api.v1.AuthorServiceApi;
-import ru.valkeru.libdemo.service.web.base.AuthorWebService;
+import ru.valkeru.libdemo.web.service.base.AuthorWebService;
 
 //@Component
 @RequiredArgsConstructor

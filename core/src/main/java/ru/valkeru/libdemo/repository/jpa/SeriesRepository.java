@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.model.entity.Series;
 
-public interface SeriesRepository extends JpaRepository<Series, Long> {
+import java.util.UUID;
+
+public interface SeriesRepository extends JpaRepository<Series, UUID> {
 
     @Modifying
     @Transactional
     @Query("delete from Series s where s.id = :id")
-    int deleteSeriesById(Long id);
+    int deleteSeriesById(UUID id);
 }

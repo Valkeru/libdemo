@@ -2,47 +2,53 @@ package ru.valkeru.libdemo.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.UuidGenerator;
 import ru.valkeru.libdemo.constants.Database;
 import ru.valkeru.libdemo.model.entity.base.TimestampedEntity;
 
+import java.util.Set;
+import java.util.UUID;
+
 /**
- * Цикл — несколько книг, объединённых общим сеттингом, но с разными персонажами
+ * Цикл — несколько книг, объединённых общим сеттингом, но с разным сюжетом
  */
 @Getter
 @Setter
 @ToString
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(schema = Database.Schema.LIBRARY, name = "cycle")
 public class Cycle extends TimestampedEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = Database.Generator.CYCLE_ID)
-    @SequenceGenerator(
-            name = Database.Generator.CYCLE_ID,
-            schema = Database.Schema.LIBRARY,
-            sequenceName = Database.Sequence.CYCLE_ID_SEQUENCE,
-            allocationSize = Database.SEQUENCE_CACHE
-    )
+    @UuidGenerator
     @Setter(AccessLevel.NONE)
     @Column(name = "id", nullable = false)
-    Long id;
+    private UUID id;
 
+    @NotBlank
     @Column(name = "name", columnDefinition = "text")
     private String name;
 
-//    @OneToMany(mappedBy = "cycle", fetch = FetchType.EAGER)
-//    @Fetch(FetchMode.JOIN)
-//    @ToString.Exclude
-//    private Set<Book> books;
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    @Version
+    @Column(name = "version", nullable = false)
+    private long version = 1L;
+
+    @OneToMany(mappedBy = "cycle", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
+    @ToString.Exclude
+    private Set<Book> books;
 }

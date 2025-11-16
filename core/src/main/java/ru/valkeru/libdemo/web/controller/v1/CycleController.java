@@ -8,41 +8,42 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.web.api.v1.CycleApi;
 import ru.valkeru.libdemo.model.dto.CycleDto;
-import ru.valkeru.libdemo.service.web.base.CycleHttpService;
+import ru.valkeru.libdemo.web.service.base.CycleWebService;
 
 import java.util.Collection;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CycleController implements CycleApi {
 
-    CycleHttpService cycleHttpService;
+    CycleWebService cycleWebService;
 
     @Override
     public ResponseEntity<CycleDto> addCycle(CycleDto cycleDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(cycleHttpService.createOrUpdateCycle(null, cycleDto));
+                .body(cycleWebService.createOrUpdateCycle(null, cycleDto));
     }
 
     @Override
-    public ResponseEntity<CycleDto> updateCycle(Long id, CycleDto cycleDto) {
-        return ResponseEntity.ok(cycleHttpService.createOrUpdateCycle(id, cycleDto));
+    public ResponseEntity<CycleDto> updateCycle(UUID id, CycleDto cycleDto) {
+        return ResponseEntity.ok(cycleWebService.createOrUpdateCycle(id, cycleDto));
     }
 
     @Override
-    public ResponseEntity<CycleDto> getCycle(Long id) {
-        return ResponseEntity.ok(cycleHttpService.getCycleById(id));
+    public ResponseEntity<CycleDto> getCycle(UUID id) {
+        return ResponseEntity.ok(cycleWebService.getCycleById(id));
     }
 
     @Override
     public ResponseEntity<Collection<CycleDto>> listCycles() {
-        return ResponseEntity.ok(cycleHttpService.getAllCycles());
+        return ResponseEntity.ok(cycleWebService.getAllCycles());
     }
 
     @Override
-    public ResponseEntity<Void> deleteCycle(Long id) {
-        cycleHttpService.deleteCycleById(id);
+    public ResponseEntity<Void> deleteCycle(UUID id) {
+        cycleWebService.deleteCycleById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

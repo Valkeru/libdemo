@@ -13,12 +13,14 @@ import ru.valkeru.libdemo.model.view.BookView;
 import ru.valkeru.libdemo.model.view.CycleView;
 import ru.valkeru.libdemo.model.view.SeriesView;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@Schema(description = "Цикл — несколько книг, объединённых общим сеттингом, но с разными персонажами")
+@Schema(description = "Цикл — несколько книг, объединённых общим сеттингом, но с разным сюжетом")
 public class CycleDto {
 
     @JsonView({
@@ -31,7 +33,7 @@ public class CycleDto {
             SeriesView.SeriesCreateView.class
     })
     @Schema(description = "ID записи", example = "1")
-    private Long id;
+    private UUID id;
 
     @JsonView({
             CycleView.CycleCreateView.class,

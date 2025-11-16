@@ -1,5 +1,6 @@
 package ru.valkeru.libdemo.web.controller.service;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.valkeru.libdemo.ApplicationTestConfiguration;
 import ru.valkeru.libdemo.config.OpenApiConfig;
 import ru.valkeru.libdemo.utility.JwtUtility;
+import ru.valkeru.libdemo.utility.RedisUtility;
 import ru.valkeru.libdemo.web.api.service.AuthorServiceApi;
 
 import java.util.UUID;
@@ -35,6 +37,14 @@ class AuthorServiceControllerTest {
 
     @Autowired
     JwtUtility jwtUtility;
+
+    @Autowired
+    RedisUtility redisUtility;
+
+    @AfterEach
+    void clearCache() {
+        redisUtility.clearCaches();
+    }
 
     @Test
     @Sql(
