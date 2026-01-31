@@ -1,11 +1,11 @@
-package ru.valkeru.libdemo.web.service.base;
+package ru.valkeru.libdemo.service.application;
 
 import ru.valkeru.libdemo.model.dto.BookDto;
 
 import java.util.Collection;
 import java.util.UUID;
 
-public interface BookWebService {
+public interface BookApplicationService {
 
     BookDto createOrUpdateBook(UUID id, BookDto bookDto);
 

@@ -1,9 +1,9 @@
-package ru.valkeru.libdemo.web.service.base;
+package ru.valkeru.libdemo.service.application;
 
 import ru.valkeru.libdemo.model.dto.security.TokenDto;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
 
-public interface SecurityWebService {
+public interface SecurityApplicationService {
 
     TokenDto performSignIn(SignUpRequest request);
 

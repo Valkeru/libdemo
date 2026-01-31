@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.base;
+package ru.valkeru.libdemo.service.core;
 
 import org.springframework.data.domain.Page;
 import org.springframework.lang.NonNull;

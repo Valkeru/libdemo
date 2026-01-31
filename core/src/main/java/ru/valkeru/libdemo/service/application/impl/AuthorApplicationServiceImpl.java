@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.web.service.impl;
+package ru.valkeru.libdemo.service.application.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -10,14 +10,14 @@ import ru.valkeru.libdemo.mapper.AuthorMapper;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
-import ru.valkeru.libdemo.service.base.AuthorService;
-import ru.valkeru.libdemo.web.service.base.AuthorWebService;
+import ru.valkeru.libdemo.service.core.AuthorService;
+import ru.valkeru.libdemo.service.application.AuthorApplicationService;
 
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class AuthorWebServiceImpl implements AuthorWebService {
+public class AuthorApplicationServiceImpl implements AuthorApplicationService {
 
     private final AuthorService authorService;
     private final AuthorMapper authorMapper;

@@ -1,21 +1,19 @@
-package ru.valkeru.libdemo.web.service.impl;
+package ru.valkeru.libdemo.service.application.impl;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.mapper.CycleMapper;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.entity.Cycle;
-import ru.valkeru.libdemo.service.base.CycleService;
-import ru.valkeru.libdemo.web.service.base.CycleWebService;
+import ru.valkeru.libdemo.service.core.CycleService;
+import ru.valkeru.libdemo.service.application.CycleApplicationService;
 
 import java.util.Collection;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class CycleWebServiceImpl implements CycleWebService {
+public class CycleApplicationServiceImpl implements CycleApplicationService {
 
     private final CycleService cycleService;
     private final CycleMapper cycleMapper;

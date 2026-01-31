@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
-import ru.valkeru.libdemo.web.service.base.AuthorWebService;
+import ru.valkeru.libdemo.service.application.AuthorApplicationService;
 import ru.valkeru.libdemo.web.api.v1.AuthorApi;
 
 import java.util.UUID;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthorController implements AuthorApi {
 
-    AuthorWebService authorService;
+    AuthorApplicationService authorService;
 
     @Override
     public ResponseEntity<PagedModel<AuthorDto>> listAllAuthors(AuthorFilter filter, Pageable pageable) {

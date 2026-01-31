@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import ru.valkeru.libdemo.config.security.TokenValidationFilter;
 import ru.valkeru.libdemo.config.security.LibraryLogoutHandler;
-import ru.valkeru.libdemo.service.base.security.SecurityService;
+import ru.valkeru.libdemo.service.core.SecurityService;
 
 @Configuration
 @EnableWebSecurity

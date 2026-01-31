@@ -7,7 +7,7 @@ import lombok.SneakyThrows;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import ru.valkeru.libdemo.config.OpenApiConfig;
-import ru.valkeru.libdemo.service.base.security.SecurityService;
+import ru.valkeru.libdemo.service.core.SecurityService;
 
 import java.util.UUID;
 

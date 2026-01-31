@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.impl;
+package ru.valkeru.libdemo.service.core.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
 import ru.valkeru.libdemo.repository.jpa.SeriesRepository;
-import ru.valkeru.libdemo.service.base.SeriesService;
+import ru.valkeru.libdemo.service.core.SeriesService;
 
 import java.util.Optional;
 import java.util.UUID;

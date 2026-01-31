@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.impl;
+package ru.valkeru.libdemo.service.core.impl;
 
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +13,8 @@ import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 import ru.valkeru.libdemo.repository.elasticsearch.AuthorElasticsearchRepository;
-import ru.valkeru.libdemo.repository.facade.AuthorRepositoryFacade;
 import ru.valkeru.libdemo.repository.jpa.author.AuthorRepository;
-import ru.valkeru.libdemo.service.base.AuthorService;
+import ru.valkeru.libdemo.service.core.AuthorService;
 import ru.valkeru.libdemo.util.ElasticsearchUtil;
 
 import java.util.List;
@@ -29,16 +28,13 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
     private final AuthorElasticsearchRepository authorElasticsearchRepository;
-    private final AuthorRepositoryFacade authorRepositoryFacade;
 
     public AuthorServiceImpl(AuthorRepository authorRepository, AuthorMapper authorMapper,
-                             AuthorElasticsearchRepository authorElasticsearchRepository,
-                             AuthorRepositoryFacade authorRepositoryFacade) {
+                             AuthorElasticsearchRepository authorElasticsearchRepository) {
 
         this.authorRepository = authorRepository;
         this.authorMapper = authorMapper;
         this.authorElasticsearchRepository = authorElasticsearchRepository;
-        this.authorRepositoryFacade = authorRepositoryFacade;
     }
 
     @Transactional

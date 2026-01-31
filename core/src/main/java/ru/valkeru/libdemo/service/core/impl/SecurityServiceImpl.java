@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.impl.security;
+package ru.valkeru.libdemo.service.core.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -23,7 +23,7 @@ import ru.valkeru.libdemo.model.entity.user.Token;
 import ru.valkeru.libdemo.model.entity.user.User;
 import ru.valkeru.libdemo.repository.jpa.user.TokenRepository;
 import ru.valkeru.libdemo.repository.jpa.user.UserRepository;
-import ru.valkeru.libdemo.service.base.security.SecurityService;
+import ru.valkeru.libdemo.service.core.SecurityService;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;

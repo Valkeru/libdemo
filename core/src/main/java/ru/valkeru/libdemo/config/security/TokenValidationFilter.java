@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.valkeru.libdemo.config.OpenApiConfig;
-import ru.valkeru.libdemo.service.base.security.SecurityService;
+import ru.valkeru.libdemo.service.core.SecurityService;
 
 import java.io.IOException;
 import java.util.List;

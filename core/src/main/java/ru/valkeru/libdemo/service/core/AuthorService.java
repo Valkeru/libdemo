@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.base;
+package ru.valkeru.libdemo.service.core;
 
 import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Page;
