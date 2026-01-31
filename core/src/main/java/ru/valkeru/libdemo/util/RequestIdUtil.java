@@ -10,7 +10,7 @@ public class RequestIdUtil {
 
     private final String MDC_REQUEST_ID_PROP = "requestId";
 
-    public void installMDCRequestId() {
+    public void setMDCRequestId() {
         MDC.put(MDC_REQUEST_ID_PROP, UUID.randomUUID().toString());
     }
 
