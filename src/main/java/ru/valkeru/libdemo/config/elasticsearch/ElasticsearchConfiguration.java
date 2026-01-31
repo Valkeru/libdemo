@@ -45,7 +45,7 @@ public class ElasticsearchConfiguration {
         ObjectMapper objectMapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule())
                 .build()
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
 
         JacksonJsonpMapper mapper = new JacksonJsonpMapper(objectMapper);
 
