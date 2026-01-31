@@ -69,6 +69,7 @@ springdoc:
     syntax-highlight:
       theme: idea
     default-model-expand-depth: 50
+  enable-hateoas: false
 app:
   security:
     jwt:

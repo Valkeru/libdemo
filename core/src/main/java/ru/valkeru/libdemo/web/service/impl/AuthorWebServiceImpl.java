@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.mapper.AuthorMapper;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
@@ -29,8 +30,10 @@ public class AuthorWebServiceImpl implements AuthorWebService {
     }
 
     @Override
-    public Page<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable) {
-        return authorService.getAuthors(filter, pageable).map(authorMapper::toDto);
+    public PagedModel<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable) {
+        Page<Author> authors = authorService.getAuthors(filter, pageable);
+
+        return new PagedModel<>(authors.map(authorMapper::toDto));
     }
 
     @Cacheable("author")

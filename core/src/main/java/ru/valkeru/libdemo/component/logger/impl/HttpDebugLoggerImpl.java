@@ -1,11 +1,11 @@
 package ru.valkeru.libdemo.component.logger.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.component.logger.AbstractHttpDebugLogger;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @Component
 public class HttpDebugLoggerImpl extends AbstractHttpDebugLogger {
@@ -22,7 +22,7 @@ public class HttpDebugLoggerImpl extends AbstractHttpDebugLogger {
             buildMessageWithParameters(request, logMessageBuilder);
 
             writeRequestLog(logMessageBuilder.toString());
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             writeLogFailed(e);
         }
     }
@@ -35,7 +35,7 @@ public class HttpDebugLoggerImpl extends AbstractHttpDebugLogger {
             buildMessageWithRequestBody(requestBody, request, logMessageBuilder, deserializationView);
 
             writeRequestLog(logMessageBuilder.toString());
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             writeLogFailed(e);
         }
     }
@@ -49,7 +49,7 @@ public class HttpDebugLoggerImpl extends AbstractHttpDebugLogger {
             buildMessageWithResponseBody(body, request, response, logMessageBuilder, serializationView);
 
             writeResponseLog(logMessageBuilder.toString());
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             writeLogFailed(e);
         }
     }
