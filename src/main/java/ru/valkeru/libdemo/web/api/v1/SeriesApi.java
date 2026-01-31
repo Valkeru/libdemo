@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +26,7 @@ import ru.valkeru.libdemo.model.dto.error.ErrorDto;
 import ru.valkeru.libdemo.model.view.SeriesView;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -96,7 +98,7 @@ public interface SeriesApi {
             tags = Tags.SERIES
     )
     @JsonView(SeriesView.SeriesListView.class)
-    ResponseEntity<Page<SeriesDto>> listAllSeries();
+    ResponseEntity<List<SeriesDto>> listAllSeries();
 
     @Operation(
             summary = Summary.Series.SUMMARY_VIEW,

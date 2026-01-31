@@ -3,6 +3,7 @@ package ru.valkeru.libdemo.service.application.impl;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.mapper.SeriesMapper;
 import ru.valkeru.libdemo.model.dto.CycleDto;
@@ -31,10 +32,10 @@ public class SeriesApplicationServiceImpl implements SeriesApplicationService {
     }
 
     @Override
-    public Page<SeriesDto> listAllSeries() {
+    public PagedModel<SeriesDto> listAllSeries() {
         Page<Series> seriesList = seriesService.listAllSeries();
 
-        return seriesList.map(seriesMapper::toDto);
+        return new PagedModel<>(seriesList.map(seriesMapper::toDto));
     }
 
     @NotNull

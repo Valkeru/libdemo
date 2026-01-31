@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import ru.valkeru.libdemo.web.api.v1.SeriesApi;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.service.application.SeriesApplicationService;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -34,8 +36,8 @@ public class SeriesController implements SeriesApi {
     }
 
     @Override
-    public ResponseEntity<Page<SeriesDto>> listAllSeries() {
-        return ResponseEntity.ok(seriesService.listAllSeries());
+    public ResponseEntity<List<SeriesDto>> listAllSeries() {
+        return ResponseEntity.ok(seriesService.listAllSeries().getContent());
     }
 
     @Override
