@@ -137,4 +137,17 @@ public interface AuthorServiceApi extends DefaultApi {
                                               @Schema(description = ApiDefinition.SchemaIdDescription.AUTHOR_ID) UUID id) {
         return defaultApiResponse();
     }
+
+    @Operation(
+            summary = ApiDefinition.Summary.Service.SUMMARY_AUTHOR_ELASTICSEARCH,
+            tags = ApiDefinition.Tags.SERVICE,
+            responses = {
+                    @ApiResponse(
+                            responseCode = ApiDefinition.StatusCodes.NO_CONTENT,
+                            description = ApiDefinition.StatusCodes.Description.ASYNC_TASK_CREATED
+                    )
+            }
+    )
+    @PostMapping("/reindex")
+    ResponseEntity<Void> elasticsearchReindexAuthors();
 }

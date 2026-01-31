@@ -37,4 +37,11 @@ public class AuthorServiceController implements AuthorServiceApi {
 
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    public ResponseEntity<Void> elasticsearchReindexAuthors() {
+        authorService.reindexAuthors();
+
+        return ResponseEntity.noContent().build();
+    }
 }
