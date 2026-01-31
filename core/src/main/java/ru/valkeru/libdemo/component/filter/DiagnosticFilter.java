@@ -31,7 +31,7 @@ public class DiagnosticFilter extends OncePerRequestFilter {
                                  @NonNull HttpServletResponse response,
                                  @NonNull FilterChain filterChain) throws ServletException, IOException {
         try {
-            RequestIdUtil.installMDCRequestId();
+            RequestIdUtil.setMDCRequestId();
 
             ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
             RequestExecutionContext.store(RequestExecutionContext.REQUEST_WRAPPER_KEY, requestWrapper);
