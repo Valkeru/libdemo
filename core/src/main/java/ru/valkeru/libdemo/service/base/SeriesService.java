@@ -6,7 +6,6 @@ import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface SeriesService {
@@ -17,10 +16,6 @@ public interface SeriesService {
 
     @NonNull
     Series getSeries(@NonNull UUID id);
-
-    @Deprecated
-    @NonNull
-    Series getSeriesEntity(UUID id);
 
     void deleteSeriesById(@NonNull UUID id);
 }

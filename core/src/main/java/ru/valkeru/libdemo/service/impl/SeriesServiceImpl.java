@@ -54,16 +54,10 @@ public class SeriesServiceImpl implements SeriesService {
         }
     }
 
-    @NonNull
-    @Override
-    public Series getSeriesEntity(UUID id) {
+    private Series getSeriesEntity(UUID id) {
         return Optional.ofNullable(id)
                 .map(seriesId -> seriesRepository.findById(seriesId)
                         .orElseThrow(() -> SeriesNotFoundException.seriesNotFound(seriesId)))
                 .orElse(new Series());
-    }
-
-    private Series getSeriesEntity(SeriesDto dto) {
-        return getSeriesEntity(dto.getId());
     }
 }
