@@ -1,7 +1,7 @@
 package ru.valkeru.libdemo.component.logger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -36,11 +36,12 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
 //                    .setAnnotationIntrospector(new SecretIntrospector());
 
     protected AbstractHttpDebugLogger(ObjectMapper mapper) {
-        this.mapper = mapper.copy();
-        this.mapper.setAnnotationIntrospector(new SecretIntrospector());
+        this.mapper = mapper.rebuild()
+                .annotationIntrospector(new SecretIntrospector())
+                .build();
     }
 
-    protected void buildMessageWithParameters(HttpServletRequest request, StringBuilder requestLogMessageBuilder) throws JsonProcessingException {
+    protected void buildMessageWithParameters(HttpServletRequest request, StringBuilder requestLogMessageBuilder) {
         Map<String, String> parameters = getParametersMap(request);
 
         formatRequestDataTemplate(request, requestLogMessageBuilder);
@@ -56,7 +57,7 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
 
     protected void buildMessageWithRequestBody(Object body, HttpServletRequest request,
                                                StringBuilder requestLogMessageBuilder,
-                                               final Class<?> deserializationView) throws JsonProcessingException {
+                                               final Class<?> deserializationView) {
         formatRequestDataTemplate(request, requestLogMessageBuilder);
         String originalString = RequestExecutionContext.readRequestBody();
 
@@ -72,7 +73,7 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
     }
 
     protected void buildMessageWithResponseBody(Object body, HttpServletRequest request, HttpServletResponse response,
-                                                StringBuilder logMessageBuilder, final Class<?> serializationView) throws JsonProcessingException {
+                                                StringBuilder logMessageBuilder, final Class<?> serializationView) {
         formatRequestDataTemplate(request, logMessageBuilder);
 
         logMessageBuilder
@@ -99,7 +100,7 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
         log.debug("Response log: {}", message);
     }
 
-    protected void writeLogFailed(JsonProcessingException jpe) {
+    protected void writeLogFailed(JacksonException jpe) {
         log.debug("Log failed: {}", jpe.getMessage(), jpe);
     }
 
@@ -121,7 +122,7 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
         return parameters;
     }
 
-    private String writeBody(final Class<?> view, final Object body) throws JsonProcessingException {
+    private String writeBody(final Class<?> view, final Object body) {
         return Optional.ofNullable(view)
                 .map(mapper::writerWithView)
                 .orElse(mapper.writer())

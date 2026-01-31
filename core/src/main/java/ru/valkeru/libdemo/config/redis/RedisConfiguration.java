@@ -1,7 +1,6 @@
 package ru.valkeru.libdemo.config.redis;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurer;
@@ -13,8 +12,10 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
+import tools.jackson.databind.DefaultTyping;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 
@@ -29,30 +30,31 @@ public class RedisConfiguration implements CachingConfigurer {
 
     @Bean("defaultRedisCacheConfiguration")
     public RedisCacheConfiguration defaultRedisCacheConfiguration(ObjectMapper mapper) {
-        ObjectMapper objectMapper = mapper.copy()
+        ObjectMapper objectMapper = mapper.rebuild()
                 .activateDefaultTyping(
-                        mapper.getPolymorphicTypeValidator(),
-                        ObjectMapper.DefaultTyping.NON_FINAL,
+                        mapper.serializationConfig().getPolymorphicTypeValidator(),
+                        DefaultTyping.NON_FINAL,
                         JsonTypeInfo.As.PROPERTY
-                );
+                )
+                .build();
 
         return RedisCacheConfiguration.defaultCacheConfig()
                 .prefixCacheNameWith("libdemo")
                 .entryTtl(Duration.ofMinutes(5))
                 .disableCachingNullValues()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
-                        new GenericJackson2JsonRedisSerializer(objectMapper)
+                        new GenericJacksonJsonRedisSerializer(objectMapper)
                 ));
     }
 
     @Bean("jwtRedisConfiguration")
-    public RedisCacheConfiguration jwtRedisConfiguration(@Value("${app.security.jwt.lifetime}") long ttl) {
+    public RedisCacheConfiguration jwtRedisConfiguration(@Value("${app.security.jwt.lifetime}") long ttl, ObjectMapper mapper) {
         return RedisCacheConfiguration.defaultCacheConfig()
                 .prefixCacheNameWith("libdemo-jwt")
                 .entryTtl(Duration.ofSeconds(ttl))
                 .disableCachingNullValues()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
-                        new GenericJackson2JsonRedisSerializer()
+                        new GenericJacksonJsonRedisSerializer(mapper)
                 ));
     }
 

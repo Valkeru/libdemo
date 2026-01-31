@@ -1,11 +1,9 @@
 package ru.valkeru.libdemo.serializer;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import ru.valkeru.libdemo.annotation.Secret;
-
-import java.io.IOException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
 
 /**
  * Sensitive data serializer to use in logs
@@ -14,13 +12,13 @@ import java.io.IOException;
  *
  * @param <T>
  */
-public class SecretSerializer<T> extends JsonSerializer<T> {
+public class SecretSerializer<T> extends ValueSerializer<T> {
 
     private static final String PATTERN = "*";
     private static final String DEFAULT_VALUE = "<SECRET>";
 
     @Override
-    public void serialize(T value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(T value, JsonGenerator gen, SerializationContext context) {
         gen.writeString(getMaskedString(value));
     }
 

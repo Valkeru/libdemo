@@ -33,7 +33,7 @@ public class DiagnosticFilter extends OncePerRequestFilter {
         try {
             RequestIdUtil.setMDCRequestId();
 
-            ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
+            ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request, 0);
             RequestExecutionContext.store(RequestExecutionContext.REQUEST_WRAPPER_KEY, requestWrapper);
 
             addDiagnosticHeaders(response);
