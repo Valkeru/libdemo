@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.web.api.v1.CycleApi;
 import ru.valkeru.libdemo.model.dto.CycleDto;
-import ru.valkeru.libdemo.web.service.base.CycleWebService;
+import ru.valkeru.libdemo.service.application.CycleApplicationService;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -18,32 +18,32 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CycleController implements CycleApi {
 
-    CycleWebService cycleWebService;
+    CycleApplicationService cycleApplicationService;
 
     @Override
     public ResponseEntity<CycleDto> addCycle(CycleDto cycleDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(cycleWebService.createOrUpdateCycle(null, cycleDto));
+                .body(cycleApplicationService.createOrUpdateCycle(null, cycleDto));
     }
 
     @Override
     public ResponseEntity<CycleDto> updateCycle(UUID id, CycleDto cycleDto) {
-        return ResponseEntity.ok(cycleWebService.createOrUpdateCycle(id, cycleDto));
+        return ResponseEntity.ok(cycleApplicationService.createOrUpdateCycle(id, cycleDto));
     }
 
     @Override
     public ResponseEntity<CycleDto> getCycle(UUID id) {
-        return ResponseEntity.ok(cycleWebService.getCycleById(id));
+        return ResponseEntity.ok(cycleApplicationService.getCycleById(id));
     }
 
     @Override
     public ResponseEntity<Collection<CycleDto>> listCycles() {
-        return ResponseEntity.ok(cycleWebService.getAllCycles());
+        return ResponseEntity.ok(cycleApplicationService.getAllCycles());
     }
 
     @Override
     public ResponseEntity<Void> deleteCycle(UUID id) {
-        cycleWebService.deleteCycleById(id);
+        cycleApplicationService.deleteCycleById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

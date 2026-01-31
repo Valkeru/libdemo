@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.base.security;
+package ru.valkeru.libdemo.service.core;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
-import ru.valkeru.libdemo.web.service.base.AuthorWebService;
+import ru.valkeru.libdemo.service.application.AuthorApplicationService;
 import ru.valkeru.libdemo.web.api.service.AuthorServiceApi;
 
 import java.util.UUID;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthorServiceController implements AuthorServiceApi {
 
-    private final AuthorWebService authorService;
+    private final AuthorApplicationService authorService;
 
     @Override
     public ResponseEntity<AuthorDto> createAuthor(@Valid AuthorDto author) {

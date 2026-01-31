@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.web.api.v1.SeriesApi;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
-import ru.valkeru.libdemo.web.service.base.SeriesWebService;
+import ru.valkeru.libdemo.service.application.SeriesApplicationService;
 
 import java.util.UUID;
 
@@ -18,7 +18,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SeriesController implements SeriesApi {
 
-    SeriesWebService seriesService;
+    SeriesApplicationService seriesService;
 
     @Override
     public ResponseEntity<SeriesDto> createSeries(SeriesDto series) {

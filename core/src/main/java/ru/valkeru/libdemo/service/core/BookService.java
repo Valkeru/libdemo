@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.base;
+package ru.valkeru.libdemo.service.core;
 
 import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.model.entity.Author;

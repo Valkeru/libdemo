@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.web.service.impl;
+package ru.valkeru.libdemo.service.application.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,11 +9,11 @@ import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
-import ru.valkeru.libdemo.service.base.AuthorService;
-import ru.valkeru.libdemo.service.base.BookService;
-import ru.valkeru.libdemo.service.base.CycleService;
-import ru.valkeru.libdemo.service.base.SeriesService;
-import ru.valkeru.libdemo.web.service.base.BookWebService;
+import ru.valkeru.libdemo.service.core.AuthorService;
+import ru.valkeru.libdemo.service.core.BookService;
+import ru.valkeru.libdemo.service.core.CycleService;
+import ru.valkeru.libdemo.service.core.SeriesService;
+import ru.valkeru.libdemo.service.application.BookApplicationService;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class BookWebServiceImpl implements BookWebService {
+public class BookApplicationServiceImpl implements BookApplicationService {
 
     private final BookService bookService;
     private final AuthorService authorService;

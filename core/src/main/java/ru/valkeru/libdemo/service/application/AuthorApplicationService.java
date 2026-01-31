@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.web.service.base;
+package ru.valkeru.libdemo.service.application;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
@@ -8,7 +8,7 @@ import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 
 import java.util.UUID;
 
-public interface AuthorWebService {
+public interface AuthorApplicationService {
 
     AuthorDto createOrUpdateAuthor(AuthorDto authorDto);
 

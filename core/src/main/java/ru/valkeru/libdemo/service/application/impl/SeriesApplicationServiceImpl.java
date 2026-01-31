@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.web.service.impl;
+package ru.valkeru.libdemo.service.application.impl;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -9,16 +9,15 @@ import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
-import ru.valkeru.libdemo.service.base.CycleService;
-import ru.valkeru.libdemo.service.base.SeriesService;
-import ru.valkeru.libdemo.web.service.base.SeriesWebService;
+import ru.valkeru.libdemo.service.core.CycleService;
+import ru.valkeru.libdemo.service.core.SeriesService;
+import ru.valkeru.libdemo.service.application.SeriesApplicationService;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class SeriesWebServiceImpl implements SeriesWebService {
+public class SeriesApplicationServiceImpl implements SeriesApplicationService {
 
     private final SeriesService seriesService;
     private final CycleService cycleService;

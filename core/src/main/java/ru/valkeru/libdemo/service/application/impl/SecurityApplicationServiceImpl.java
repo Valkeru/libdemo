@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.web.service.impl;
+package ru.valkeru.libdemo.service.application.impl;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,19 +8,19 @@ import ru.valkeru.libdemo.model.dto.security.TokenDto;
 import ru.valkeru.libdemo.model.entity.user.Token;
 import ru.valkeru.libdemo.model.entity.user.User;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
-import ru.valkeru.libdemo.service.base.security.SecurityService;
-import ru.valkeru.libdemo.web.service.base.SecurityWebService;
+import ru.valkeru.libdemo.service.core.SecurityService;
+import ru.valkeru.libdemo.service.application.SecurityApplicationService;
 
 import java.util.List;
 import java.util.UUID;
 
 @Component
-public class SecurityWebServiceImpl implements SecurityWebService {
+public class SecurityApplicationServiceImpl implements SecurityApplicationService {
 
     private final SecurityService securityService;
 
 
-    public SecurityWebServiceImpl(SecurityService securityService) {
+    public SecurityApplicationServiceImpl(SecurityService securityService) {
         this.securityService = securityService;
     }
 

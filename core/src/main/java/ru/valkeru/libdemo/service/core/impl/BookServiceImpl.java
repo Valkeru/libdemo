@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.impl;
+package ru.valkeru.libdemo.service.core.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import ru.valkeru.libdemo.model.entity.Book;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
 import ru.valkeru.libdemo.repository.jpa.BookRepository;
-import ru.valkeru.libdemo.service.base.BookService;
+import ru.valkeru.libdemo.service.core.BookService;
 import ru.valkeru.libdemo.util.SqlUtil;
 
 import java.util.Collection;

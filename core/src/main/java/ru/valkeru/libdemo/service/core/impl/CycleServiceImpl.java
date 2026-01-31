@@ -1,8 +1,6 @@
-package ru.valkeru.libdemo.service.impl;
+package ru.valkeru.libdemo.service.core.impl;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.exception.impl.CycleNotFoundException;
@@ -10,8 +8,7 @@ import ru.valkeru.libdemo.mapper.CycleMapper;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.repository.jpa.CycleRepository;
-import ru.valkeru.libdemo.service.base.CycleService;
-import ru.valkeru.libdemo.util.SqlUtil;
+import ru.valkeru.libdemo.service.core.CycleService;
 
 import java.util.Collection;
 import java.util.Optional;
