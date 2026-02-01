@@ -1,7 +1,7 @@
 package ru.valkeru.libdemo.service.core;
 
 import org.springframework.data.domain.Page;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;

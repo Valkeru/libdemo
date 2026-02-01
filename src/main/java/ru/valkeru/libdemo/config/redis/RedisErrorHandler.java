@@ -3,7 +3,7 @@ package ru.valkeru.libdemo.config.redis;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.interceptor.CacheErrorHandler;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Обработчик ошибок работы с кэшем Redis.
