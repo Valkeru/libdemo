@@ -1,6 +1,5 @@
 package ru.valkeru.libdemo.service.core;
 
-import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
@@ -15,7 +14,6 @@ public interface AuthorService {
 
     Page<Author> getAuthors(AuthorFilter filter, Pageable pageable);
 
-    @Nonnull
     Author getAuthorById(UUID id);
 
     void deleteAuthorById(UUID id);

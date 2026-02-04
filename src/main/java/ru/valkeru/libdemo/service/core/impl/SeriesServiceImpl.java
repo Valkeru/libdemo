@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.exception.impl.SeriesNotFoundException;
 import ru.valkeru.libdemo.mapper.SeriesMapper;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
@@ -27,7 +26,6 @@ public class SeriesServiceImpl implements SeriesService {
     SeriesRepository seriesRepository;
     SeriesMapper seriesMapper;
 
-    @Transactional
     @Override
     public Series createOrUpdateSeries(SeriesDto dto, Cycle cycle, Series series) {
         seriesMapper.updateSeries(dto, cycle, series);
@@ -46,7 +44,6 @@ public class SeriesServiceImpl implements SeriesService {
         return getSeriesEntity(id);
     }
 
-    @Transactional
     @Override
     public void deleteSeriesById(@NonNull UUID id) {
         if (seriesRepository.deleteSeriesById(id) == 0) {

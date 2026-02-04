@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.mapper.SeriesMapper;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class SeriesApplicationServiceImpl implements SeriesApplicationService {
 
     private final SeriesService seriesService;
@@ -25,6 +27,7 @@ public class SeriesApplicationServiceImpl implements SeriesApplicationService {
     private final SeriesMapper seriesMapper;
 
     @Override
+    @Transactional
     public SeriesDto createOrUpdateSeries(SeriesDto dto) {
         Series series = seriesService.getSeries(dto.getId());
 
@@ -47,6 +50,7 @@ public class SeriesApplicationServiceImpl implements SeriesApplicationService {
     }
 
     @Override
+    @Transactional
     public void deleteSeriesById(UUID id) {
         seriesService.deleteSeriesById(id);
     }

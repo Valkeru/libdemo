@@ -17,7 +17,6 @@ public interface AuthorMapper {
 
     AuthorDocument toDocument(Author entity);
 
-    @Mapping(target = "books", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     void updateAuthor(AuthorDto dto, @MappingTarget Author entity);

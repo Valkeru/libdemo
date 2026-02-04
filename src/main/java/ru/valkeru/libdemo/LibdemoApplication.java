@@ -1,5 +1,6 @@
 package ru.valkeru.libdemo;
 
+import io.hypersistence.utils.spring.repository.BaseJpaRepositoryImpl;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,7 +13,10 @@ import java.util.UUID;
 
 @EnableAsync
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = {"ru.valkeru.libdemo.repository.jpa"})
+@EnableJpaRepositories(
+        basePackages = {"ru.valkeru.libdemo.repository.jpa"},
+        repositoryBaseClass = BaseJpaRepositoryImpl.class
+)
 @EnableConfigurationProperties({
         SystemConfiguration.class
 })

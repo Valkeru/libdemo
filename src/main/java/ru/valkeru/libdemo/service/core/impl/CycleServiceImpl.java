@@ -2,7 +2,6 @@ package ru.valkeru.libdemo.service.core.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.exception.impl.CycleNotFoundException;
 import ru.valkeru.libdemo.mapper.CycleMapper;
 import ru.valkeru.libdemo.model.dto.CycleDto;
@@ -21,7 +20,6 @@ public class CycleServiceImpl implements CycleService {
     private final CycleRepository cycleRepository;
     private final CycleMapper cycleMapper;
 
-    @Transactional
     @Override
     public CycleDto createOrUpdateCycle(CycleDto dto) {
         Cycle entity = getCycleEntity(dto);
@@ -40,7 +38,6 @@ public class CycleServiceImpl implements CycleService {
         return getCycleEntity(id);
     }
 
-    @Transactional
     @Override
     public void deleteCycleById(UUID id) {
         if (cycleRepository.deleteCycleById(id) == 0) {

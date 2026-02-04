@@ -2,9 +2,7 @@ package ru.valkeru.libdemo.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
@@ -14,13 +12,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UuidGenerator;
 import ru.valkeru.libdemo.constants.Database;
 import ru.valkeru.libdemo.model.entity.base.TimestampedEntity;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -58,9 +53,4 @@ public class Author extends TimestampedEntity {
     @Version
     @Column(name = "version", nullable = false)
     private long version = 1L;
-
-    @ManyToMany(mappedBy = "authors", fetch = FetchType.EAGER)
-    @Fetch(FetchMode.JOIN)
-    @ToString.Exclude
-    Set<Book> books;
 }

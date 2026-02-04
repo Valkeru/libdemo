@@ -1,11 +1,9 @@
 package ru.valkeru.libdemo.service.core.impl;
 
-import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.exception.impl.AuthorNotFoundException;
 import ru.valkeru.libdemo.mapper.AuthorMapper;
 import ru.valkeru.libdemo.model.document.AuthorDocument;
@@ -37,13 +35,14 @@ public class AuthorServiceImpl implements AuthorService {
         this.authorElasticsearchRepository = authorElasticsearchRepository;
     }
 
-    @Transactional
     @Override
     public Author createOrUpdateAuthor(AuthorDto authorDto) {
         Author author = getAuthorEntity(authorDto);
         authorMapper.updateAuthor(authorDto, author);
 
-        return authorRepository.save(author);
+        return author.getId() == null
+                ? authorRepository.persist(author)
+                : authorRepository.update(author);
     }
 
     @Override
@@ -51,14 +50,12 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.listAllAuthors(filter, pageable);
     }
 
-    @Nonnull
     @Override
     public Author getAuthorById(UUID id) {
         return Optional.ofNullable(authorRepository.getAuthorById(id))
                 .orElseThrow(() -> AuthorNotFoundException.authorNotFound(id));
     }
 
-    @Transactional
     @Override
     public void deleteAuthorById(UUID id) {
         if (authorRepository.deleteAuthorById(id) == 0) {
@@ -70,7 +67,7 @@ public class AuthorServiceImpl implements AuthorService {
     public void reindexAuthors() {
         ElasticsearchUtil.createOrUpdateElasticsearchIndex(AuthorDocument.class);
 
-        List<AuthorDocument> authorDocuments = authorRepository.findAll().stream()
+        List<AuthorDocument> authorDocuments = authorRepository.findAll(Pageable.unpaged()).stream()
                 .map(authorMapper::toDocument)
                 .toList();
 
@@ -79,13 +76,11 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     private Author getAuthorEntity(AuthorDto authorDto) {
-        return Optional.ofNullable(authorDto.getId())
-                .map(this::getAuthorEntity)
-                .orElse(new Author());
-    }
+        UUID id = authorDto.getId();
 
-    private Author getAuthorEntity(UUID id) {
-        return authorRepository.findById(id)
-                .orElseThrow(() -> AuthorNotFoundException.authorNotFound(id));
+        return id != null
+                ? authorRepository.findById(id)
+                    .orElseThrow(() -> AuthorNotFoundException.authorNotFound(id))
+                : new Author();
     }
 }

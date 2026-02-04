@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotBlank;
@@ -21,7 +20,6 @@ import org.hibernate.annotations.UuidGenerator;
 import ru.valkeru.libdemo.constants.Database;
 import ru.valkeru.libdemo.model.entity.base.TimestampedEntity;
 
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -47,10 +45,6 @@ public class Series extends TimestampedEntity {
     @NotBlank
     @Column(name = "name", nullable = false, columnDefinition = "text")
     private String name;
-
-    @OneToMany(mappedBy = "series", fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private Set<Book> books;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude

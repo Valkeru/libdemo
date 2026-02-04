@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.exception.impl.BookNotFoundException;
 import ru.valkeru.libdemo.mapper.BookMapper;
 import ru.valkeru.libdemo.model.dto.BookDto;
@@ -29,7 +28,6 @@ public class BookServiceImpl implements BookService {
     BookRepository bookRepository;
     BookMapper bookMapper;
 
-    @Transactional
     @Override
     public BookDto createOrUpdateBook(BookDto bookDto, List<Author> authors, Series series, Cycle cycle) {
         Book book = getBookEntity(bookDto);
@@ -39,13 +37,11 @@ public class BookServiceImpl implements BookService {
         return bookMapper.toDto(bookRepository.save(book));
     }
 
-    @Transactional(readOnly = true)
     @Override
     public Collection<BookDto> getAllBooks() {
         return bookMapper.toDtoCollection(bookRepository.findAll(SqlUtil.sortByCreatedAtAsc()));
     }
 
-    @Transactional(readOnly = true)
     @Override
     public BookDto getBookById(UUID id) {
         Book bookEntity = getBookEntity(id);
@@ -53,7 +49,6 @@ public class BookServiceImpl implements BookService {
         return bookMapper.toDto(bookEntity);
     }
 
-    @Transactional
     @Override
     public void deleteBookById(UUID id) {
         if (bookRepository.deleteBookById(id) == 0) {

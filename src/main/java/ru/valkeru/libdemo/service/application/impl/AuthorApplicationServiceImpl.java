@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.mapper.AuthorMapper;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.entity.Author;
@@ -17,11 +18,13 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthorApplicationServiceImpl implements AuthorApplicationService {
 
     private final AuthorService authorService;
     private final AuthorMapper authorMapper;
 
+    @Transactional
     @Override
     public AuthorDto createOrUpdateAuthor(AuthorDto authorDto) {
         Author author = authorService.createOrUpdateAuthor(authorDto);
@@ -44,6 +47,7 @@ public class AuthorApplicationServiceImpl implements AuthorApplicationService {
         return authorMapper.toDto(author);
     }
 
+    @Transactional
     @Override
     public void deleteAuthor(UUID id) {
         authorService.deleteAuthorById(id);

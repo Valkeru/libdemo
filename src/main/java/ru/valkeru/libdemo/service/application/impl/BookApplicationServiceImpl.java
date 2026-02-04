@@ -2,6 +2,7 @@ package ru.valkeru.libdemo.service.application.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.model.dto.CycleDto;
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BookApplicationServiceImpl implements BookApplicationService {
 
     private final BookService bookService;
@@ -28,12 +30,15 @@ public class BookApplicationServiceImpl implements BookApplicationService {
     private final SeriesService seriesService;
     private final CycleService cycleService;
 
+    @Transactional
     @Override
     public BookDto createOrUpdateBook(UUID id, BookDto bookDto) {
         bookDto.setId(id);
+
         List<Author> authors = bookDto.getAuthors().stream()
                 .map(this::getAuthor)
                 .toList();
+
         Series series = getSeries(bookDto.getSeries());
         Cycle cycle = getCycle(bookDto.getCycle());
 
@@ -51,6 +56,7 @@ public class BookApplicationServiceImpl implements BookApplicationService {
     }
 
     @Override
+    @Transactional
     public void deleteBookById(UUID id) {
         bookService.deleteBookById(id);
     }

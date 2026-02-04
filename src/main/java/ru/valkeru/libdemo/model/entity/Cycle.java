@@ -2,9 +2,7 @@ package ru.valkeru.libdemo.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotBlank;
@@ -12,13 +10,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UuidGenerator;
 import ru.valkeru.libdemo.constants.Database;
 import ru.valkeru.libdemo.model.entity.base.TimestampedEntity;
 
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -46,9 +41,4 @@ public class Cycle extends TimestampedEntity {
     @Version
     @Column(name = "version", nullable = false)
     private long version = 1L;
-
-    @OneToMany(mappedBy = "cycle", fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
-    @ToString.Exclude
-    private Set<Book> books;
 }
