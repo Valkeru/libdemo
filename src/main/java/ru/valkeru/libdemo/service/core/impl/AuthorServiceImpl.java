@@ -67,7 +67,7 @@ public class AuthorServiceImpl implements AuthorService {
     public void reindexAuthors() {
         ElasticsearchUtil.createOrUpdateElasticsearchIndex(AuthorDocument.class);
 
-        List<AuthorDocument> authorDocuments = authorRepository.findAll(Pageable.unpaged()).stream()
+        List<AuthorDocument> authorDocuments = authorRepository.findAll(Pageable.unpaged())
                 .map(authorMapper::toDocument)
                 .toList();
 

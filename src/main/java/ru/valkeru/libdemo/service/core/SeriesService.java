@@ -14,7 +14,6 @@ public interface SeriesService {
 
     Page<Series> listAllSeries();
 
-    @NonNull
     Series getSeries(@NonNull UUID id);
 
     void deleteSeriesById(@NonNull UUID id);

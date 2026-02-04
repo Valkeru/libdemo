@@ -1,17 +1,22 @@
 package ru.valkeru.libdemo.repository.jpa;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import io.hypersistence.utils.spring.repository.BaseJpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.model.entity.Book;
 
+import java.util.Collection;
 import java.util.UUID;
 
-public interface BookRepository extends JpaRepository<Book, UUID> {
+public interface BookRepository extends BaseJpaRepository<Book, UUID> {
 
     @Transactional
     @Modifying
     @Query("delete from Book b where b.id = :id")
     int deleteBookById(UUID id);
+
+    Page<Book> findAll(Pageable pageable);
 }

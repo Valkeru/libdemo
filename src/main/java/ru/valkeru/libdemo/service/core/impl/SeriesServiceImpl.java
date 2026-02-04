@@ -30,7 +30,9 @@ public class SeriesServiceImpl implements SeriesService {
     public Series createOrUpdateSeries(SeriesDto dto, Cycle cycle, Series series) {
         seriesMapper.updateSeries(dto, cycle, series);
 
-        return seriesRepository.save(series);
+        return dto.getId() == null
+                ? seriesRepository.persist(series)
+                : seriesRepository.update(series);
     }
 
     @Override
@@ -38,7 +40,6 @@ public class SeriesServiceImpl implements SeriesService {
         return seriesRepository.findAll(Pageable.unpaged());
     }
 
-    @NonNull
     @Override
     public Series getSeries(@NonNull UUID id) {
         return getSeriesEntity(id);

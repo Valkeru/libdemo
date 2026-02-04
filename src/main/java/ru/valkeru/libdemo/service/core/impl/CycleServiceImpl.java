@@ -11,7 +11,6 @@ import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.repository.jpa.CycleRepository;
 import ru.valkeru.libdemo.service.core.CycleService;
 
-import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 

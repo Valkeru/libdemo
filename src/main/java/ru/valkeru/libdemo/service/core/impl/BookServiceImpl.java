@@ -3,6 +3,8 @@ package ru.valkeru.libdemo.service.core.impl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.exception.impl.BookNotFoundException;
 import ru.valkeru.libdemo.mapper.BookMapper;
@@ -34,12 +36,18 @@ public class BookServiceImpl implements BookService {
 
         bookMapper.updateBookEntity(bookDto, authors, series, cycle, book);
 
-        return bookMapper.toDto(bookRepository.save(book));
+        Book saved = bookDto.getId() == null
+                ? bookRepository.persist(book)
+                : bookRepository.update(book);
+
+        return bookMapper.toDto(saved);
     }
 
     @Override
     public Collection<BookDto> getAllBooks() {
-        return bookMapper.toDtoCollection(bookRepository.findAll(SqlUtil.sortByCreatedAtAsc()));
+        Page<Book> bookPage = bookRepository.findAll(Pageable.unpaged(SqlUtil.sortByCreatedAtAsc()));
+
+        return bookMapper.toDtoCollection(bookPage.toList());
     }
 
     @Override
