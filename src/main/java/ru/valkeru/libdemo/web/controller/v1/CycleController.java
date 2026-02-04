@@ -3,6 +3,7 @@ package ru.valkeru.libdemo.web.controller.v1;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,6 @@ import ru.valkeru.libdemo.web.api.v1.CycleApi;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.service.application.CycleApplicationService;
 
-import java.util.Collection;
 import java.util.UUID;
 
 @Component
@@ -37,7 +37,7 @@ public class CycleController implements CycleApi {
     }
 
     @Override
-    public ResponseEntity<Collection<CycleDto>> listCycles() {
+    public ResponseEntity<PagedModel<CycleDto>> listCycles() {
         return ResponseEntity.ok(cycleApplicationService.getAllCycles());
     }
 

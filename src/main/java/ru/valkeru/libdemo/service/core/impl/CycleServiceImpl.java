@@ -33,10 +33,8 @@ public class CycleServiceImpl implements CycleService {
     }
 
     @Override
-    public Collection<Cycle> getAllCycles() {
-        Page<Cycle> allPage = repository.findAll(Pageable.unpaged());
-
-        return allPage.getContent();
+    public Page<Cycle> getAllCycles() {
+        return repository.findAll(Pageable.unpaged());
     }
 
     @Override

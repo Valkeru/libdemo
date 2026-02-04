@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -111,7 +112,7 @@ public interface CycleApi {
     )
     @GetMapping
     @JsonView(CycleView.CycleSingleView.class)
-    ResponseEntity<Collection<CycleDto>> listCycles();
+    ResponseEntity<PagedModel<CycleDto>> listCycles();
 
     @Operation(
             summary = Summary.Cycle.SUMMARY_VIEW,
