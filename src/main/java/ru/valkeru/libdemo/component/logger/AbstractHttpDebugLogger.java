@@ -1,6 +1,7 @@
 package ru.valkeru.libdemo.component.logger;
 
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.AnnotationIntrospector;
 import tools.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import ru.valkeru.libdemo.config.serialization.SecretIntrospector;
 import ru.valkeru.libdemo.util.RequestExecutionContext;
+import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -30,8 +32,11 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
     private final ObjectMapper mapper;
 
     protected AbstractHttpDebugLogger(ObjectMapper mapper) {
+        AnnotationIntrospector defaultIntrospector = mapper.serializationConfig().getAnnotationIntrospector();
+        SecretIntrospector secretIntrospector = new SecretIntrospector();
+
         this.mapper = mapper.rebuild()
-                .annotationIntrospector(new SecretIntrospector())
+                .annotationIntrospector(AnnotationIntrospector.pair(secretIntrospector, defaultIntrospector))
                 .build();
     }
 

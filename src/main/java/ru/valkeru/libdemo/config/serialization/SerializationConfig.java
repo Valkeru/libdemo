@@ -22,7 +22,7 @@ public class SerializationConfig {
                 gen.writeStartObject();
 
                 gen.writeName("content");
-                gen.writePOJO(value.getContent());
+                ctxt.writeValue(gen, value.getContent());
 
                 writePageObject(value, gen);
 
