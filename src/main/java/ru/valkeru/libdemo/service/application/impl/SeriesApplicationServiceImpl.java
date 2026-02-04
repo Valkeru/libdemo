@@ -23,6 +23,7 @@ public class SeriesApplicationServiceImpl implements SeriesApplicationService {
 
     private final SeriesService seriesService;
     private final CycleService cycleService;
+
     private final SeriesMapper seriesMapper;
 
     @Override
