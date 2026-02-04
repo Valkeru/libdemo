@@ -3,6 +3,7 @@ package ru.valkeru.libdemo.web.controller.v1;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,8 @@ public class CycleController implements CycleApi {
     }
 
     @Override
-    public ResponseEntity<PagedModel<CycleDto>> listCycles() {
-        return ResponseEntity.ok(cycleApplicationService.getAllCycles());
+    public ResponseEntity<PagedModel<CycleDto>> listCycles(Pageable pageable) {
+        return ResponseEntity.ok(cycleApplicationService.getAllCycles(pageable));
     }
 
     @Override

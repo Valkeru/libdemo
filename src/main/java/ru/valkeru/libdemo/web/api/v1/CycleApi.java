@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -112,7 +115,7 @@ public interface CycleApi {
     )
     @GetMapping
     @JsonView(CycleView.CycleSingleView.class)
-    ResponseEntity<PagedModel<CycleDto>> listCycles();
+    ResponseEntity<PagedModel<CycleDto>> listCycles(@ParameterObject @PageableDefault Pageable pageable);
 
     @Operation(
             summary = Summary.Cycle.SUMMARY_VIEW,
