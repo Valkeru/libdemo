@@ -31,16 +31,14 @@ public class BookServiceImpl implements BookService {
     BookMapper bookMapper;
 
     @Override
-    public BookDto createOrUpdateBook(BookDto bookDto, List<Author> authors, Series series, Cycle cycle) {
+    public Book createOrUpdateBook(BookDto bookDto, List<Author> authors, Series series, Cycle cycle) {
         Book book = getBookEntity(bookDto);
 
         bookMapper.updateBookEntity(bookDto, authors, series, cycle, book);
 
-        Book saved = bookDto.getId() == null
+        return bookDto.getId() == null
                 ? bookRepository.persist(book)
                 : bookRepository.update(book);
-
-        return bookMapper.toDto(saved);
     }
 
     @Override

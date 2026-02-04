@@ -3,11 +3,13 @@ package ru.valkeru.libdemo.service.application.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.valkeru.libdemo.mapper.BookMapper;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.entity.Author;
+import ru.valkeru.libdemo.model.entity.Book;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
 import ru.valkeru.libdemo.service.core.AuthorService;
@@ -29,6 +31,7 @@ public class BookApplicationServiceImpl implements BookApplicationService {
     private final AuthorService authorService;
     private final SeriesService seriesService;
     private final CycleService cycleService;
+    private final BookMapper bookMapper;
 
     @Transactional
     @Override
@@ -42,7 +45,9 @@ public class BookApplicationServiceImpl implements BookApplicationService {
         Series series = getSeries(bookDto.getSeries());
         Cycle cycle = getCycle(bookDto.getCycle());
 
-        return bookService.createOrUpdateBook(bookDto, authors, series, cycle);
+        Book book = bookService.createOrUpdateBook(bookDto, authors, series, cycle);
+
+        return bookMapper.toDto(book);
     }
 
     @Override
