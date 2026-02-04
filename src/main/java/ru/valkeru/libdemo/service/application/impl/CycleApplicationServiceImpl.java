@@ -25,12 +25,16 @@ public class CycleApplicationServiceImpl implements CycleApplicationService {
     public CycleDto createOrUpdateCycle(UUID id, CycleDto dto) {
         dto.setId(id);
 
-        return cycleService.createOrUpdateCycle(dto);
+        Cycle cycle = cycleService.createOrUpdateCycle(dto);
+
+        return cycleMapper.toDto(cycle);
     }
 
     @Override
     public Collection<CycleDto> getAllCycles() {
-        return cycleService.getAllCycles();
+        Collection<Cycle> allCycles = cycleService.getAllCycles();
+
+        return cycleMapper.toDtoList(allCycles);
     }
 
     @Override

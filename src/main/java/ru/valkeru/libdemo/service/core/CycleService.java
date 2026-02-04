@@ -8,9 +8,9 @@ import java.util.UUID;
 
 public interface CycleService {
 
-    CycleDto createOrUpdateCycle(CycleDto dto);
+    Cycle createOrUpdateCycle(CycleDto dto);
 
-    Collection<CycleDto> getAllCycles();
+    Collection<Cycle> getAllCycles();
 
     Cycle getCycleById(UUID id);
 
