@@ -1,8 +1,6 @@
 package ru.valkeru.libdemo.service.core.impl;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,46 +22,45 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BookServiceImpl implements BookService {
 
-    BookRepository bookRepository;
-    BookMapper bookMapper;
+    private final BookRepository repository;
+    private final BookMapper mapper;
 
     @Override
     public Book createOrUpdateBook(BookDto bookDto, List<Author> authors, Series series, Cycle cycle) {
         Book book = getBookEntity(bookDto);
 
-        bookMapper.updateBookEntity(bookDto, authors, series, cycle, book);
+        mapper.updateBookEntity(bookDto, authors, series, cycle, book);
 
         return bookDto.getId() == null
-                ? bookRepository.persist(book)
-                : bookRepository.update(book);
+                ? repository.persist(book)
+                : repository.update(book);
     }
 
     @Override
     public Collection<BookDto> getAllBooks() {
-        Page<Book> bookPage = bookRepository.findAll(Pageable.unpaged(SqlUtil.sortByCreatedAtAsc()));
+        Page<Book> bookPage = repository.findAll(Pageable.unpaged(SqlUtil.sortByCreatedAtAsc()));
 
-        return bookMapper.toDtoCollection(bookPage.toList());
+        return mapper.toDtoCollection(bookPage.toList());
     }
 
     @Override
     public BookDto getBookById(UUID id) {
         Book bookEntity = getBookEntity(id);
 
-        return bookMapper.toDto(bookEntity);
+        return mapper.toDto(bookEntity);
     }
 
     @Override
     public void deleteBookById(UUID id) {
-        if (bookRepository.deleteBookById(id) == 0) {
+        if (repository.deleteBookById(id) == 0) {
             throw BookNotFoundException.bookNotFound(id);
         }
     }
 
     private Book getBookEntity(UUID id) {
-        return bookRepository.findById(id)
+        return repository.findById(id)
                 .orElseThrow(() -> BookNotFoundException.bookNotFound(id));
     }
 

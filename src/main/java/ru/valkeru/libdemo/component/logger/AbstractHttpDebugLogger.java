@@ -28,12 +28,6 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
     private static final char CLOSING_BRACKET = ')';
 
     private final ObjectMapper mapper;
-//            JsonMapper.builder()
-//                    .addModule(new JavaTimeModule())
-//                    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-//                    .defaultTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()))
-//                    .build()
-//                    .setAnnotationIntrospector(new SecretIntrospector());
 
     protected AbstractHttpDebugLogger(ObjectMapper mapper) {
         this.mapper = mapper.rebuild()

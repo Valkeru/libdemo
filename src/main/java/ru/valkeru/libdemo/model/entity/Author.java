@@ -11,7 +11,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.UuidGenerator;
 import ru.valkeru.libdemo.constants.Database;
 import ru.valkeru.libdemo.model.entity.base.TimestampedEntity;
@@ -21,7 +20,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(schema = Database.Schema.LIBRARY, name = "author", uniqueConstraints = {
         @UniqueConstraint(
@@ -35,18 +33,18 @@ public class Author extends TimestampedEntity {
     @UuidGenerator
     @Setter(AccessLevel.NONE)
     @Column(name = "id", nullable = false)
-    UUID id;
+    private UUID id;
 
     @NotBlank
     @Column(name = "first_name", nullable = false)
-    String firstName;
+    private String firstName;
 
     @Column(name = "middle_name")
-    String middleName;
+    private String middleName;
 
     @NotBlank
     @Column(name = "last_name", nullable = false)
-    String lastName;
+    private String lastName;
 
     @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.NONE)

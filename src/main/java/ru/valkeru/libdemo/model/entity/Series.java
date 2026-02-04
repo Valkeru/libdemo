@@ -15,7 +15,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.UuidGenerator;
 import ru.valkeru.libdemo.constants.Database;
 import ru.valkeru.libdemo.model.entity.base.TimestampedEntity;
@@ -29,7 +28,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(schema = Database.Schema.LIBRARY, name = "series", indexes = {
         @Index(name = "series_cycle_id_ix", columnList = "cycle_id")

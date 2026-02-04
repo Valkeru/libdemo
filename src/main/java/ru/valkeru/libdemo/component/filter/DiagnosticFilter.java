@@ -4,9 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.core.annotation.Order;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
@@ -21,10 +19,9 @@ import java.io.IOException;
 @Component
 @Order(Integer.MIN_VALUE)
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DiagnosticFilter extends OncePerRequestFilter {
 
-    HttpDebugLogger httpDebugLogger;
+    private final HttpDebugLogger httpDebugLogger;
 
     @Override
     public void doFilterInternal(@NonNull HttpServletRequest request,

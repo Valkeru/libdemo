@@ -1,8 +1,6 @@
 package ru.valkeru.libdemo.web.controller.v1;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -15,10 +13,9 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BookController implements BookApi {
 
-    BookApplicationService bookService;
+    private final BookApplicationService bookService;
 
     @Override
     public ResponseEntity<BookDto> addBook(BookDto book) {

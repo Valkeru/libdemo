@@ -1,9 +1,7 @@
 package ru.valkeru.libdemo.component.adapter.request;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -18,21 +16,23 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import ru.valkeru.libdemo.component.logger.HttpDebugLogger;
 import ru.valkeru.libdemo.constants.Profiles;
 
+import java.lang.reflect.Method;
 import java.util.Optional;
 
 @ControllerAdvice
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Profile({Profiles.PROFILE_DEV, Profiles.PROFILE_PRE_PRODUCTION, Profiles.PROFILE_TEST})
 public class ResponseBodyLoggingAdapter implements ResponseBodyAdvice<Object> {
 
-    HttpDebugLogger debugLogger;
+    private final HttpDebugLogger debugLogger;
 
     @Override
     public boolean supports(MethodParameter returnType,
                             @NonNull Class<? extends HttpMessageConverter<?>> converterType) {
 
-        return Optional.ofNullable(returnType.getMethod())
+        Method method = returnType.getMethod();
+
+        return Optional.ofNullable(method)
                 .map(m -> m.getDeclaringClass().getPackage().getName().contains("ru.valkeru.libdemo"))
                 .orElse(false);
     }

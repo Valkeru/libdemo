@@ -1,9 +1,7 @@
 package ru.valkeru.libdemo.exception.handler;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -29,10 +27,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class LibDemoExceptionHandler {
 
-    MessageProvider messageProvider;
+    private final MessageProvider messageProvider;
 
     @Hidden
     @ResponseStatus(HttpStatus.NOT_FOUND)

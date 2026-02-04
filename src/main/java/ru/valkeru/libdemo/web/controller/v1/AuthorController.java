@@ -2,7 +2,6 @@ package ru.valkeru.libdemo.web.controller.v1;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +15,9 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthorController implements AuthorApi {
 
-    AuthorApplicationService authorService;
+    private final AuthorApplicationService authorService;
 
     @Override
     public ResponseEntity<PagedModel<AuthorDto>> listAllAuthors(AuthorFilter filter, Pageable pageable) {

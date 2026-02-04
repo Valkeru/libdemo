@@ -1,8 +1,6 @@
 package ru.valkeru.libdemo.web.controller.v1;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
@@ -16,10 +14,9 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CycleController implements CycleApi {
 
-    CycleApplicationService cycleApplicationService;
+    private final CycleApplicationService cycleApplicationService;
 
     @Override
     public ResponseEntity<CycleDto> addCycle(CycleDto cycleDto) {
