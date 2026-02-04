@@ -1,6 +1,5 @@
 package ru.valkeru.libdemo.service.application;
 
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.web.PagedModel;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
 
@@ -12,8 +11,7 @@ public interface SeriesApplicationService {
 
     PagedModel<SeriesDto> listAllSeries();
 
-    @NotNull
-    SeriesDto getSeriesById(@NotNull UUID id);
+    SeriesDto getSeriesById(UUID id);
 
-    void deleteSeriesById(@NotNull UUID id);
+    void deleteSeriesById(UUID id);
 }

@@ -1,7 +1,6 @@
 package ru.valkeru.libdemo.service.core;
 
 import org.springframework.data.domain.Page;
-import org.jspecify.annotations.NonNull;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
@@ -14,7 +13,10 @@ public interface SeriesService {
 
     Page<Series> listAllSeries();
 
-    Series getSeries(@NonNull UUID id);
+    /**
+     * Возвращает серию с заданным ID. Если ID == null, возвращает новую сущность
+     */
+    Series getSeries(UUID id);
 
-    void deleteSeriesById(@NonNull UUID id);
+    void deleteSeriesById(UUID id);
 }

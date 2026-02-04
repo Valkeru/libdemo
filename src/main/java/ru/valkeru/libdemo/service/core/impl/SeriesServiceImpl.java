@@ -1,11 +1,8 @@
 package ru.valkeru.libdemo.service.core.impl;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.exception.impl.SeriesNotFoundException;
 import ru.valkeru.libdemo.mapper.SeriesMapper;
@@ -15,16 +12,14 @@ import ru.valkeru.libdemo.model.entity.Series;
 import ru.valkeru.libdemo.repository.jpa.SeriesRepository;
 import ru.valkeru.libdemo.service.core.SeriesService;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SeriesServiceImpl implements SeriesService {
 
-    SeriesRepository seriesRepository;
-    SeriesMapper seriesMapper;
+    private final SeriesRepository seriesRepository;
+    private final SeriesMapper seriesMapper;
 
     @Override
     public Series createOrUpdateSeries(SeriesDto dto, Cycle cycle, Series series) {
@@ -41,21 +36,17 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public Series getSeries(@NonNull UUID id) {
-        return getSeriesEntity(id);
+    public Series getSeries(UUID id) {
+        return id != null
+                ? seriesRepository.findById(id)
+                    .orElseThrow(() -> SeriesNotFoundException.seriesNotFound(id))
+                : new Series();
     }
 
     @Override
-    public void deleteSeriesById(@NonNull UUID id) {
+    public void deleteSeriesById(UUID id) {
         if (seriesRepository.deleteSeriesById(id) == 0) {
             throw SeriesNotFoundException.seriesNotFound(id);
         }
-    }
-
-    private Series getSeriesEntity(UUID id) {
-        return Optional.ofNullable(id)
-                .map(seriesId -> seriesRepository.findById(seriesId)
-                        .orElseThrow(() -> SeriesNotFoundException.seriesNotFound(seriesId)))
-                .orElse(new Series());
     }
 }

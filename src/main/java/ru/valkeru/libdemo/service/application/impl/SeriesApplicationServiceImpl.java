@@ -1,6 +1,5 @@
 package ru.valkeru.libdemo.service.application.impl;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedModel;
@@ -31,7 +30,9 @@ public class SeriesApplicationServiceImpl implements SeriesApplicationService {
     public SeriesDto createOrUpdateSeries(SeriesDto dto) {
         Series series = seriesService.getSeries(dto.getId());
 
-        return seriesMapper.toDto(seriesService.createOrUpdateSeries(dto, getCycle(dto.getCycle()), series));
+        Series updated = seriesService.createOrUpdateSeries(dto, getCycle(dto.getCycle()), series);
+
+        return seriesMapper.toDto(updated);
     }
 
     @Override
@@ -41,9 +42,8 @@ public class SeriesApplicationServiceImpl implements SeriesApplicationService {
         return new PagedModel<>(seriesList.map(seriesMapper::toDto));
     }
 
-    @NotNull
     @Override
-    public SeriesDto getSeriesById(@NotNull UUID id) {
+    public SeriesDto getSeriesById(UUID id) {
         Series series = seriesService.getSeries(id);
 
         return seriesMapper.toDto(series);
