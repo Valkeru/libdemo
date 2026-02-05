@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import ru.valkeru.libdemo.config.serialization.SecretIntrospector;
 import ru.valkeru.libdemo.util.RequestExecutionContext;
-import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
 import java.util.Enumeration;
 import java.util.HashMap;

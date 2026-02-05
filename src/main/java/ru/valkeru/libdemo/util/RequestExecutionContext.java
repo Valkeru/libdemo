@@ -15,8 +15,6 @@ public class RequestExecutionContext {
 
     private static final ThreadLocal<Map<String, Object>> contextStorage = ThreadLocal.withInitial(HashMap::new);
 
-    private static final ThreadLocal<String> rawRequestBody = ThreadLocal.withInitial(String::new);
-
     public static void store(String key, Object object) {
         Map<String, Object> storage = contextStorage.get();
 
@@ -39,22 +37,17 @@ public class RequestExecutionContext {
     }
 
     public static String readRequestBody() throws NoCachedRequestException {
-        if (StringUtils.isEmpty(rawRequestBody.get())) {
-            ContentCachingRequestWrapper requestWrapper =
-                    getObject(REQUEST_WRAPPER_KEY, ContentCachingRequestWrapper.class);
+        ContentCachingRequestWrapper requestWrapper =
+                getObject(REQUEST_WRAPPER_KEY, ContentCachingRequestWrapper.class);
 
-            if (requestWrapper == null) {
-                throw NoCachedRequestException.noCachedRequest();
-            }
-
-            rawRequestBody.set(requestWrapper.getContentAsString());
+        if (requestWrapper == null) {
+            throw NoCachedRequestException.noCachedRequest();
         }
 
-        return rawRequestBody.get();
+        return requestWrapper.getContentAsString();
     }
 
     public static void clear() {
         contextStorage.remove();
-        rawRequestBody.remove();
     }
 }

@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,7 +17,6 @@ import ru.valkeru.libdemo.exception.BadRequestException;
 import ru.valkeru.libdemo.exception.IntegrityViolationException;
 import ru.valkeru.libdemo.exception.NotFoundException;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.util.RequestExecutionContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +34,7 @@ public class LibDemoExceptionHandler {
     @ResponseBody
     @ExceptionHandler(NotFoundException.class)
     public ErrorDto handleEntityNotFound(NotFoundException nfe) {
-        log.error("Entity not found: {}", nfe.getMessage(), nfe);
+        log.info("Entity not found: {}", nfe.getMessage(), nfe);
 
         return buildErrorDto(nfe, HttpStatus.NOT_FOUND);
     }
@@ -46,7 +44,7 @@ public class LibDemoExceptionHandler {
     @ResponseBody
     @ExceptionHandler(BadRequestException.class)
     public ErrorDto handleBadRequest(BadRequestException bre) {
-        log.error("Invalid request (validation), reason: {}", bre.getMessage(), bre);
+        log.info("Invalid request (validation), reason: {}", bre.getMessage(), bre);
 
         return buildErrorDto(bre, HttpStatus.BAD_REQUEST);
     }
@@ -54,23 +52,9 @@ public class LibDemoExceptionHandler {
     @Hidden
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ErrorDto handleNotReadable(HttpMessageNotReadableException hmnre) {
-        log.error("Invalid request, reason: {}; payload: {}",
-                hmnre.getMessage(),
-                RequestExecutionContext.readRequestBody(),
-                hmnre
-        );
-
-        return buildErrorDto(messageProvider.getBadRequestMessage(hmnre), HttpStatus.BAD_REQUEST);
-    }
-
-    @Hidden
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorDto validationExceptionHandler(MethodArgumentNotValidException manve) {
-        log.error("Request validation failed: {}", manve.getMessage(), manve);
+        log.info("Request validation failed: {}", manve.getMessage(), manve);
 
         Map<String, String> fieldErrorMap = new HashMap<>();
         manve.getFieldErrors().forEach(error -> fieldErrorMap.put(error.getField(), error.getDefaultMessage()));
@@ -83,7 +67,7 @@ public class LibDemoExceptionHandler {
     @ResponseBody
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorDto handleIntegrityViolations(DataIntegrityViolationException dive) {
-        log.error("Data violation: {}", dive.getMessage(), dive);
+        log.info("Data violation: {}", dive.getMessage(), dive);
 
         return buildErrorDto(messageProvider.getDataIntegrityMessage(dive), HttpStatus.CONFLICT);
     }
@@ -93,7 +77,7 @@ public class LibDemoExceptionHandler {
     @ResponseBody
     @ExceptionHandler(IntegrityViolationException.class)
     public ErrorDto handleIntegrityViolations(IntegrityViolationException ive) {
-        log.error("Data violation: {}", ive.getMessage(), ive);
+        log.info("Data integrity violation: {}", ive.getMessage(), ive);
 
         return buildErrorDto(ive, HttpStatus.CONFLICT);
     }

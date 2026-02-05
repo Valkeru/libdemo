@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import ru.valkeru.libdemo.annotation.Secret;
 import ru.valkeru.libdemo.model.view.AuthorView;
 import ru.valkeru.libdemo.model.view.BookView;
 
@@ -29,7 +28,6 @@ public class AuthorDto {
         this.lastName = lastName;
     }
 
-    @Secret
     @JsonView({
             AuthorView.AuthorListView.class,
             AuthorView.AuthorSingleView.class,
