@@ -1,6 +1,7 @@
 package ru.valkeru.libdemo.service.infrastructure.application.impl;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,9 +29,7 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
     public TokenDto performSignIn(SignUpRequest request) {
         UserDetails user = securityService.loadUserByUsername(request.getUsername());
         if (!securityService.isValidPassword(user, request.getPassword())) {
-            // TODO: throw
-
-            return null;
+            throw new BadCredentialsException("Invalid password for user %s".formatted(user.getUsername()));
         }
 
         UUID id = securityService.generateToken(user);

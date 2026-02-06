@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -97,6 +99,16 @@ public class LibDemoExceptionHandler {
         log.error("Internal error: {}", e.getMessage(), e);
 
         return buildErrorDto(messageProvider.getInternalErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    @ExceptionHandler(AuthenticationException.class)
+    public ErrorDto handleUserNotFound(AuthenticationException ae) {
+        log.info("Authentication failed");
+        log.info(ae.getMessage());
+
+        return buildErrorDto("Неверное имя пользователя или пароль", HttpStatus.UNAUTHORIZED);
     }
 
     private ErrorDto buildErrorDto(Exception e, HttpStatus status) {

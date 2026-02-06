@@ -20,7 +20,7 @@ public interface SecurityService extends UserDetailsService {
 
     LibraryPrincipal loadPrincipalFromToken(String token);
 
-    boolean isValidPassword(UserDetails user, String password);
+    boolean isValidPassword(UserDetails user, String providedPassword);
 
     String hashPassword(String password);
 

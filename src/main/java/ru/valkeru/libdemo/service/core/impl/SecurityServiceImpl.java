@@ -11,6 +11,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -55,15 +56,21 @@ public class SecurityServiceImpl implements SecurityService {
         this.refreshLifetime = refreshLifetime;
     }
 
+    @NonNull
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User %s not found".formatted(username)));
     }
 
     @Override
-    public boolean isValidPassword(UserDetails user, String password) {
-        return BCrypt.checkpw(password, user.getPassword());
+    public boolean isValidPassword(UserDetails user, String providedPassword) {
+        String hashedPassword = user.getPassword();
+        if (hashedPassword == null) {
+            return false;
+        }
+
+        return BCrypt.checkpw(providedPassword, hashedPassword);
     }
 
     @Override
