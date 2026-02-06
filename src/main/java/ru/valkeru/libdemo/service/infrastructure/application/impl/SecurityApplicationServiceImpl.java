@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.application.impl;
+package ru.valkeru.libdemo.service.infrastructure.application.impl;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +9,7 @@ import ru.valkeru.libdemo.model.entity.user.Token;
 import ru.valkeru.libdemo.model.entity.user.User;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
 import ru.valkeru.libdemo.service.core.SecurityService;
-import ru.valkeru.libdemo.service.application.SecurityApplicationService;
+import ru.valkeru.libdemo.service.infrastructure.application.SecurityApplicationService;
 
 import java.util.List;
 import java.util.UUID;

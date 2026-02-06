@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.application.impl;
+package ru.valkeru.libdemo.service.infrastructure.application.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,7 +10,7 @@ import ru.valkeru.libdemo.mapper.CycleMapper;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.service.core.CycleService;
-import ru.valkeru.libdemo.service.application.CycleApplicationService;
+import ru.valkeru.libdemo.service.infrastructure.application.CycleApplicationService;
 
 import java.util.UUID;
 

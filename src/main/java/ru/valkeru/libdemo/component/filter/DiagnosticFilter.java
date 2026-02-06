@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import ru.valkeru.libdemo.component.logger.HttpDebugLogger;
+import ru.valkeru.libdemo.constants.CustomHeaders;
 import ru.valkeru.libdemo.util.RequestExecutionContext;
 import ru.valkeru.libdemo.util.RequestIdUtil;
 
@@ -38,12 +39,17 @@ public class DiagnosticFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(requestWrapper, response);
         } finally {
+            // На случай, если заголовок потеряли
+            if (!response.isCommitted()) {
+                addDiagnosticHeaders(response);
+            }
+
             RequestIdUtil.clearMDCRequestId();
             RequestExecutionContext.clear();
         }
     }
 
     private void addDiagnosticHeaders(HttpServletResponse response) {
-        response.setHeader("X-Request-ID", RequestIdUtil.getMDCRequestId().toString());
+        response.setHeader(CustomHeaders.REQUEST_ID, RequestIdUtil.getMDCRequestId());
     }
 }

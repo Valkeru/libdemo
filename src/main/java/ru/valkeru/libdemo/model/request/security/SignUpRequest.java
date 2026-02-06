@@ -16,7 +16,7 @@ public class SignUpRequest {
     @Size(min = 3, message = "Имя пользователя должно содержать не менее {min} символов")
     private String username;
 
-    @Secret
+    @Secret(absolute = true)
     @Schema(description = "Пароль")
     @Size(min = 12, message = "Пароль должен содержать не менее {min} символов")
     private String password;

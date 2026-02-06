@@ -1,8 +1,7 @@
-package ru.valkeru.libdemo.service.application.impl;
+package ru.valkeru.libdemo.service.infrastructure.application.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,9 @@ import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 import ru.valkeru.libdemo.service.core.AuthorService;
-import ru.valkeru.libdemo.service.application.AuthorApplicationService;
+import ru.valkeru.libdemo.service.infrastructure.application.AuthorApplicationService;
+import ru.valkeru.libdemo.service.infrastructure.provider.indexing.AuthorIndexingProvider;
+import ru.valkeru.libdemo.service.infrastructure.provider.search.AuthorSearchProvider;
 
 import java.util.UUID;
 
@@ -22,6 +23,8 @@ import java.util.UUID;
 public class AuthorApplicationServiceImpl implements AuthorApplicationService {
 
     private final AuthorService authorService;
+    private final AuthorSearchProvider authorSearchProvider;
+    private final AuthorIndexingProvider indexingProvider;
     private final AuthorMapper authorMapper;
 
     @Transactional
@@ -34,9 +37,7 @@ public class AuthorApplicationServiceImpl implements AuthorApplicationService {
 
     @Override
     public PagedModel<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable) {
-        Page<Author> authors = authorService.getAuthors(filter, pageable);
-
-        return new PagedModel<>(authors.map(authorMapper::toDto));
+        return authorSearchProvider.listAllAuthors(filter, pageable);
     }
 
     @Cacheable("author")
@@ -55,6 +56,6 @@ public class AuthorApplicationServiceImpl implements AuthorApplicationService {
 
     @Override
     public void reindexAuthors() {
-        authorService.reindexAuthors();
+        indexingProvider.reindexAuthors();
     }
 }

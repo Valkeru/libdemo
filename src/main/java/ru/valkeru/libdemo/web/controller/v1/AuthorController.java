@@ -1,6 +1,5 @@
 package ru.valkeru.libdemo.web.controller.v1;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
@@ -8,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
-import ru.valkeru.libdemo.service.application.AuthorApplicationService;
+import ru.valkeru.libdemo.service.infrastructure.application.AuthorApplicationService;
 import ru.valkeru.libdemo.web.api.v1.AuthorApi;
 
 import java.util.UUID;

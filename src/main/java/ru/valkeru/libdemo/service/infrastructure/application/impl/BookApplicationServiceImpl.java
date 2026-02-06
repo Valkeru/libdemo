@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.application.impl;
+package ru.valkeru.libdemo.service.infrastructure.application.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import ru.valkeru.libdemo.service.core.AuthorService;
 import ru.valkeru.libdemo.service.core.BookService;
 import ru.valkeru.libdemo.service.core.CycleService;
 import ru.valkeru.libdemo.service.core.SeriesService;
-import ru.valkeru.libdemo.service.application.BookApplicationService;
+import ru.valkeru.libdemo.service.infrastructure.application.BookApplicationService;
 
 import java.util.Collection;
 import java.util.List;

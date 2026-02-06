@@ -14,8 +14,8 @@ public class RequestIdUtil {
         MDC.put(MDC_REQUEST_ID_PROP, UUID.randomUUID().toString());
     }
 
-    public UUID getMDCRequestId() {
-        return UUID.fromString(MDC.get(MDC_REQUEST_ID_PROP));
+    public String getMDCRequestId() {
+        return MDC.get(MDC_REQUEST_ID_PROP);
     }
 
     public void clearMDCRequestId() {

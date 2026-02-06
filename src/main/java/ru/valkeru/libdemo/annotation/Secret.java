@@ -11,4 +11,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface Secret {
+
+    /**
+     * Указывает, что строка должна быть маскирована полностью
+     */
+    boolean absolute() default false;
 }

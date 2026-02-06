@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.application;
+package ru.valkeru.libdemo.service.infrastructure.application;
 
 import ru.valkeru.libdemo.model.dto.BookDto;
 

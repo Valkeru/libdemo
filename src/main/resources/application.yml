@@ -78,6 +78,7 @@ app:
       refresh-lifetime: 604800
   system:
     is-debug-mode: false
+    elasticsearch-enabled: false
 management:
   health:
     elasticsearch:

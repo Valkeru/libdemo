@@ -1,39 +1,25 @@
 package ru.valkeru.libdemo.service.core.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.exception.impl.AuthorNotFoundException;
 import ru.valkeru.libdemo.mapper.AuthorMapper;
-import ru.valkeru.libdemo.model.document.AuthorDocument;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.entity.Author;
-import ru.valkeru.libdemo.model.request.author.AuthorFilter;
-import ru.valkeru.libdemo.repository.elasticsearch.AuthorElasticsearchRepository;
 import ru.valkeru.libdemo.repository.jpa.author.AuthorRepository;
 import ru.valkeru.libdemo.service.core.AuthorService;
-import ru.valkeru.libdemo.util.ElasticsearchUtil;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
-    private final AuthorElasticsearchRepository authorElasticsearchRepository;
-
-    public AuthorServiceImpl(AuthorRepository authorRepository, AuthorMapper authorMapper,
-                             AuthorElasticsearchRepository authorElasticsearchRepository) {
-
-        this.authorRepository = authorRepository;
-        this.authorMapper = authorMapper;
-        this.authorElasticsearchRepository = authorElasticsearchRepository;
-    }
 
     @Override
     public Author createOrUpdateAuthor(AuthorDto authorDto) {
@@ -43,11 +29,6 @@ public class AuthorServiceImpl implements AuthorService {
         return author.getId() == null
                 ? authorRepository.persist(author)
                 : authorRepository.update(author);
-    }
-
-    @Override
-    public Page<Author> getAuthors(AuthorFilter filter, Pageable pageable) {
-        return authorRepository.listAllAuthors(filter, pageable);
     }
 
     @Override
@@ -61,18 +42,6 @@ public class AuthorServiceImpl implements AuthorService {
         if (authorRepository.deleteAuthorById(id) == 0) {
             throw AuthorNotFoundException.authorNotFound(id);
         }
-    }
-
-    @Override
-    public void reindexAuthors() {
-        ElasticsearchUtil.createOrUpdateElasticsearchIndex(AuthorDocument.class);
-
-        List<AuthorDocument> authorDocuments = authorRepository.findAll(Pageable.unpaged())
-                .map(authorMapper::toDocument)
-                .toList();
-
-        authorElasticsearchRepository.deleteAll();
-        authorElasticsearchRepository.saveAll(authorDocuments);
     }
 
     private Author getAuthorEntity(AuthorDto authorDto) {

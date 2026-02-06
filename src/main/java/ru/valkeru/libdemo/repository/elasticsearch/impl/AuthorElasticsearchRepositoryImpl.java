@@ -12,10 +12,8 @@ import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
-import ru.valkeru.libdemo.mapper.AuthorMapper;
 import ru.valkeru.libdemo.model.document.AuthorDocument;
-import ru.valkeru.libdemo.model.dto.AuthorDto;
-import ru.valkeru.libdemo.model.entity.QAuthor;
+import ru.valkeru.libdemo.model.document.QAuthorDocument;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 import ru.valkeru.libdemo.repository.elasticsearch.AuthorElasticsearchCustomRepository;
 import ru.valkeru.libdemo.util.QueryUtil;
@@ -29,28 +27,24 @@ import java.util.UUID;
 public class AuthorElasticsearchRepositoryImpl implements AuthorElasticsearchCustomRepository {
 
     private final ElasticsearchTemplate elasticsearchTemplate;
-    private final AuthorMapper authorMapper;
 
-    public AuthorElasticsearchRepositoryImpl(ElasticsearchTemplate elasticsearchTemplate, AuthorMapper authorMapper) {
+    public AuthorElasticsearchRepositoryImpl(ElasticsearchTemplate elasticsearchTemplate) {
         this.elasticsearchTemplate = elasticsearchTemplate;
-        this.authorMapper = authorMapper;
     }
 
     @Override
-    public Page<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable) {
+    public Page<AuthorDocument> listAllAuthors(AuthorFilter filter, Pageable pageable) {
         SearchHits<AuthorDocument> searchHits = elasticsearchTemplate.search(buildElasticsearchQuery(filter, pageable), AuthorDocument.class);
         Page<AuthorDocument> authors = getPage(searchHits, pageable);
 
         Assert.notNull(authors, "Search result is null");
 
-        return authors.map(authorMapper::toDto);
+        return authors;
     }
 
     @Override
-    public AuthorDto getAuthorById(UUID id) {
-        AuthorDocument authorDocument = elasticsearchTemplate.get(String.valueOf(id), AuthorDocument.class);
-
-        return authorMapper.toDto(authorDocument);
+    public AuthorDocument getAuthorById(UUID id) {
+        return elasticsearchTemplate.get(String.valueOf(id), AuthorDocument.class);
     }
 
 
@@ -67,9 +61,9 @@ public class AuthorElasticsearchRepositoryImpl implements AuthorElasticsearchCus
     private List<Query> applyFilter(AuthorFilter filter) {
         List<Query> queries = new ArrayList<>();
 
-        QueryUtil.applyLikeCondition(filter.getFirstName(), queries, QAuthor.author.firstName);
-        QueryUtil.applyLikeCondition(filter.getMiddleName(), queries, QAuthor.author.middleName);
-        QueryUtil.applyLikeCondition(filter.getLastName(), queries, QAuthor.author.lastName);
+        QueryUtil.applyLikeCondition(filter.getFirstName(), queries, QAuthorDocument.authorDocument.firstName);
+        QueryUtil.applyLikeCondition(filter.getMiddleName(), queries, QAuthorDocument.authorDocument.middleName);
+        QueryUtil.applyLikeCondition(filter.getLastName(), queries, QAuthorDocument.authorDocument.lastName);
 
         return queries;
     }

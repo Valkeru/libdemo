@@ -57,13 +57,15 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
                                                StringBuilder requestLogMessageBuilder,
                                                final Class<?> deserializationView) {
         formatRequestDataTemplate(request, requestLogMessageBuilder);
-        String originalString = RequestExecutionContext.readRequestBody();
+        // На подумать. Основная идея - писать в лог оригинал того, что прислал пользователь.
+        // Но так в лог попадут секреты, скрытые в dto
+//        String originalString = RequestExecutionContext.readRequestBody();
 
         requestLogMessageBuilder
-                .append(SOURCE_TEMPLATE)
-                .append(OPENING_BRACKET)
-                .append(mapper.writeValueAsString(originalString))
-                .append(CLOSING_BRACKET)
+//                .append(SOURCE_TEMPLATE)
+//                .append(OPENING_BRACKET)
+//                .append(mapper.writeValueAsString(originalString))
+//                .append(CLOSING_BRACKET)
                 .append(DESERIALIZED_TEMPLATE)
                 .append(OPENING_BRACKET)
                 .append(writeBody(deserializationView, body))

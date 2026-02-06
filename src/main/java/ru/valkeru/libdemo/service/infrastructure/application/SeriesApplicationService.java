@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.service.application;
+package ru.valkeru.libdemo.service.infrastructure.application;
 
 import org.springframework.data.web.PagedModel;
 import ru.valkeru.libdemo.model.dto.SeriesDto;

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.web.api.v1.SeriesApi;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
-import ru.valkeru.libdemo.service.application.SeriesApplicationService;
+import ru.valkeru.libdemo.service.infrastructure.application.SeriesApplicationService;
 
 import java.util.List;
 import java.util.UUID;

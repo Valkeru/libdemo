@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
-import ru.valkeru.libdemo.service.application.AuthorApplicationService;
+import ru.valkeru.libdemo.service.infrastructure.application.AuthorApplicationService;
 import ru.valkeru.libdemo.web.api.service.AuthorServiceApi;
 
 import java.util.UUID;

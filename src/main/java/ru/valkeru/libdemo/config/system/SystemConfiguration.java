@@ -10,4 +10,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class SystemConfiguration {
 
     private final boolean isDebugMode;
+    private final boolean elasticsearchEnabled;
 }

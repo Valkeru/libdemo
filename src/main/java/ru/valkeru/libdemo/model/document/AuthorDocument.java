@@ -1,5 +1,6 @@
 package ru.valkeru.libdemo.model.document;
 
+import com.querydsl.core.annotations.QueryEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @Setting(
         shards = 2
 )
+@QueryEntity
 public class AuthorDocument {
 
     @Id

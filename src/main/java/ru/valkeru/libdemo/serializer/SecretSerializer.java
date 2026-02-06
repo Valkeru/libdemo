@@ -2,6 +2,7 @@ package ru.valkeru.libdemo.serializer;
 
 import ru.valkeru.libdemo.annotation.Secret;
 import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.BeanProperty;
 import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.ValueSerializer;
 
@@ -17,6 +18,16 @@ public class SecretSerializer<T> extends ValueSerializer<T> {
     private static final String PATTERN = "*";
     private static final String DEFAULT_VALUE = "<SECRET>";
 
+    private final boolean absolute;
+
+    public SecretSerializer(boolean absolute) {
+        this.absolute = absolute;
+    }
+
+    public SecretSerializer() {
+        this(false);
+    }
+
     @Override
     public void serialize(T value, JsonGenerator gen, SerializationContext context) {
         gen.writeString(getMaskedString(value));
@@ -31,18 +42,16 @@ public class SecretSerializer<T> extends ValueSerializer<T> {
      * @return Маскированная строка
      */
     private String getMaskedString(T value) {
-        if (value == null) {
-            return null;
+        if (absolute) {
+            return DEFAULT_VALUE;
         }
 
-        return DEFAULT_VALUE;
-
-//        return switch (value) {
-//            case String s -> maskString(s);
-//            case Number n -> maskNumber(n);
-//            case null -> null;
-//            default -> DEFAULT_VALUE;
-//        };
+        return switch (value) {
+            case String s -> maskString(s);
+            case Number n -> maskNumber(n);
+            case null -> null;
+            default -> DEFAULT_VALUE;
+        };
     }
 
     /**
@@ -72,5 +81,17 @@ public class SecretSerializer<T> extends ValueSerializer<T> {
 
     private String maskNumber(Number value) {
         return maskString(String.valueOf(value));
+    }
+
+    @Override
+    public ValueSerializer<?> createContextual(SerializationContext ctxt, BeanProperty property) {
+        if (property != null) {
+            Secret annotation = property.getAnnotation(Secret.class);
+            if (annotation != null) {
+                return new SecretSerializer<>(annotation.absolute());
+            }
+        }
+
+        return super.createContextual(ctxt, property);
     }
 }
