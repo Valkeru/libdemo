@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ElasticsearchUtil implements ApplicationContextAware {
 
-    private static ElasticsearchTemplate elasticsearchTemplate;
+
 
     private static void initDependencies(ApplicationContext applicationContext) {
         elasticsearchTemplate = applicationContext.getBean(ElasticsearchTemplate.class);
@@ -24,18 +24,5 @@ public class ElasticsearchUtil implements ApplicationContextAware {
         initDependencies(applicationContext);
     }
 
-    public static void createOrUpdateElasticsearchIndex(Class<?> clazz) {
-        IndexOperations indexOperations = elasticsearchTemplate.indexOps(clazz);
-        String indexName = indexOperations.getIndexCoordinates().getIndexName();
-        log.info("Create or update elasticsearch index {} requested", indexName);
 
-        if (indexOperations.exists()) {
-            log.info("Index {} exists, update mapping only", indexOperations);
-
-            indexOperations.putMapping();
-        }
-
-        indexOperations.create(indexOperations.createSettings(), indexOperations.createMapping());
-        log.info("Created index {}", indexName);
-    }
 }

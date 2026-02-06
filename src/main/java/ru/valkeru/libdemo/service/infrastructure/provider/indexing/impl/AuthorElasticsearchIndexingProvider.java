@@ -10,8 +10,8 @@ import ru.valkeru.libdemo.mapper.AuthorMapper;
 import ru.valkeru.libdemo.model.document.AuthorDocument;
 import ru.valkeru.libdemo.repository.elasticsearch.AuthorElasticsearchRepository;
 import ru.valkeru.libdemo.repository.jpa.author.AuthorRepository;
+import ru.valkeru.libdemo.service.infrastructure.elasticsearch.ElasticsearchService;
 import ru.valkeru.libdemo.service.infrastructure.provider.indexing.AuthorIndexingProvider;
-import ru.valkeru.libdemo.util.ElasticsearchUtil;
 
 import java.util.List;
 
@@ -22,6 +22,7 @@ import java.util.List;
 public class AuthorElasticsearchIndexingProvider implements AuthorIndexingProvider {
 
     private final AuthorElasticsearchRepository repository;
+    private final ElasticsearchService elasticsearchService;
     private final AuthorRepository jpaRepository;
     private final AuthorMapper mapper;
 
@@ -32,7 +33,7 @@ public class AuthorElasticsearchIndexingProvider implements AuthorIndexingProvid
 
     @Override
     public void reindexAuthors() {
-        ElasticsearchUtil.createOrUpdateElasticsearchIndex(AuthorDocument.class);
+        elasticsearchService.createOrUpdateElasticsearchIndex(AuthorDocument.class);
 
         List<AuthorDocument> authorDocuments = jpaRepository.findAll(Pageable.unpaged())
                 .map(mapper::toDocument)
