@@ -28,7 +28,7 @@ public class AuthorServiceImpl implements AuthorService {
 
         return author.getId() == null
                 ? authorRepository.persist(author)
-                : authorRepository.update(author);
+                : authorRepository.merge(author);
     }
 
     @Override

@@ -22,7 +22,7 @@ public class SeriesDto {
     @NotNull(groups = {
             BookView.BookCreateView.class
     })
-    @Schema(description = "ID записи", example = "1")
+    @Schema(description = "ID записи", example = "bea5db6f-0c17-471d-a3f4-2c348560adea")
     @JsonView({
             SeriesView.SeriesListView.class,
             BookView.BookCreateView.class

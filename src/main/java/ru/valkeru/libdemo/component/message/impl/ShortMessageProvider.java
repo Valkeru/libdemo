@@ -1,17 +1,23 @@
 package ru.valkeru.libdemo.component.message.impl;
 
-import org.springframework.context.annotation.Profile;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Fallback;
 import org.springframework.stereotype.Component;
-import ru.valkeru.libdemo.component.message.AbstractMessageProvider;
-import ru.valkeru.libdemo.config.system.SystemConfiguration;
-import ru.valkeru.libdemo.constants.Profiles;
+import ru.valkeru.libdemo.component.message.MessageProvider;
 
+@Slf4j
 @Component
-@Profile(Profiles.PROFILE_PRODUCTION)
-public class ShortMessageProvider extends AbstractMessageProvider {
+@Fallback
+public class ShortMessageProvider implements MessageProvider {
 
-    public ShortMessageProvider(SystemConfiguration configuration) {
-        super(configuration);
+    protected static final String BAD_REQUEST_MESSAGE = "Неверный запрос";
+    protected static final String INTERNAL_ERROR_MESSAGE = "Произошла внутренняя ошибка";
+    protected static final String DATA_INTEGRITY_MESSAGE = "Некорректные данные. Проверьте заполнение формы";
+
+    @PostConstruct
+    protected void logComponentStarted() {
+        log.info("Short error message provider started");
     }
 
     @Override

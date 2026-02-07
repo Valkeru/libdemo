@@ -1,9 +1,9 @@
 package ru.valkeru.libdemo.web.controller.v1;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.web.api.v1.BookApi;
 import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.service.infrastructure.application.BookApplicationService;
@@ -11,37 +11,21 @@ import ru.valkeru.libdemo.service.infrastructure.application.BookApplicationServ
 import java.util.Collection;
 import java.util.UUID;
 
-@Component
+@RestController
 @RequiredArgsConstructor
 public class BookController implements BookApi {
 
     private final BookApplicationService bookService;
 
     @Override
-    public ResponseEntity<BookDto> addBook(BookDto book) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(bookService.createOrUpdateBook(null, book));
-    }
+    public ResponseEntity<PagedModel<BookDto>> getAllBooks() {
+        PagedModel<BookDto> allBooks = bookService.getAllBooks();
 
-    @Override
-    public ResponseEntity<BookDto> updateBook(UUID id, BookDto book) {
-        return ResponseEntity.ok(bookService.createOrUpdateBook(id, book));
-    }
-
-    @Override
-    public ResponseEntity<Collection<BookDto>> getAllBooks() {
-        return ResponseEntity.ok(bookService.getAllBooks());
+        return ResponseEntity.ok(allBooks);
     }
 
     @Override
     public ResponseEntity<BookDto> getBookById(UUID id) {
         return ResponseEntity.ok(bookService.getBookById(id));
-    }
-
-    @Override
-    public ResponseEntity<Void> deleteBookById(UUID id) {
-        bookService.deleteBookById(id);
-
-        return ResponseEntity.noContent().build();
     }
 }

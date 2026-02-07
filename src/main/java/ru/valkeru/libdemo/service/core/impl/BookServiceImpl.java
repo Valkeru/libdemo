@@ -3,6 +3,7 @@ package ru.valkeru.libdemo.service.core.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.exception.impl.BookNotFoundException;
 import ru.valkeru.libdemo.mapper.BookMapper;
@@ -10,12 +11,11 @@ import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.model.entity.Book;
 import ru.valkeru.libdemo.model.entity.Cycle;
+import ru.valkeru.libdemo.model.entity.QBook;
 import ru.valkeru.libdemo.model.entity.Series;
 import ru.valkeru.libdemo.repository.jpa.BookRepository;
 import ru.valkeru.libdemo.service.core.BookService;
-import ru.valkeru.libdemo.util.SqlUtil;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,14 +35,12 @@ public class BookServiceImpl implements BookService {
 
         return bookDto.getId() == null
                 ? repository.persist(book)
-                : repository.update(book);
+                : repository.merge(book);
     }
 
     @Override
-    public Collection<BookDto> getAllBooks() {
-        Page<Book> bookPage = repository.findAll(Pageable.unpaged(SqlUtil.sortByCreatedAtAsc()));
-
-        return mapper.toDtoCollection(bookPage.toList());
+    public Page<Book> getAllBooks() {
+        return repository.findAll(Pageable.unpaged(getDefaultSort()));
     }
 
     @Override
@@ -68,5 +66,9 @@ public class BookServiceImpl implements BookService {
         return Optional.ofNullable(dto.getId())
                 .map(this::getBookEntity)
                 .orElse(new Book());
+    }
+
+    private Sort getDefaultSort() {
+        return Sort.by(Sort.Direction.ASC, QBook.book.createdAt.getMetadata().getName());
     }
 }

@@ -14,14 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.web.api.DefaultApi;
-import ru.valkeru.libdemo.web.api.definition.ApiDefinition.SchemaIdDescription;
-import ru.valkeru.libdemo.web.api.definition.ApiDefinition.StatusCodes;
-import ru.valkeru.libdemo.web.api.definition.AuthorDefinition.Summary;
-import ru.valkeru.libdemo.web.api.definition.AuthorDefinition.Tags;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 import ru.valkeru.libdemo.model.view.AuthorView;
+import ru.valkeru.libdemo.web.api.definition.ApiTags;
 
 import java.util.UUID;
 
@@ -34,8 +31,8 @@ public interface AuthorApi extends DefaultApi {
      * Постраничный просмотр списка авторов
      */
     @Operation(
-            summary = Summary.Author.SUMMARY_VIEW_LIST,
-            tags = Tags.AUTHOR
+            summary = "Получить список авторов",
+            tags = ApiTags.AUTHOR
     )
     @GetMapping
     @JsonView(AuthorView.AuthorListView.class)
@@ -48,26 +45,26 @@ public interface AuthorApi extends DefaultApi {
      * Получить запись об авторе по id
      */
     @Operation(
-            summary = Summary.Author.SUMMARY_VIEW,
-            tags = Tags.AUTHOR,
+            summary = "Получить данные об авторе",
+            tags = ApiTags.AUTHOR,
             responses = {
                     @ApiResponse(
-                            responseCode = StatusCodes.OK,
-                            description = StatusCodes.Description.OK
+                            responseCode = "200",
+                            description = "Успех"
                     ),
                     @ApiResponse(
-                            responseCode = StatusCodes.NOT_FOUND,
-                            description = StatusCodes.Description.NOT_FOUND,
+                            responseCode = "404",
+                            description = "Данные не найдены",
                             content = {
                                     @Content(schema = @Schema(implementation = ErrorDto.class))
                             }
                     )
             }
     )
-    @GetMapping("/{authorId}")
+    @GetMapping("/{id}")
     @JsonView(AuthorView.AuthorSingleView.class)
-    default ResponseEntity<AuthorDto> getAuthor(@PathVariable(name = "authorId")
-                                                @Schema(description = SchemaIdDescription.AUTHOR_ID) UUID id) {
+    default ResponseEntity<AuthorDto> getAuthor(@PathVariable
+                                                @Schema(description = "ID автора") UUID id) {
         return defaultApiResponse();
     }
 }

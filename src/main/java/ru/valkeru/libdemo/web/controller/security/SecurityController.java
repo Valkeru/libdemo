@@ -2,13 +2,13 @@ package ru.valkeru.libdemo.web.controller.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.model.dto.security.TokenDto;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
 import ru.valkeru.libdemo.service.infrastructure.application.SecurityApplicationService;
 import ru.valkeru.libdemo.web.api.security.SecurityApi;
 
-@Component
+@RestController
 @RequiredArgsConstructor
 public class SecurityController implements SecurityApi {
 

@@ -27,7 +27,7 @@ public class SeriesServiceImpl implements SeriesService {
 
         return dto.getId() == null
                 ? seriesRepository.persist(series)
-                : seriesRepository.update(series);
+                : seriesRepository.merge(series);
     }
 
     @Override

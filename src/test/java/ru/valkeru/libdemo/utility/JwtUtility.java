@@ -1,64 +1,56 @@
 package ru.valkeru.libdemo.utility;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import ru.valkeru.libdemo.security.Role;
-
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Date;
-import java.util.UUID;
+import ru.valkeru.libdemo.model.entity.user.Token;
+import ru.valkeru.libdemo.service.core.security.JWTService;
+import ru.valkeru.libdemo.service.core.security.UserService;
 
 /**
  * Генератор токенов пользователей в тестах
  */
 @Component
+@RequiredArgsConstructor
 public class JwtUtility {
 
-    private final String jwtSecret;
+    private Token librarianToken = null;
+    private Token adminToken = null;
+    private Token userToken = null;
 
-    public JwtUtility(@Value("${app.security.jwt.secret}") String jwtSecret) {
-        this.jwtSecret = jwtSecret;
-    }
+    private final UserService userService;
+    private final JWTService jwtService;
 
     public String librarianToken() {
-        return Jwts.builder()
-                .signWith(getJwtSigningKey())
-                .subject("default_librarian")
-                .issuedAt(Date.from(Instant.now()))
-                .expiration(Date.from(Instant.now().plus(Duration.ofMinutes(1))))
-                .claim("id", UUID.randomUUID())
-                .claim("role", Role.LIBRARIAN.name())
-                .compact();
+        if (isInvalidToken(librarianToken)) {
+            librarianToken = getToken("default_librarian");
+        }
+
+        return librarianToken.getJwt();
     }
 
     public String adminToken() {
-        return Jwts.builder()
-                .signWith(getJwtSigningKey())
-                .subject("admin")
-                .issuedAt(Date.from(Instant.now()))
-                .expiration(Date.from(Instant.now().plus(Duration.ofMinutes(1))))
-                .claim("id", UUID.randomUUID())
-                .claim("role", Role.ADMIN.name())
-                .compact();
+        if (isInvalidToken(adminToken)) {
+            adminToken = getToken("default_admin");
+        }
+
+        return adminToken.getJwt();
     }
 
     public String userToken() {
-        return Jwts.builder()
-                .signWith(getJwtSigningKey())
-                .subject("default_user")
-                .issuedAt(Date.from(Instant.now()))
-                .expiration(Date.from(Instant.now().plus(Duration.ofMinutes(1))))
-                .claim("id", UUID.randomUUID())
-                .claim("role", Role.USER.name())
-                .compact();
+        if (isInvalidToken(userToken)) {
+            userToken = getToken("default_user");
+        }
+
+        return userToken.getJwt();
     }
 
-    private SecretKey getJwtSigningKey() {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+    private Token getToken(String userName) {
+        UserDetails user = userService.loadUserByUsername(userName);
+        return jwtService.generateToken(user);
+    }
+
+    private boolean isInvalidToken(Token token) {
+        return token == null || !jwtService.isValidToken(token.getJwt());
     }
 }

@@ -27,7 +27,7 @@ public class CycleServiceImpl implements CycleService {
 
         return dto.getId() == null
                 ? repository.persist(entity)
-                : repository.update(entity);
+                : repository.merge(entity);
     }
 
     @Override

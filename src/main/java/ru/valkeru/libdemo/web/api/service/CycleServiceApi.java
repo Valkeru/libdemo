@@ -15,26 +15,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.config.OpenApiConfig;
-import ru.valkeru.libdemo.model.dto.AuthorDto;
+import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.model.view.AuthorView;
+import ru.valkeru.libdemo.model.view.CycleView;
 import ru.valkeru.libdemo.web.api.DefaultApi;
 import ru.valkeru.libdemo.web.api.definition.ApiTags;
 
 import java.util.UUID;
 
 @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
-@RequestMapping(AuthorServiceApi.AUTHOR_SERVICE_URL)
-public interface AuthorServiceApi extends DefaultApi {
+@RequestMapping(CycleServiceApi.CYCLE_SERVICE_URL)
+public interface CycleServiceApi extends DefaultApi {
 
-    String AUTHOR_SERVICE_URL = "/service/author";
+    String CYCLE_SERVICE_URL = "/service/cycle";
 
-    /**
-     * Создание записи об авторе
-     */
     @Operation(
-            summary = "Добавить данные об авторе",
-            tags = ApiTags.AUTHOR,
+            summary = "Добавить цикл",
+            tags = {ApiTags.CYCLE, ApiTags.SERVICE},
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -57,19 +54,16 @@ public interface AuthorServiceApi extends DefaultApi {
             }
     )
     @PostMapping
-    @JsonView(AuthorView.AuthorSingleView.class)
-    default ResponseEntity<AuthorDto> createAuthor(@RequestBody
-                                                   @Validated(AuthorView.AuthorCreateView.class)
-                                                   @JsonView(AuthorView.AuthorCreateView.class) AuthorDto author) {
+    @JsonView(CycleView.CycleSingleView.class)
+    default ResponseEntity<CycleDto> addCycle(@RequestBody
+                                      @Validated(CycleView.CycleCreateView.class)
+                                      @JsonView(CycleView.CycleCreateView.class) CycleDto cycleDto) {
         return defaultApiResponse();
     }
 
-    /**
-     * Обновление записи об авторе
-     */
     @Operation(
-            summary = "Обновить данные об авторе",
-            tags = ApiTags.AUTHOR,
+            summary = "Обновить цикл",
+            tags = {ApiTags.CYCLE, ApiTags.SERVICE},
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -88,32 +82,33 @@ public interface AuthorServiceApi extends DefaultApi {
                             content = {
                                     @Content(schema = @Schema(implementation = ErrorDto.class))
                             }
-                    )
-            }
-    )
-    @PatchMapping("/{id}")
-    @JsonView(AuthorView.AuthorSingleView.class)
-    default ResponseEntity<AuthorDto> updateAuthor(@PathVariable
-                                                   @Schema(description = "ID автора") UUID id,
-                                                   @RequestBody
-                                                   @Validated(AuthorView.AuthorUpdateView.class)
-                                                   @JsonView(AuthorView.AuthorUpdateView.class) AuthorDto author) {
-        return defaultApiResponse();
-    }
-
-    /**
-     * Удалить запись об авторе
-     */
-    @Operation(
-            summary = "Удалить данные об авторе",
-            tags = ApiTags.AUTHOR,
-            responses = {
+                    ),
                     @ApiResponse(
-                            responseCode = "204",
-                            description = "Успех",
+                            responseCode = "409",
+                            description = "Нарушение целостности данных",
                             content = {
                                     @Content(schema = @Schema(implementation = ErrorDto.class))
                             }
+                    )
+            }
+    )
+    @PatchMapping("/{cycleId}")
+    @JsonView(CycleView.CycleListView.class)
+    default ResponseEntity<CycleDto> updateCycle(@PathVariable(name = "cycleId")
+                                         @Schema(description = "ID цикла") UUID id,
+                                         @RequestBody
+                                         @Validated(CycleView.CycleUpdateView.class)
+                                         @JsonView(CycleView.CycleUpdateView.class) CycleDto cycleDto) {
+        return defaultApiResponse();
+    }
+
+    @Operation(
+            summary = "Удалить цикл",
+            tags = {ApiTags.CYCLE, ApiTags.SERVICE},
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Успех"
                     ),
                     @ApiResponse(
                             responseCode = "404",
@@ -131,24 +126,9 @@ public interface AuthorServiceApi extends DefaultApi {
                     )
             }
     )
-    @DeleteMapping("/{authorId}")
-    default ResponseEntity<Void> deleteAuthor(@PathVariable(name = "authorId")
-                                              @Schema(description = "ID автора") UUID id) {
-        return defaultApiResponse();
-    }
-
-    @Operation(
-            summary = "Переиндексировать авторов в Elasticsearch",
-            tags = ApiTags.SERVICE,
-            responses = {
-                    @ApiResponse(
-                            responseCode = "204",
-                            description = "Задание создано"
-                    )
-            }
-    )
-    @PostMapping("/reindex")
-    default ResponseEntity<Void> elasticsearchReindexAuthors() {
+    @DeleteMapping("/{cycleId}")
+    default ResponseEntity<Void> deleteCycle(@PathVariable(name = "cycleId")
+                                     @Schema(description = "ID цикла") UUID id) {
         return defaultApiResponse();
     }
 }

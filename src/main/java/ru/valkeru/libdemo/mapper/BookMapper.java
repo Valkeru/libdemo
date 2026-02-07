@@ -20,7 +20,7 @@ public interface BookMapper {
 
     BookDto toDto(Book entity);
 
-    Collection<BookDto> toDtoCollection(Collection<Book> books);
+    List<BookDto> toDtoList(Collection<Book> books);
 
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)

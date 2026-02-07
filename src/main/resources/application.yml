@@ -41,8 +41,8 @@ spring:
     banner-mode: off
   autoconfigure:
     exclude:
-      - org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRepositoriesAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+      - org.springframework.boot.data.elasticsearch.autoconfigure.DataElasticsearchReactiveRepositoriesAutoConfiguration
+      - org.springframework.boot.data.redis.autoconfigure.DataRedisRepositoriesAutoConfiguration
 logging:
   config: classpath:logback-spring.xml
   pattern:
@@ -77,24 +77,11 @@ app:
       lifetime: 3600
       refresh-lifetime: 604800
   system:
-    is-debug-mode: false
     elasticsearch-enabled: false
 management:
   health:
     elasticsearch:
       enabled: false
-
----
-spring:
-  config:
-    activate:
-      on-profile: test
-  datasource:
-    hikari:
-      maximum-pool-size: 5
-app:
-  system:
-    is-debug-mode: true
 
 ---
 spring:

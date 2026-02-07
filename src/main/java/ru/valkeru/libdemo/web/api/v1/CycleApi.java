@@ -10,160 +10,56 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.valkeru.libdemo.web.api.definition.ApiDefinition.SchemaIdDescription;
-import ru.valkeru.libdemo.web.api.definition.ApiDefinition.StatusCodes;
-import ru.valkeru.libdemo.web.api.definition.CycleDefinition.Summary;
-import ru.valkeru.libdemo.web.api.definition.CycleDefinition.Tags;
+import ru.valkeru.libdemo.web.api.DefaultApi;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
 import ru.valkeru.libdemo.model.view.CycleView;
+import ru.valkeru.libdemo.web.api.definition.ApiTags;
 
-import java.util.Collection;
 import java.util.UUID;
 
-@RestController
 @RequestMapping("/v1/cycle")
-public interface CycleApi {
+public interface CycleApi extends DefaultApi {
 
     @Operation(
-            summary = Summary.Cycle.SUMMARY_CREATE,
-            tags = Tags.CYCLE,
+            summary = "Получить все циклы",
+            tags = ApiTags.CYCLE,
             responses = {
                     @ApiResponse(
-                            responseCode = StatusCodes.CREATED,
-                            description = StatusCodes.Description.CREATED
-                    ),
-                    @ApiResponse(
-                            responseCode = StatusCodes.BAD_REQUEST,
-                            description = StatusCodes.Description.BAD_REQUEST,
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    ),
-                    @ApiResponse(
-                            responseCode = StatusCodes.CONFLICT,
-                            description = StatusCodes.Description.DATA_INTEGRITY_CONFLICT,
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    )
-            }
-    )
-    @PostMapping
-    @JsonView(CycleView.CycleSingleView.class)
-    ResponseEntity<CycleDto> addCycle(@RequestBody
-                                      @Validated(CycleView.CycleCreateView.class)
-                                      @JsonView(CycleView.CycleCreateView.class) CycleDto cycleDto);
-
-    @Operation(
-            summary = Summary.Cycle.SUMMARY_UPDATE,
-            tags = Tags.CYCLE,
-            responses = {
-                    @ApiResponse(
-                            responseCode = StatusCodes.OK,
-                            description = StatusCodes.Description.OK
-                    ),
-                    @ApiResponse(
-                            responseCode = StatusCodes.NOT_FOUND,
-                            description = StatusCodes.Description.NOT_FOUND,
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    ),
-                    @ApiResponse(
-                            responseCode = StatusCodes.BAD_REQUEST,
-                            description = StatusCodes.Description.BAD_REQUEST,
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    ),
-                    @ApiResponse(
-                            responseCode = StatusCodes.CONFLICT,
-                            description = StatusCodes.Description.DATA_INTEGRITY_CONFLICT,
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    )
-            }
-    )
-    @PatchMapping("/{cycleId}")
-    @JsonView(CycleView.CycleListView.class)
-    ResponseEntity<CycleDto> updateCycle(@PathVariable(name = "cycleId")
-                                         @Schema(description = SchemaIdDescription.CYCLE_ID) UUID id,
-                                         @RequestBody
-                                         @Validated(CycleView.CycleUpdateView.class)
-                                         @JsonView(CycleView.CycleUpdateView.class) CycleDto cycleDto);
-
-    @Operation(
-            summary = Summary.Cycle.SUMMARY_VIEW_LIST,
-            tags = Tags.CYCLE,
-            responses = {
-                    @ApiResponse(
-                            responseCode = StatusCodes.OK,
-                            description = StatusCodes.Description.OK
+                            responseCode = "200",
+                            description = "Успех"
                     )
             }
     )
     @GetMapping
     @JsonView(CycleView.CycleSingleView.class)
-    ResponseEntity<PagedModel<CycleDto>> listCycles(@ParameterObject @PageableDefault Pageable pageable);
+    default ResponseEntity<PagedModel<CycleDto>> listCycles(@ParameterObject @PageableDefault Pageable pageable) {
+        return defaultApiResponse();
+    }
 
     @Operation(
-            summary = Summary.Cycle.SUMMARY_VIEW,
-            tags = Tags.CYCLE,
+            summary = "Получить цикл",
+            tags = ApiTags.CYCLE,
             responses = {
                     @ApiResponse(
-                            responseCode = StatusCodes.OK,
-                            description = StatusCodes.Description.OK
+                            responseCode = "200",
+                            description = "Успех"
                     ),
                     @ApiResponse(
-                            responseCode = StatusCodes.NOT_FOUND,
-                            description = StatusCodes.Description.NOT_FOUND,
+                            responseCode = "404",
+                            description = "Данные не найдены",
                             content = {
                                     @Content(schema = @Schema(implementation = ErrorDto.class))
                             }
                     )
             }
     )
-    @GetMapping("/{cycleId}")
+    @GetMapping("/{id}")
     @JsonView(CycleView.CycleSingleView.class)
-    ResponseEntity<CycleDto> getCycle(@PathVariable(name = "cycleId")
-                                      @Schema(description = SchemaIdDescription.CYCLE_ID) UUID id);
-
-    @Operation(
-            summary = Summary.Cycle.SUMMARY_DELETE,
-            tags = Tags.CYCLE,
-            responses = {
-                    @ApiResponse(
-                            responseCode = StatusCodes.NO_CONTENT,
-                            description = StatusCodes.Description.OK
-                    ),
-                    @ApiResponse(
-                            responseCode = StatusCodes.NOT_FOUND,
-                            description = StatusCodes.Description.NOT_FOUND,
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    ),
-                    @ApiResponse(
-                            responseCode = StatusCodes.CONFLICT,
-                            description = StatusCodes.Description.DATA_INTEGRITY_CONFLICT,
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    )
-            }
-    )
-    @DeleteMapping("/{cycleId}")
-    ResponseEntity<Void> deleteCycle(@PathVariable(name = "cycleId")
-                                     @Schema(description = SchemaIdDescription.CYCLE_ID) UUID id);
+    default ResponseEntity<CycleDto> getCycle(@PathVariable @Schema(description = "ID цикла") UUID id) {
+        return defaultApiResponse();
+    }
 }

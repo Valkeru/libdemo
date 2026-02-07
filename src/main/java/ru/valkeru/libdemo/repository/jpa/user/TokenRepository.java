@@ -1,6 +1,6 @@
 package ru.valkeru.libdemo.repository.jpa.user;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import io.hypersistence.utils.spring.repository.BaseJpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-public interface TokenRepository extends JpaRepository<Token, UUID> {
+public interface TokenRepository extends BaseJpaRepository<Token, UUID> {
 
     List<Token> getTokensByUserAndIdNot(User user, UUID id);
 
@@ -24,8 +24,13 @@ public interface TokenRepository extends JpaRepository<Token, UUID> {
     /**
      * Получить ID токена, если не истёк refresh токен
      */
-    @Query("select t.id from Token t where t.refreshToken = :refreshToken and t.refreshTokenExpiry > CURRENT_TIMESTAMP")
-    UUID getNotExpiredTokenId(String refreshToken);
+    @Query("select t from Token t where t.refreshToken = :refreshToken and t.refreshTokenExpiry > :now")
+    Token getNotExpired(String refreshToken, Instant now);
+
+    @Transactional
+    @Modifying
+    @Query("delete from Token t where t.refreshTokenExpiry <= :now")
+    void deleteExpired(Instant now);
 
     @Transactional
     @Modifying

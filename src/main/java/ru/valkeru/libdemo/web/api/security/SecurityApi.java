@@ -10,20 +10,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.config.OpenApiConfig;
 import ru.valkeru.libdemo.model.dto.security.TokenDto;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
 import ru.valkeru.libdemo.web.api.DefaultApi;
-import ru.valkeru.libdemo.web.api.definition.ApiDefinition;
+import ru.valkeru.libdemo.web.api.definition.ApiTags;
 
-@RestController
 @RequestMapping("/security")
 public interface SecurityApi extends DefaultApi {
 
     @Operation(
-            summary = ApiDefinition.Summary.Security.SIGN_UP,
-            tags = ApiDefinition.Tags.SECURITY
+            summary = "Регистрация",
+            tags = ApiTags.SECURITY
     )
     @PostMapping("/sign-up")
     default ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
@@ -31,8 +29,8 @@ public interface SecurityApi extends DefaultApi {
     }
 
     @Operation(
-            summary = ApiDefinition.Summary.Security.SIGN_IN,
-            tags = ApiDefinition.Tags.SECURITY
+            summary = "Вход",
+            tags = ApiTags.SECURITY
     )
     @PostMapping("/sign-in")
     default ResponseEntity<TokenDto> signIn(@RequestBody SignUpRequest request) {
@@ -41,7 +39,7 @@ public interface SecurityApi extends DefaultApi {
 
     @Operation(
             summary = "Выполнить ротацию access токена",
-            tags = ApiDefinition.Tags.SECURITY
+            tags = ApiTags.SECURITY
     )
     @PostMapping("/refresh-token")
     default ResponseEntity<TokenDto> refreshToken(@RequestHeader(name = "Refresh-Token") String refreshToken) {
@@ -50,7 +48,7 @@ public interface SecurityApi extends DefaultApi {
 
     @Operation(
             summary = "Завершить все сессии, кроме текущей",
-            tags = ApiDefinition.Tags.SECURITY,
+            tags = ApiTags.SECURITY,
             security = @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
     )
     @PostMapping("/revoke-sessions")

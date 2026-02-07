@@ -32,7 +32,7 @@ public class CycleDto {
     @NotNull(groups = {
             SeriesView.SeriesCreateView.class
     })
-    @Schema(description = "ID записи", example = "1")
+    @Schema(description = "ID записи", example = "8e468a24-1cb5-4564-8b91-8ccda21cbce2")
     private UUID id;
 
     @JsonView({

@@ -3,29 +3,32 @@ package ru.valkeru.libdemo.config.security;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import ru.valkeru.libdemo.config.OpenApiConfig;
-import ru.valkeru.libdemo.service.core.SecurityService;
+import ru.valkeru.libdemo.service.infrastructure.application.SecurityApplicationService;
 
-import java.util.UUID;
-
+@Slf4j
 @RequiredArgsConstructor
 public class LibraryLogoutHandler implements LogoutHandler {
 
-    private final SecurityService securityService;
+    private final SecurityApplicationService securityApplicationService;
 
     @Override
-    @SneakyThrows
-    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+    public void logout(HttpServletRequest request, @NonNull HttpServletResponse response, Authentication authentication) {
         String token = request.getHeader(OpenApiConfig.ACCESS_TOKEN_HEADER_NAME);
 
-        if (securityService.isValidToken(token)) {
-            UUID tokenId = securityService.getTokenId(token);
-            securityService.deleteToken(tokenId);
+        if (StringUtils.isBlank(token)) {
+            return;
         }
 
-        response.sendRedirect("/");
+        try {
+            securityApplicationService.deleteToken(token);
+        } catch (Exception e) {
+            log.warn("Failed to logout", e);
+        }
     }
 }

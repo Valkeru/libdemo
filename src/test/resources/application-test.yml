@@ -1,0 +1,6 @@
+app:
+  security:
+    jwt:
+      secret: NBBGS2VXFNZ2UtDUN6If6TGT4T53PjWRmkfjXySIsw20647eqfE6WISX9pGTLQds
+      lifetime: 10
+      refresh-lifetime: 604800

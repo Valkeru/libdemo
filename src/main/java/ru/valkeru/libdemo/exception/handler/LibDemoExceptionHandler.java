@@ -3,11 +3,12 @@ package ru.valkeru.libdemo.exception.handler;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -56,7 +57,7 @@ public class LibDemoExceptionHandler {
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorDto validationExceptionHandler(MethodArgumentNotValidException manve) {
-        log.info("Request validation failed: {}", manve.getMessage(), manve);
+        log.info("Request validation failed: {}", getRootMessage(manve), manve);
 
         Map<String, String> fieldErrorMap = new HashMap<>();
         manve.getFieldErrors().forEach(error -> fieldErrorMap.put(error.getField(), error.getDefaultMessage()));
@@ -69,7 +70,7 @@ public class LibDemoExceptionHandler {
     @ResponseBody
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorDto handleIntegrityViolations(DataIntegrityViolationException dive) {
-        log.info("Data violation: {}", dive.getMessage(), dive);
+        log.info("Data violation: {}", getRootMessage(dive), dive);
 
         return buildErrorDto(messageProvider.getDataIntegrityMessage(dive), HttpStatus.CONFLICT);
     }
@@ -106,7 +107,7 @@ public class LibDemoExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ErrorDto handleUserNotFound(AuthenticationException ae) {
         log.info("Authentication failed");
-        log.info(ae.getMessage());
+        log.info(getRootMessage(ae));
 
         return buildErrorDto("Неверное имя пользователя или пароль", HttpStatus.UNAUTHORIZED);
     }
@@ -125,5 +126,12 @@ public class LibDemoExceptionHandler {
 
     private ErrorDto buildErrorDto(String message, HttpStatus status) {
         return new ErrorDto(status, message);
+    }
+
+    private String getRootMessage(Exception e) {
+        Throwable rootCause = ExceptionUtils.getRootCause(e);
+        String message = rootCause.getMessage();
+
+        return StringUtils.isNotBlank(message) ? message : e.getMessage();
     }
 }

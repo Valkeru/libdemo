@@ -1,31 +1,43 @@
 package ru.valkeru.libdemo.component.message.impl;
 
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import ru.valkeru.libdemo.component.message.AbstractMessageProvider;
-import ru.valkeru.libdemo.config.system.SystemConfiguration;
+import ru.valkeru.libdemo.component.message.MessageProvider;
 import ru.valkeru.libdemo.constants.Profiles;
 
+@Slf4j
 @Component
 @Profile({Profiles.PROFILE_DEV, Profiles.PROFILE_PRE_PRODUCTION, Profiles.PROFILE_TEST})
-public class DetailedMessageProvider extends AbstractMessageProvider {
+public class DetailedMessageProvider implements MessageProvider {
 
-    public DetailedMessageProvider(SystemConfiguration configuration) {
-        super(configuration);
+    @PostConstruct
+    protected void logComponentStarted() {
+        log.info("Detailed error message provider started");
     }
 
     @Override
     public String getBadRequestMessage(Exception e) {
-        return isDebug() ? e.getMessage() : BAD_REQUEST_MESSAGE;
+        return getExceptionMessage(e);
     }
 
     @Override
     public String getInternalErrorMessage(Exception e) {
-        return isDebug() ? e.getMessage() : INTERNAL_ERROR_MESSAGE;
+        return getExceptionMessage(e);
     }
 
     @Override
     public String getDataIntegrityMessage(Exception e) {
-        return isDebug() ? e.getMessage() : DATA_INTEGRITY_MESSAGE;
+        return getExceptionMessage(e);
+    }
+
+    private String getExceptionMessage(Exception e) {
+        Throwable rootCause = ExceptionUtils.getRootCause(e);
+        String message = rootCause.getMessage();
+
+        return StringUtils.isNotBlank(message) ? message : e.getMessage();
     }
 }

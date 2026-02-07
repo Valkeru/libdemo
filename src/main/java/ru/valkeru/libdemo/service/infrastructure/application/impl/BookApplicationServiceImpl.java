@@ -1,6 +1,8 @@
 package ru.valkeru.libdemo.service.infrastructure.application.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.mapper.BookMapper;
@@ -18,7 +20,6 @@ import ru.valkeru.libdemo.service.core.CycleService;
 import ru.valkeru.libdemo.service.core.SeriesService;
 import ru.valkeru.libdemo.service.infrastructure.application.BookApplicationService;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,8 +52,10 @@ public class BookApplicationServiceImpl implements BookApplicationService {
     }
 
     @Override
-    public Collection<BookDto> getAllBooks() {
-        return bookService.getAllBooks();
+    public PagedModel<BookDto> getAllBooks() {
+        Page<Book> allBooks = bookService.getAllBooks();
+
+        return new PagedModel<>(allBooks.map(bookMapper::toDto));
     }
 
     @Override

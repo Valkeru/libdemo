@@ -15,26 +15,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.config.OpenApiConfig;
-import ru.valkeru.libdemo.model.dto.AuthorDto;
+import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.model.view.AuthorView;
+import ru.valkeru.libdemo.model.view.SeriesView;
 import ru.valkeru.libdemo.web.api.DefaultApi;
 import ru.valkeru.libdemo.web.api.definition.ApiTags;
 
 import java.util.UUID;
 
 @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
-@RequestMapping(AuthorServiceApi.AUTHOR_SERVICE_URL)
-public interface AuthorServiceApi extends DefaultApi {
+@RequestMapping(SeriesServiceApi.SERIES_SERVICE_URL)
+public interface SeriesServiceApi extends DefaultApi {
 
-    String AUTHOR_SERVICE_URL = "/service/author";
+    String SERIES_SERVICE_URL = "/service/series";
 
-    /**
-     * Создание записи об авторе
-     */
     @Operation(
-            summary = "Добавить данные об авторе",
-            tags = ApiTags.AUTHOR,
+            summary = "Создать серию",
+            tags = {ApiTags.SERIES, ApiTags.SERVICE},
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -57,19 +54,16 @@ public interface AuthorServiceApi extends DefaultApi {
             }
     )
     @PostMapping
-    @JsonView(AuthorView.AuthorSingleView.class)
-    default ResponseEntity<AuthorDto> createAuthor(@RequestBody
-                                                   @Validated(AuthorView.AuthorCreateView.class)
-                                                   @JsonView(AuthorView.AuthorCreateView.class) AuthorDto author) {
+    @JsonView(SeriesView.SeriesSingleView.class)
+    default ResponseEntity<SeriesDto> createSeries(@RequestBody
+                                           @Validated(SeriesView.SeriesCreateView.class)
+                                           @JsonView(SeriesView.SeriesCreateView.class) SeriesDto series) {
         return defaultApiResponse();
     }
 
-    /**
-     * Обновление записи об авторе
-     */
     @Operation(
-            summary = "Обновить данные об авторе",
-            tags = ApiTags.AUTHOR,
+            summary = "Обновить серию",
+            tags = {ApiTags.SERIES, ApiTags.SERVICE},
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -83,37 +77,28 @@ public interface AuthorServiceApi extends DefaultApi {
                             }
                     ),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Некорректный запрос",
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
+                            responseCode = "409",
+                            description = "Нарушение целостности данных"
                     )
             }
     )
-    @PatchMapping("/{id}")
-    @JsonView(AuthorView.AuthorSingleView.class)
-    default ResponseEntity<AuthorDto> updateAuthor(@PathVariable
-                                                   @Schema(description = "ID автора") UUID id,
-                                                   @RequestBody
-                                                   @Validated(AuthorView.AuthorUpdateView.class)
-                                                   @JsonView(AuthorView.AuthorUpdateView.class) AuthorDto author) {
+    @PatchMapping("/{seriesId}")
+    @JsonView(SeriesView.SeriesSingleView.class)
+    default ResponseEntity<SeriesDto> updateSeries(@PathVariable(name = "seriesId")
+                                           @Schema(description = "ID серии") UUID id,
+                                           @RequestBody
+                                           @Validated(SeriesView.SeriesUpdateView.class)
+                                           @JsonView(SeriesView.SeriesUpdateView.class) SeriesDto series) {
         return defaultApiResponse();
     }
 
-    /**
-     * Удалить запись об авторе
-     */
     @Operation(
-            summary = "Удалить данные об авторе",
-            tags = ApiTags.AUTHOR,
+            summary = "Удалить серию",
+            tags = {ApiTags.SERIES, ApiTags.SERVICE},
             responses = {
                     @ApiResponse(
                             responseCode = "204",
-                            description = "Успех",
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
+                            description = "Успех"
                     ),
                     @ApiResponse(
                             responseCode = "404",
@@ -131,24 +116,9 @@ public interface AuthorServiceApi extends DefaultApi {
                     )
             }
     )
-    @DeleteMapping("/{authorId}")
-    default ResponseEntity<Void> deleteAuthor(@PathVariable(name = "authorId")
-                                              @Schema(description = "ID автора") UUID id) {
-        return defaultApiResponse();
-    }
-
-    @Operation(
-            summary = "Переиндексировать авторов в Elasticsearch",
-            tags = ApiTags.SERVICE,
-            responses = {
-                    @ApiResponse(
-                            responseCode = "204",
-                            description = "Задание создано"
-                    )
-            }
-    )
-    @PostMapping("/reindex")
-    default ResponseEntity<Void> elasticsearchReindexAuthors() {
+    @DeleteMapping("/{seriesId}")
+    default ResponseEntity<Void> deleteSeries(@PathVariable(name = "seriesId")
+                                      @Schema(description = "ID серии") UUID id) {
         return defaultApiResponse();
     }
 }
