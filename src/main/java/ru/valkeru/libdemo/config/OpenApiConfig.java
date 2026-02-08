@@ -38,12 +38,16 @@ public class OpenApiConfig {
 
     @Bean
     public OpenApiCustomizer requestIdHeaderCustomizer() {
-        return openApi -> openApi.getPaths().values().forEach(pathItem -> {
-            pathItem.readOperations().forEach(operation -> {
-                operation.getResponses().forEach(((s, apiResponse) -> {
-                    apiResponse.addHeaderObject(CustomHeaders.REQUEST_ID, new Header().$ref("#/components/headers/RequestIdHeader"));
-                }));
-            });
-        });
+        return openApi -> openApi.getPaths().values().forEach(pathItem ->
+                pathItem.readOperations().forEach(operation ->
+                        operation.getResponses().forEach(((s, apiResponse) ->
+                                apiResponse.addHeaderObject(
+                                        CustomHeaders.REQUEST_ID,
+                                        new Header().$ref("#/components/headers/RequestIdHeader")
+                                )
+                                )
+                        )
+                )
+        );
     }
 }

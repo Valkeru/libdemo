@@ -24,8 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Import(ApplicationTestConfiguration.class)
-@Sql(value = {"classpath:delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
-@Sql(value = {"classpath:delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
+@Sql(value = {"classpath:sql/delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(value = {"classpath:sql/delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 class CycleControllerTest {
 
     public static final String CYCLE_ID = "7cc6be9b-7649-4955-bff9-8cbf7c4c429a";
@@ -38,7 +38,7 @@ class CycleControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql"
+                    "classpath:sql/delete/00.truncate.sql"
             }
     )
     void testCreateCycleBadRequest() throws Exception {
@@ -61,7 +61,7 @@ class CycleControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql"
+                    "classpath:sql/delete/00.truncate.sql"
             }
     )
     void testCreateCycleOk() throws Exception {
@@ -95,7 +95,7 @@ class CycleControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql"
+                    "classpath:sql/delete/00.truncate.sql"
             }
     )
     void testGetCycleNotFound() throws Exception {
@@ -109,8 +109,8 @@ class CycleControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:02.create_cycle.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/02.create_cycle.sql"
             },
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
     )
@@ -128,7 +128,7 @@ class CycleControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql"
+                    "classpath:sql/delete/00.truncate.sql"
             }
     )
     void testUpdateCycleNotFound() throws Exception {
@@ -151,8 +151,8 @@ class CycleControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:02.create_cycle.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/02.create_cycle.sql"
             }
     )
     void testUpdateCycleOk() throws Exception {
@@ -173,7 +173,7 @@ class CycleControllerTest {
     }
 
     @Test
-    @Sql(value = {"classpath:delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {"classpath:sql/delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void testDeleteCycleNotFound() throws Exception {
         mockMvc.perform(
                         delete("%s/{id}".formatted(CycleServiceController.CYCLE_SERVICE_URL), CYCLE_ID)
@@ -185,7 +185,7 @@ class CycleControllerTest {
 
     @Test
     @Sql(
-            value = {"classpath:02.create_cycle.sql", "classpath:03.create_series.sql"},
+            value = {"classpath:sql/02.create_cycle.sql", "classpath:sql/03.create_series.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
     )
     void testDeleteCycleSeriesConflict() throws Exception {
@@ -200,10 +200,10 @@ class CycleControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:01.create_author.sql",
-                    "classpath:02.create_cycle.sql",
-                    "classpath:03.create_series.sql",
-                    "classpath:04.create_book.sql"
+                    "classpath:sql/01.create_author.sql",
+                    "classpath:sql/02.create_cycle.sql",
+                    "classpath:sql/03.create_series.sql",
+                    "classpath:sql/04.create_book.sql"
             }
     )
     void testDeleteCycleBookConflict() throws Exception {
@@ -218,8 +218,8 @@ class CycleControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:02.create_cycle.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/02.create_cycle.sql"
             }
     )
     void testDeleteCycleOk() throws Exception {

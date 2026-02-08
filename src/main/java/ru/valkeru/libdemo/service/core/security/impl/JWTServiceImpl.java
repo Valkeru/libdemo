@@ -16,7 +16,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.model.entity.user.Token;
 import ru.valkeru.libdemo.model.entity.user.User;
 import ru.valkeru.libdemo.repository.jpa.user.TokenRepository;

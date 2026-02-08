@@ -11,17 +11,24 @@
 
     <properties>
         <java.version>21</java.version>
-        <mapstruct.version>1.6.0</mapstruct.version>
-        <springdoc.version>3.0.1</springdoc.version>
-        <datasource-proxy.version>1.9.1</datasource-proxy.version>
-        <logstash-encoder.version>8.0</logstash-encoder.version>
-        <sonar-plugin.version>4.0.0.4121</sonar-plugin.version>
+        <apache-http-client.version>4.5.14</apache-http-client.version>
+        <elasticsearch-rest-client.version>8.18.8</elasticsearch-rest-client.version>
+        <datasource-proxy.version>2.0.0</datasource-proxy.version>
+        <flyway.version>12.0.0</flyway.version>
+        <fluentd-logger.version>0.3.4</fluentd-logger.version>
+        <fluency.version>2.7.4</fluency.version>
         <hypersistence.version>3.15.1</hypersistence.version>
+        <io-utils.version>2.21.0</io-utils.version>
+        <jacoco-plugin.version>0.8.14</jacoco-plugin.version>
+        <jwt.version>0.13.0</jwt.version>
+        <logback-appenders.version>1.8.9</logback-appenders.version>
+        <logstash-encoder.version>9.0</logstash-encoder.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-        <io-utils.version>2.16.1</io-utils.version>
-        <classgraph.version>4.8.175</classgraph.version>
-        <jacoco-plugin.version>0.8.12</jacoco-plugin.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
+        <openapi-generator.version>7.19.0</openapi-generator.version>
         <openfeign-querydsl.version>7.1</openfeign-querydsl.version>
+        <sonar-plugin.version>4.0.0.4121</sonar-plugin.version>
+        <springdoc.version>3.0.1</springdoc.version>
     </properties>
 
     <parent>
@@ -106,6 +113,27 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>jmeter-test-plan</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.openapitools</groupId>
+                        <artifactId>openapi-generator-maven-plugin</artifactId>
+                        <version>${openapi-generator.version}</version>
+                        <configuration>
+                            <inputSpec>${project.basedir}/jmeter/api-docs.yaml</inputSpec>
+                            <generatorName>jmeter</generatorName>
+                            <output>${project.basedir}/jmeter</output>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <dependencies>
@@ -118,11 +146,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.hateoas</groupId>-->
-<!--            <artifactId>spring-hateoas</artifactId>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -174,6 +197,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
+            <version>${flyway.version}</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -188,6 +212,7 @@
             <version>${springdoc.version}</version>
         </dependency>
 
+<!--        Для логирования SQL запросов-->
         <dependency>
             <groupId>com.github.gavlyukovskiy</groupId>
             <artifactId>datasource-proxy-spring-boot-starter</artifactId>
@@ -243,35 +268,36 @@
             <version>${io-utils.version}</version>
         </dependency>
 
+<!--        Для отправки логов в fluentd-->
         <dependency>
             <groupId>com.sndyuk</groupId>
             <artifactId>logback-more-appenders</artifactId>
-            <version>1.8.8</version>
+            <version>${logback-appenders.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.fluentd</groupId>
             <artifactId>fluent-logger</artifactId>
-            <version>0.3.4</version>
+            <version>${fluentd-logger.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.komamitsu</groupId>
             <artifactId>fluency-fluentd</artifactId>
-            <version>2.7.2</version>
+            <version>${fluency.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-client</artifactId>
-            <version>8.18.8</version>
+            <version>${elasticsearch-rest-client.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.14</version>
+            <version>${apache-http-client.version}</version>
         </dependency>
 
         <dependency>
@@ -306,18 +332,18 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
-            <version>0.13.0</version>
+            <version>${jwt.version}</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
-            <version>0.13.0</version>
+            <version>${jwt.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
-            <version>0.13.0</version>
+            <version>${jwt.version}</version>
             <scope>runtime</scope>
         </dependency>
 

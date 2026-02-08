@@ -4,28 +4,24 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlMergeMode;
 import ru.valkeru.libdemo.AbstractIntegrationTest;
 import ru.valkeru.libdemo.web.api.service.AuthorServiceApi;
+import ru.valkeru.libdemo.web.controller.v1.AuthorController;
 
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Sql(value = {"classpath:delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
-@Sql(value = {"classpath:delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 class AuthorServiceControllerTest extends AbstractIntegrationTest {
 
     @Test
-    @Sql(
-            value = {
-                    "classpath:delete/00.truncate.sql"
-            }
-    )
     @DisplayName("Добавить автора - некорректный запрос")
     void testCreateAuthorBadRequest() throws Exception {
         performAsLibrarian(post(AuthorServiceApi.AUTHOR_SERVICE_URL)
@@ -41,11 +37,6 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @Sql(
-            value = {
-                    "classpath:delete/00.truncate.sql"
-            }
-    )
     @DisplayName("Добавить автора - успешно")
     void testCreateAuthorOk() throws Exception {
         performAsLibrarian(post(AuthorServiceApi.AUTHOR_SERVICE_URL)
@@ -70,10 +61,10 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql"
+                    "classpath:sql/01.create_author.sql"
             }
     )
     @DisplayName("Добавить автора - конфликт данных")
@@ -92,11 +83,6 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @Sql(
-            value = {
-                    "classpath:delete/00.truncate.sql"
-            }
-    )
     @DisplayName("Обновить данные об авторе - 404")
     void testUpdateAuthorNotFound() throws Exception {
         performAsLibrarian(patch("%s/{id}".formatted(AuthorServiceApi.AUTHOR_SERVICE_URL), UUID.randomUUID())
@@ -115,9 +101,10 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
     @Sql(
             value = {
-                    "classpath:01.create_author.sql"
+                    "classpath:sql/01.create_author.sql"
             }
     )
     @DisplayName("Обновить данные об авторе - 400")
@@ -137,20 +124,17 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql"
+                    "classpath:sql/01.create_author.sql"
             }
     )
     @DisplayName("Обновить данные об авторе - успешно")
     void testUpdateAuthorOk() throws Exception {
-//        mockMvc.perform(
-//                        get("%s/{id}".formatted(AuthorServiceApi.AUTHOR_SERVICE_URL), 1)
-//                                .accept(MediaType.APPLICATION_JSON)
-//                )
-//                .andExpect(status().isOk())
-//                .andDo(print());
+        performNotAuthenticated(get("%s/{id}".formatted(AuthorController.AUTHOR_V1_URL), "84c1599c-21e6-47f3-a03b-12f6071da20b"))
+                .andExpect(status().isOk())
+                .andDo(print());
 
         performAsLibrarian(patch("%s/{id}".formatted(AuthorServiceApi.AUTHOR_SERVICE_URL), "84c1599c-21e6-47f3-a03b-12f6071da20b")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -171,11 +155,6 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @Sql(
-            value = {
-                    "classpath:delete/00.truncate.sql"
-            }
-    )
     @DisplayName("Удалить данные об авторе - 404")
     void deleteAuthorNotFound() throws Exception {
         performAsLibrarian(delete("%s/{id}".formatted(AuthorServiceApi.AUTHOR_SERVICE_URL), UUID.randomUUID()))
@@ -184,10 +163,10 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql"
+                    "classpath:sql/01.create_author.sql"
             }
     )
     @DisplayName("Удалить данные об авторе - успешно")

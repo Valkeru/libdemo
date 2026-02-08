@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.model.entity.Book;
 
-import java.util.Collection;
 import java.util.UUID;
 
 public interface BookRepository extends BaseJpaRepository<Book, UUID> {

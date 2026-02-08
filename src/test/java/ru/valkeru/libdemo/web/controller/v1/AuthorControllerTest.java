@@ -13,15 +13,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Sql(value = {"classpath:delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
-@Sql(value = {"classpath:delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 class AuthorControllerTest extends AbstractIntegrationTest {
 
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/01.create_author.sql"
             }
     )
     @DisplayName("Получить данные об авторе по ID - успешно")
@@ -40,7 +38,7 @@ class AuthorControllerTest extends AbstractIntegrationTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql"
+                    "classpath:sql/delete/00.truncate.sql"
             },
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
     )
@@ -54,8 +52,8 @@ class AuthorControllerTest extends AbstractIntegrationTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/01.create_author.sql"
             }
     )
     @DisplayName("Получить список авторов")

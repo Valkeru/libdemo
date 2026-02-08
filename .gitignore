@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Jmeter generated files
+jmeter/
+!jmeter/.gitkeep
+
+.env

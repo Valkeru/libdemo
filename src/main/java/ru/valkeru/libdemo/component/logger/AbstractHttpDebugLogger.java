@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import ru.valkeru.libdemo.config.serialization.SecretIntrospector;
-import ru.valkeru.libdemo.util.RequestExecutionContext;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -21,7 +20,7 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
 
     private static final String REQUEST_TEMPLATE = "REQUEST: method = [%s]; path = [%s], IP = [%s]";
     private static final String PARAMETERS_TEMPLATE = "; parameters = ";
-    private static final String SOURCE_TEMPLATE = "; source = ";
+//    private static final String SOURCE_TEMPLATE = "; source = "; //NOSONAR
     private static final String DESERIALIZED_TEMPLATE = "; deserialized value = ";
     private static final String RESPONSE_DATA = "; response data = ";
     private static final String SERIALIZED_TEMPLATE = "; serialized value = ";
@@ -59,13 +58,13 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
         formatRequestDataTemplate(request, requestLogMessageBuilder);
         // На подумать. Основная идея - писать в лог оригинал того, что прислал пользователь.
         // Но так в лог попадут секреты, скрытые в dto
-//        String originalString = RequestExecutionContext.readRequestBody();
+//        String originalString = RequestExecutionContext.readRequestBody(); // NOSONAR
 
         requestLogMessageBuilder
-//                .append(SOURCE_TEMPLATE)
-//                .append(OPENING_BRACKET)
-//                .append(mapper.writeValueAsString(originalString))
-//                .append(CLOSING_BRACKET)
+//                .append(SOURCE_TEMPLATE) // NOSONAR
+//                .append(OPENING_BRACKET) // NOSONAR
+//                .append(mapper.writeValueAsString(originalString)) // NOSONAR
+//                .append(CLOSING_BRACKET) // NOSONAR
                 .append(DESERIALIZED_TEMPLATE)
                 .append(OPENING_BRACKET)
                 .append(writeBody(deserializationView, body))

@@ -8,7 +8,6 @@ import ru.valkeru.libdemo.web.api.v1.BookApi;
 import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.service.infrastructure.application.BookApplicationService;
 
-import java.util.Collection;
 import java.util.UUID;
 
 @RestController

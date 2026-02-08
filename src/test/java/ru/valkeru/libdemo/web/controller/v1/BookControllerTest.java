@@ -26,8 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(ApplicationTestConfiguration.class)
 @AutoConfigureMockMvc
-@Sql(value = {"classpath:delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
-@Sql(value = {"classpath:delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
+@Sql(value = {"classpath:sql/delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(value = {"classpath:sql/delete/00.truncate.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 class BookControllerTest {
 
     @Autowired
@@ -36,7 +36,7 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql"
+                    "classpath:sql/delete/00.truncate.sql"
             }
     )
     void testCreateBookBadRequestAuthorNotSet() throws Exception {
@@ -59,7 +59,7 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql"
+                    "classpath:sql/delete/00.truncate.sql"
             }
     )
     void testCreateBookBadRequestInvalidIsbn() throws Exception {
@@ -87,7 +87,7 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql"
+                    "classpath:sql/delete/00.truncate.sql"
             }
     )
     void testCreateBookAuthorNotFound() throws Exception {
@@ -115,8 +115,8 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/01.create_author.sql"
             }
     )
     void testCreateBookSeriesNotFound() throws Exception {
@@ -147,8 +147,8 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/01.create_author.sql"
             }
     )
     void testCreateBookCycleNotFound() throws Exception {
@@ -179,10 +179,10 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql",
-                    "classpath:02.create_cycle.sql",
-                    "classpath:03.create_series.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/01.create_author.sql",
+                    "classpath:sql/02.create_cycle.sql",
+                    "classpath:sql/03.create_series.sql"
             }
     )
     void testCreateBookOk() throws Exception {
@@ -229,7 +229,7 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql"
+                    "classpath:sql/delete/00.truncate.sql"
             }
     )
     void testListBooksEmptyList() throws Exception {
@@ -246,11 +246,11 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql",
-                    "classpath:02.create_cycle.sql",
-                    "classpath:03.create_series.sql",
-                    "classpath:04.create_book.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/01.create_author.sql",
+                    "classpath:sql/02.create_cycle.sql",
+                    "classpath:sql/03.create_series.sql",
+                    "classpath:sql/04.create_book.sql"
             }
     )
     void testListBooksOk() throws Exception {
@@ -274,7 +274,7 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
+                    "classpath:sql/delete/00.truncate.sql",
             }
     )
     void testGetBookNotFound() throws Exception {
@@ -289,11 +289,11 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql",
-                    "classpath:02.create_cycle.sql",
-                    "classpath:03.create_series.sql",
-                    "classpath:04.create_book.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/01.create_author.sql",
+                    "classpath:sql/02.create_cycle.sql",
+                    "classpath:sql/03.create_series.sql",
+                    "classpath:sql/04.create_book.sql"
             }
     )
     void testGetBookOk() throws Exception {
@@ -315,11 +315,11 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql",
-                    "classpath:02.create_cycle.sql",
-                    "classpath:03.create_series.sql",
-                    "classpath:04.create_book.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/01.create_author.sql",
+                    "classpath:sql/02.create_cycle.sql",
+                    "classpath:sql/03.create_series.sql",
+                    "classpath:sql/04.create_book.sql"
             }
     )
     void testUpdateBookBadRequestAuthorsNotSet() throws Exception {
@@ -361,11 +361,11 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql",
-                    "classpath:02.create_cycle.sql",
-                    "classpath:03.create_series.sql",
-                    "classpath:04.create_book.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/01.create_author.sql",
+                    "classpath:sql/02.create_cycle.sql",
+                    "classpath:sql/03.create_series.sql",
+                    "classpath:sql/04.create_book.sql"
             }
     )
     void testUpdateBookBadRequestInvalidIsbn() throws Exception {
@@ -416,11 +416,11 @@ class BookControllerTest {
     @ParameterizedTest
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql",
-                    "classpath:02.create_cycle.sql",
-                    "classpath:03.create_series.sql",
-                    "classpath:04.create_book.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/01.create_author.sql",
+                    "classpath:sql/02.create_cycle.sql",
+                    "classpath:sql/03.create_series.sql",
+                    "classpath:sql/04.create_book.sql"
             }
     )
     @ValueSource(strings = {
@@ -481,11 +481,11 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql",
-                    "classpath:02.create_cycle.sql",
-                    "classpath:03.create_series.sql",
-                    "classpath:04.create_book.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/01.create_author.sql",
+                    "classpath:sql/02.create_cycle.sql",
+                    "classpath:sql/03.create_series.sql",
+                    "classpath:sql/04.create_book.sql"
             }
     )
     void testUpdateBookOk() throws Exception {
@@ -548,11 +548,11 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql",
-                    "classpath:02.create_cycle.sql",
-                    "classpath:03.create_series.sql",
-                    "classpath:04.create_book.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/01.create_author.sql",
+                    "classpath:sql/02.create_cycle.sql",
+                    "classpath:sql/03.create_series.sql",
+                    "classpath:sql/04.create_book.sql"
             }
     )
     void testDeleteBookNotFound() throws Exception {
@@ -567,11 +567,11 @@ class BookControllerTest {
     @Test
     @Sql(
             value = {
-                    "classpath:delete/00.truncate.sql",
-                    "classpath:01.create_author.sql",
-                    "classpath:02.create_cycle.sql",
-                    "classpath:03.create_series.sql",
-                    "classpath:04.create_book.sql"
+                    "classpath:sql/delete/00.truncate.sql",
+                    "classpath:sql/01.create_author.sql",
+                    "classpath:sql/02.create_cycle.sql",
+                    "classpath:sql/03.create_series.sql",
+                    "classpath:sql/04.create_book.sql"
             }
     )
     void testDeleteBookOk() throws Exception {

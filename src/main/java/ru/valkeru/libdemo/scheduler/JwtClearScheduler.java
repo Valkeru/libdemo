@@ -9,10 +9,10 @@ import ru.valkeru.libdemo.service.core.security.JWTService;
 @RequiredArgsConstructor
 public class JwtClearScheduler {
 
-    private final JWTService JWTService;
+    private final JWTService jwtService;
 
     @Scheduled(cron = "0 */5 * * * *")
     public void schedule() {
-        JWTService.deleteExpiredTokens();
+        jwtService.deleteExpiredTokens();
     }
 }
