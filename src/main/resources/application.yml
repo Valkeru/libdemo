@@ -34,9 +34,7 @@ spring:
 #        javax:
 #          cache:
 #            provider: org.ehcache.jsr107.EhcacheCachingProvider
-    #        enable_lazy_load_no_trans: true
-  # TODO: Разобраться. Теоретически оставлять true - плохая практика, но иначе ломается сериализация
-#    open-in-view: true
+    open-in-view: false
   main:
     banner-mode: off
   autoconfigure:

@@ -1,6 +1,5 @@
 package ru.valkeru.libdemo.web.api.v1;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.web.api.DefaultApi;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.model.view.SeriesView;
 import ru.valkeru.libdemo.web.api.definition.ApiTags;
 
 import java.util.List;
@@ -26,7 +24,6 @@ public interface SeriesApi extends DefaultApi {
             summary = "Получить все серии",
             tags = ApiTags.SERIES
     )
-    @JsonView(SeriesView.SeriesListView.class)
     default ResponseEntity<List<SeriesDto>> listAllSeries() {
         return defaultApiResponse();
     }
@@ -49,7 +46,6 @@ public interface SeriesApi extends DefaultApi {
             }
     )
     @GetMapping("/{id}")
-    @JsonView(SeriesView.SeriesSingleView.class)
     default ResponseEntity<SeriesDto> getSeries(@PathVariable @Schema(description = "ID серии") UUID id) {
         return defaultApiResponse();
     }

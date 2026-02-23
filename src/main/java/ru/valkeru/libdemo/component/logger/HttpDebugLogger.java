@@ -15,10 +15,9 @@ public interface HttpDebugLogger {
      *
      * @param body Тело запроса
      * @param request Запрос
-     * @param deserializationView Вью для десериализации
      *
      */
-    void logRequestBody(Object body, HttpServletRequest request, Class<?> deserializationView);
+    void logRequestBody(Object body, HttpServletRequest request);
 
     /**
      * Логирование тела ответа
@@ -26,8 +25,6 @@ public interface HttpDebugLogger {
      * @param body Тело ответа
      * @param request Запрос
      * @param response Ответ
-     * @param serializationView Вью для сериализации
      */
-    void logResponseBody(Object body, HttpServletRequest request,
-                         HttpServletResponse response, Class<?> serializationView);
+    void logResponseBody(Object body, HttpServletRequest request, HttpServletResponse response);
 }

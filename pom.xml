@@ -29,6 +29,11 @@
         <openfeign-querydsl.version>7.1</openfeign-querydsl.version>
         <sonar-plugin.version>4.0.0.4121</sonar-plugin.version>
         <springdoc.version>3.0.1</springdoc.version>
+
+<!--        Путь по умолчанию к документации OpenAPI для генерации плана тестирования JMeter-->
+        <openapi.generator.maven.plugin.inputSpec>
+            ${project.basedir}/jmeter/api-docs.yaml
+        </openapi.generator.maven.plugin.inputSpec>
     </properties>
 
     <parent>
@@ -126,7 +131,6 @@
                         <artifactId>openapi-generator-maven-plugin</artifactId>
                         <version>${openapi-generator.version}</version>
                         <configuration>
-                            <inputSpec>${project.basedir}/jmeter/api-docs.yaml</inputSpec>
                             <generatorName>jmeter</generatorName>
                             <output>${project.basedir}/jmeter</output>
                         </configuration>
@@ -294,6 +298,7 @@
             <scope>compile</scope>
         </dependency>
 
+<!--        Для клиента elasticsearch требуется более старая версия httpclient-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -352,6 +357,12 @@
             <artifactId>testcontainers-redis</artifactId>
             <version>2.2.4</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.5.0</version>
         </dependency>
     </dependencies>
 

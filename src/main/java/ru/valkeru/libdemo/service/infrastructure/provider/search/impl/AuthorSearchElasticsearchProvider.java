@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.mapper.AuthorMapper;
 import ru.valkeru.libdemo.model.document.AuthorDocument;
@@ -35,11 +34,11 @@ public class AuthorSearchElasticsearchProvider extends AuthorSearchJPAProvider {
     }
 
     @Override
-    public PagedModel<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable) {
+    public Page<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable) {
         try {
             Page<AuthorDocument> documents = elasticsearchRepository.listAllAuthors(filter, pageable);
 
-            return new PagedModel<>(documents.map(mapper::toDto));
+            return documents.map(mapper::toDto);
         } catch (Exception e) {
             log.error("Failed to search authors using elasticsearch, falling back to database", e);
 

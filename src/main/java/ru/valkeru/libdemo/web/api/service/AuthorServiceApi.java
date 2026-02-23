@@ -1,13 +1,11 @@
 package ru.valkeru.libdemo.web.api.service;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.config.OpenApiConfig;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.model.view.AuthorView;
 import ru.valkeru.libdemo.web.api.DefaultApi;
 import ru.valkeru.libdemo.web.api.definition.ApiTags;
 
@@ -57,10 +54,7 @@ public interface AuthorServiceApi extends DefaultApi {
             }
     )
     @PostMapping
-    @JsonView(AuthorView.AuthorSingleView.class)
-    default ResponseEntity<AuthorDto> createAuthor(@RequestBody
-                                                   @Validated(AuthorView.AuthorCreateView.class)
-                                                   @JsonView(AuthorView.AuthorCreateView.class) AuthorDto author) {
+    default ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto author) {
         return defaultApiResponse();
     }
 
@@ -92,12 +86,9 @@ public interface AuthorServiceApi extends DefaultApi {
             }
     )
     @PatchMapping("/{id}")
-    @JsonView(AuthorView.AuthorSingleView.class)
     default ResponseEntity<AuthorDto> updateAuthor(@PathVariable
                                                    @Schema(description = "ID автора") UUID id,
-                                                   @RequestBody
-                                                   @Validated(AuthorView.AuthorUpdateView.class)
-                                                   @JsonView(AuthorView.AuthorUpdateView.class) AuthorDto author) {
+                                                   @RequestBody AuthorDto author) {
         return defaultApiResponse();
     }
 

@@ -9,6 +9,8 @@ import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.model.entity.Book;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
+import ru.valkeru.libdemo.model.transport.BookListDto;
+import ru.valkeru.libdemo.repository.jpa.projection.BookShortProjection;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +19,8 @@ import java.util.List;
         componentModel = MappingConstants.ComponentModel.SPRING
 )
 public interface BookMapper {
+
+    BookListDto toListDto(BookShortProjection projection);
 
     BookDto toDto(Book entity);
 

@@ -28,11 +28,11 @@ public class HttpDebugLoggerImpl extends AbstractHttpDebugLogger {
     }
 
     @Override
-    public void logRequestBody(Object requestBody, HttpServletRequest request, final Class<?> deserializationView) {
+    public void logRequestBody(Object requestBody, HttpServletRequest request) {
         StringBuilder logMessageBuilder = new StringBuilder();
 
         try {
-            buildMessageWithRequestBody(requestBody, request, logMessageBuilder, deserializationView);
+            buildMessageWithRequestBody(requestBody, request, logMessageBuilder);
 
             writeRequestLog(logMessageBuilder.toString());
         } catch (JacksonException e) {
@@ -41,12 +41,11 @@ public class HttpDebugLoggerImpl extends AbstractHttpDebugLogger {
     }
 
     @Override
-    public void logResponseBody(Object body, HttpServletRequest request,
-                                HttpServletResponse response, final Class<?> serializationView) {
+    public void logResponseBody(Object body, HttpServletRequest request, HttpServletResponse response) {
         StringBuilder logMessageBuilder = new StringBuilder();
 
         try {
-            buildMessageWithResponseBody(body, request, response, logMessageBuilder, serializationView);
+            buildMessageWithResponseBody(body, request, response, logMessageBuilder);
 
             writeResponseLog(logMessageBuilder.toString());
         } catch (JacksonException e) {

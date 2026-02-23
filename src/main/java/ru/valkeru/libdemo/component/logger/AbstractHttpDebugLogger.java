@@ -13,14 +13,12 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
 
     private static final String REQUEST_TEMPLATE = "REQUEST: method = [%s]; path = [%s], IP = [%s]";
     private static final String PARAMETERS_TEMPLATE = "; parameters = ";
-//    private static final String SOURCE_TEMPLATE = "; source = "; //NOSONAR
     private static final String DESERIALIZED_TEMPLATE = "; deserialized value = ";
     private static final String RESPONSE_DATA = "; response data = ";
     private static final String SERIALIZED_TEMPLATE = "; serialized value = ";
@@ -53,26 +51,18 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
     }
 
     protected void buildMessageWithRequestBody(Object body, HttpServletRequest request,
-                                               StringBuilder requestLogMessageBuilder,
-                                               final Class<?> deserializationView) {
+                                               StringBuilder requestLogMessageBuilder) {
         formatRequestDataTemplate(request, requestLogMessageBuilder);
-        // На подумать. Основная идея - писать в лог оригинал того, что прислал пользователь.
-        // Но так в лог попадут секреты, скрытые в dto
-//        String originalString = RequestExecutionContext.readRequestBody(); // NOSONAR
 
         requestLogMessageBuilder
-//                .append(SOURCE_TEMPLATE) // NOSONAR
-//                .append(OPENING_BRACKET) // NOSONAR
-//                .append(mapper.writeValueAsString(originalString)) // NOSONAR
-//                .append(CLOSING_BRACKET) // NOSONAR
                 .append(DESERIALIZED_TEMPLATE)
                 .append(OPENING_BRACKET)
-                .append(writeBody(deserializationView, body))
+                .append(writeBody(body))
                 .append(CLOSING_BRACKET);
     }
 
     protected void buildMessageWithResponseBody(Object body, HttpServletRequest request, HttpServletResponse response,
-                                                StringBuilder logMessageBuilder, final Class<?> serializationView) {
+                                                StringBuilder logMessageBuilder) {
         formatRequestDataTemplate(request, logMessageBuilder);
 
         logMessageBuilder
@@ -86,7 +76,7 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
             logMessageBuilder
                     .append(SERIALIZED_TEMPLATE)
                     .append(OPENING_BRACKET)
-                    .append(writeBody(serializationView, body))
+                    .append(writeBody(body))
                     .append(CLOSING_BRACKET);
         }
     }
@@ -121,10 +111,7 @@ public abstract class AbstractHttpDebugLogger implements HttpDebugLogger {
         return parameters;
     }
 
-    private String writeBody(final Class<?> view, final Object body) {
-        return Optional.ofNullable(view)
-                .map(mapper::writerWithView)
-                .orElse(mapper.writer())
-                .writeValueAsString(body);
+    private String writeBody(final Object body) {
+        return mapper.writeValueAsString(body);
     }
 }

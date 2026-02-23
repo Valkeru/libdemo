@@ -13,7 +13,9 @@ import ru.valkeru.libdemo.model.entity.Book;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.QBook;
 import ru.valkeru.libdemo.model.entity.Series;
+import ru.valkeru.libdemo.model.request.book.BookFilter;
 import ru.valkeru.libdemo.repository.jpa.BookRepository;
+import ru.valkeru.libdemo.repository.jpa.projection.BookShortProjection;
 import ru.valkeru.libdemo.service.core.BookService;
 
 import java.util.List;
@@ -39,8 +41,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> getAllBooks() {
-        return repository.findAll(Pageable.unpaged(getDefaultSort()));
+    public Page<BookShortProjection> getAllBooks(BookFilter filter, Pageable pageable) {
+        return repository.findAllBooks(filter, pageable);
     }
 
     @Override

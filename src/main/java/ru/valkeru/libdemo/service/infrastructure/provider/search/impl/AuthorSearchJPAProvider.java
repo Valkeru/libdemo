@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.mapper.AuthorMapper;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
@@ -33,9 +32,9 @@ public class AuthorSearchJPAProvider implements AuthorSearchProvider {
     }
 
     @Override
-    public PagedModel<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable) {
+    public Page<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable) {
         Page<Author> authors = repository.listAllAuthors(filter, pageable);
 
-        return new PagedModel<>(authors.map(mapper::toDto));
+        return authors.map(mapper::toDto);
     }
 }

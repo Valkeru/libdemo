@@ -1,13 +1,11 @@
 package ru.valkeru.libdemo.web.api.service;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.config.OpenApiConfig;
 import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.model.view.BookView;
 import ru.valkeru.libdemo.web.api.DefaultApi;
 import ru.valkeru.libdemo.web.api.definition.ApiTags;
 
@@ -54,10 +51,7 @@ public interface BookServiceApi extends DefaultApi {
             }
     )
     @PostMapping
-    @JsonView(BookView.BookSingleView.class)
-    default ResponseEntity<BookDto> addBook(@RequestBody
-                                    @Validated(BookView.BookCreateView.class)
-                                    @JsonView(BookView.BookCreateView.class) BookDto book) {
+    default ResponseEntity<BookDto> addBook(@RequestBody BookDto book) {
         return defaultApiResponse();
     }
 
@@ -85,12 +79,9 @@ public interface BookServiceApi extends DefaultApi {
             }
     )
     @PatchMapping("/{bookId}")
-    @JsonView(BookView.BookSingleView.class)
     default ResponseEntity<BookDto> updateBook(@PathVariable(name = "bookId")
                                        @Schema(description = "ID книги") UUID id,
-                                       @RequestBody
-                                       @Validated(BookView.BookUpdateView.class)
-                                       @JsonView(BookView.BookUpdateView.class) BookDto book) {
+                                       @RequestBody BookDto book) {
         return defaultApiResponse();
     }
 

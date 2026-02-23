@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -100,6 +101,16 @@ public class LibDemoExceptionHandler {
         log.error("Internal error: {}", e.getMessage(), e);
 
         return buildErrorDto(messageProvider.getInternalErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Hidden
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ErrorDto handlePropertyReference(PropertyReferenceException pre) {
+        log.warn("Property reference exception: {}", pre.getMessage());
+
+        return buildErrorDto("Неверное поле для сортировки: %s".formatted(pre.getPropertyName()), HttpStatus.BAD_REQUEST);
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

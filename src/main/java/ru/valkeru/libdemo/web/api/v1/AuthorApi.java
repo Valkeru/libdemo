@@ -1,6 +1,5 @@
 package ru.valkeru.libdemo.web.api.v1;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,7 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.PagedModel;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +16,6 @@ import ru.valkeru.libdemo.web.api.DefaultApi;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
-import ru.valkeru.libdemo.model.view.AuthorView;
 import ru.valkeru.libdemo.web.api.definition.ApiTags;
 
 import java.util.UUID;
@@ -35,8 +33,7 @@ public interface AuthorApi extends DefaultApi {
             tags = ApiTags.AUTHOR
     )
     @GetMapping
-    @JsonView(AuthorView.AuthorListView.class)
-    default ResponseEntity<PagedModel<AuthorDto>> listAllAuthors(@ParameterObject AuthorFilter filter,
+    default ResponseEntity<Page<AuthorDto>> listAllAuthors(@ParameterObject AuthorFilter filter,
                                                                  @ParameterObject @PageableDefault Pageable pageable) {
         return defaultApiResponse();
     }
@@ -62,7 +59,6 @@ public interface AuthorApi extends DefaultApi {
             }
     )
     @GetMapping("/{id}")
-    @JsonView(AuthorView.AuthorSingleView.class)
     default ResponseEntity<AuthorDto> getAuthor(@PathVariable
                                                 @Schema(description = "ID автора") UUID id) {
         return defaultApiResponse();

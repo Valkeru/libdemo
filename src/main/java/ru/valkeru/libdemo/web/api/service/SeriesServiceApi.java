@@ -1,13 +1,11 @@
 package ru.valkeru.libdemo.web.api.service;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.config.OpenApiConfig;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.model.view.SeriesView;
 import ru.valkeru.libdemo.web.api.DefaultApi;
 import ru.valkeru.libdemo.web.api.definition.ApiTags;
 
@@ -54,10 +51,7 @@ public interface SeriesServiceApi extends DefaultApi {
             }
     )
     @PostMapping
-    @JsonView(SeriesView.SeriesSingleView.class)
-    default ResponseEntity<SeriesDto> createSeries(@RequestBody
-                                           @Validated(SeriesView.SeriesCreateView.class)
-                                           @JsonView(SeriesView.SeriesCreateView.class) SeriesDto series) {
+    default ResponseEntity<SeriesDto> createSeries(@RequestBody SeriesDto series) {
         return defaultApiResponse();
     }
 
@@ -83,12 +77,9 @@ public interface SeriesServiceApi extends DefaultApi {
             }
     )
     @PatchMapping("/{seriesId}")
-    @JsonView(SeriesView.SeriesSingleView.class)
     default ResponseEntity<SeriesDto> updateSeries(@PathVariable(name = "seriesId")
                                            @Schema(description = "ID серии") UUID id,
-                                           @RequestBody
-                                           @Validated(SeriesView.SeriesUpdateView.class)
-                                           @JsonView(SeriesView.SeriesUpdateView.class) SeriesDto series) {
+                                           @RequestBody SeriesDto series) {
         return defaultApiResponse();
     }
 

@@ -1,6 +1,5 @@
 package ru.valkeru.libdemo.component.adapter.request;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -35,13 +34,7 @@ public class RequestBodyLoggingAdapter extends RequestBodyAdviceAdapter {
                                 @NonNull MethodParameter parameter, @NonNull Type targetType,
                                 @NonNull Class<? extends HttpMessageConverter<?>> converterType) {
 
-        JsonView viewAnnotation = parameter.getParameterAnnotation(JsonView.class);
-
-        Class<?> deserializationView = viewAnnotation != null
-                ? viewAnnotation.value()[0]
-                : null;
-
-        debugLogger.logRequestBody(body, request, deserializationView);
+        debugLogger.logRequestBody(body, request);
 
         return super.afterBodyRead(body, inputMessage, parameter, targetType, converterType);
     }

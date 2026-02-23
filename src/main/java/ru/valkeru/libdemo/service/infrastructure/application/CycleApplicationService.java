@@ -1,7 +1,7 @@
 package ru.valkeru.libdemo.service.infrastructure.application;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedModel;
+import org.springframework.data.domain.Page;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 
 import java.util.UUID;
@@ -10,7 +10,7 @@ public interface CycleApplicationService {
 
     CycleDto createOrUpdateCycle(UUID id, CycleDto dto);
 
-    PagedModel<CycleDto> getAllCycles(Pageable pageable);
+    Page<CycleDto> getAllCycles(Pageable pageable);
 
     CycleDto getCycleById(UUID id);
 

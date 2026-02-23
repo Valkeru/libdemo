@@ -2,7 +2,7 @@ package ru.valkeru.libdemo.service.infrastructure.application.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.web.PagedModel;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.mapper.BookMapper;
@@ -14,6 +14,9 @@ import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.model.entity.Book;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
+import ru.valkeru.libdemo.model.request.book.BookFilter;
+import ru.valkeru.libdemo.model.transport.BookListDto;
+import ru.valkeru.libdemo.repository.jpa.projection.BookShortProjection;
 import ru.valkeru.libdemo.service.core.AuthorService;
 import ru.valkeru.libdemo.service.core.BookService;
 import ru.valkeru.libdemo.service.core.CycleService;
@@ -52,10 +55,10 @@ public class BookApplicationServiceImpl implements BookApplicationService {
     }
 
     @Override
-    public PagedModel<BookDto> getAllBooks() {
-        Page<Book> allBooks = bookService.getAllBooks();
+    public Page<BookListDto> getAllBooks(BookFilter filter, Pageable pageable) {
+        Page<BookShortProjection> allBooks = bookService.getAllBooks(filter, pageable);
 
-        return new PagedModel<>(allBooks.map(bookMapper::toDto));
+        return allBooks.map(bookMapper::toListDto);
     }
 
     @Override

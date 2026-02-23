@@ -1,7 +1,7 @@
 package ru.valkeru.libdemo.service.infrastructure.application;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedModel;
+import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Async;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
@@ -12,7 +12,7 @@ public interface AuthorApplicationService {
 
     AuthorDto createOrUpdateAuthor(AuthorDto authorDto);
 
-    PagedModel<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable);
+    Page<AuthorDto> listAllAuthors(AuthorFilter filter, Pageable pageable);
 
     AuthorDto getAuthorById(UUID id);
 

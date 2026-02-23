@@ -3,7 +3,6 @@ package ru.valkeru.libdemo.service.infrastructure.application.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.mapper.CycleMapper;
@@ -33,12 +32,10 @@ public class CycleApplicationServiceImpl implements CycleApplicationService {
     }
 
     @Override
-    public PagedModel<CycleDto> getAllCycles(Pageable pageable) {
+    public Page<CycleDto> getAllCycles(Pageable pageable) {
         Page<Cycle> allCycles = cycleService.getAllCycles(pageable);
 
-        Page<CycleDto> dtoPage = allCycles.map(cycleMapper::toDto);
-
-        return new PagedModel<>(dtoPage);
+        return allCycles.map(cycleMapper::toDto);
     }
 
     @Override

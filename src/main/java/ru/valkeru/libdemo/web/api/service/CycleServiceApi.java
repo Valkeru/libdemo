@@ -1,13 +1,11 @@
 package ru.valkeru.libdemo.web.api.service;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.config.OpenApiConfig;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.model.view.CycleView;
 import ru.valkeru.libdemo.web.api.DefaultApi;
 import ru.valkeru.libdemo.web.api.definition.ApiTags;
 
@@ -54,10 +51,7 @@ public interface CycleServiceApi extends DefaultApi {
             }
     )
     @PostMapping
-    @JsonView(CycleView.CycleSingleView.class)
-    default ResponseEntity<CycleDto> addCycle(@RequestBody
-                                      @Validated(CycleView.CycleCreateView.class)
-                                      @JsonView(CycleView.CycleCreateView.class) CycleDto cycleDto) {
+    default ResponseEntity<CycleDto> addCycle(@RequestBody CycleDto cycleDto) {
         return defaultApiResponse();
     }
 
@@ -93,12 +87,9 @@ public interface CycleServiceApi extends DefaultApi {
             }
     )
     @PatchMapping("/{cycleId}")
-    @JsonView(CycleView.CycleListView.class)
     default ResponseEntity<CycleDto> updateCycle(@PathVariable(name = "cycleId")
                                          @Schema(description = "ID цикла") UUID id,
-                                         @RequestBody
-                                         @Validated(CycleView.CycleUpdateView.class)
-                                         @JsonView(CycleView.CycleUpdateView.class) CycleDto cycleDto) {
+                                         @RequestBody CycleDto cycleDto) {
         return defaultApiResponse();
     }
 

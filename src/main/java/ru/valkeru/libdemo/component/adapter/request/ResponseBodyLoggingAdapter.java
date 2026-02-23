@@ -1,6 +1,5 @@
 package ru.valkeru.libdemo.component.adapter.request;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.MethodParameter;
@@ -43,14 +42,9 @@ public class ResponseBodyLoggingAdapter implements ResponseBodyAdvice<Object> {
                                   @NonNull Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   @NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response) {
 
-        JsonView viewAnnotation = returnType.getMethodAnnotation(JsonView.class);
-        Class<?> serializationView = Optional.ofNullable(viewAnnotation)
-                .map(a -> a.value()[0])
-                .orElse(null);
-
         debugLogger.logResponseBody(
                 body, ((ServletServerHttpRequest) request).getServletRequest(),
-                ((ServletServerHttpResponse) response).getServletResponse(), serializationView
+                ((ServletServerHttpResponse) response).getServletResponse()
         );
 
         return body;

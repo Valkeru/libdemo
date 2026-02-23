@@ -2,7 +2,6 @@ package ru.valkeru.libdemo.service.infrastructure.application.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.mapper.SeriesMapper;
@@ -37,10 +36,10 @@ public class SeriesApplicationServiceImpl implements SeriesApplicationService {
     }
 
     @Override
-    public PagedModel<SeriesDto> listAllSeries() {
+    public Page<SeriesDto> listAllSeries() {
         Page<Series> seriesList = seriesService.listAllSeries();
 
-        return new PagedModel<>(seriesList.map(seriesMapper::toDto));
+        return seriesList.map(seriesMapper::toDto);
     }
 
     @Override

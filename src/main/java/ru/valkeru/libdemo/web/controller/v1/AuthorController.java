@@ -2,7 +2,7 @@ package ru.valkeru.libdemo.web.controller.v1;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedModel;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
@@ -19,8 +19,8 @@ public class AuthorController implements AuthorApi {
     private final AuthorApplicationService authorService;
 
     @Override
-    public ResponseEntity<PagedModel<AuthorDto>> listAllAuthors(AuthorFilter filter, Pageable pageable) {
-        PagedModel<AuthorDto> page = authorService.listAllAuthors(filter, pageable);
+    public ResponseEntity<Page<AuthorDto>> listAllAuthors(AuthorFilter filter, Pageable pageable) {
+        Page<AuthorDto> page = authorService.listAllAuthors(filter, pageable);
 
         return ResponseEntity.ok(page);
     }
