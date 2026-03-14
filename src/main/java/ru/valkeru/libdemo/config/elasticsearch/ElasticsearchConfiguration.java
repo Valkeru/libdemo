@@ -36,7 +36,7 @@ public class ElasticsearchConfiguration {
         return "libdemo_";
     }
 
-    @Bean
+//    @Bean
     public ElasticsearchClient elasticsearchClient() {
         return new ElasticsearchClient(elasticsearchTransport());
     }
@@ -52,7 +52,7 @@ public class ElasticsearchConfiguration {
         return new RestClientTransport(restClient(), mapper);
     }
 
-    @Bean
+//    @Bean
     public RestClient restClient() {
         return RestClient.builder(getHosts())
                 .setDefaultHeaders(getDefaultHeaders())

@@ -17,6 +17,10 @@ java -jar openapi-generator-cli.jar generate -i api-docs_no_tags.yaml -g jmeter
 ```shell
 mvn openapi-generator:generate -P jmeter-test-plan
 ```
+По умолчанию плагин ищет файл jmeter/api-docs.yms, для переопределения требуется передать свойство `openapi.generator.maven.plugin.inputSpec`  
+```shell
+mvn -Dopenapi.generator.maven.plugin.inputSpec=/tmp/docs_no_tags.yaml openapi-generator:generate -P jmeter-test-plan
+```
 Результат должен быть таким:  
 ```shell
 ls -l
@@ -27,9 +31,9 @@ ls -l
 ```
 
 Если из yml не удалить теги, то будет сгенерировано несколько jmx по тегам.  
-Можно использовать, если требуется тестировать только определённую группу эндпоинтов
-(например, только security или service), в остальных случаях так делать не рекомендуется, так как один эндпоинт
-с несколькими тегами окажется во всех соответствующих планах.
+Не рекомендуется так делать, если не требуется тестировать только определённые группы эндпоинтов
+(например, только security или service), так как один эндпоинт с несколькими тегами
+окажется во всех соответствующих планах.
 ```shell
 ls -l
 итого 244

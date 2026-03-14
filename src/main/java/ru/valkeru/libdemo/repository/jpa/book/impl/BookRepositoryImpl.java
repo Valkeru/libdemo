@@ -9,6 +9,7 @@ import com.querydsl.jpa.JPQLSubQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +21,11 @@ import ru.valkeru.libdemo.model.entity.QBook;
 import ru.valkeru.libdemo.model.request.book.BookFilter;
 import ru.valkeru.libdemo.repository.jpa.BaseDslRepository;
 import ru.valkeru.libdemo.repository.jpa.book.BookDslRepository;
-import ru.valkeru.libdemo.repository.jpa.projection.BookShortProjection;
+import ru.valkeru.libdemo.repository.jpa.book.projection.BookShortProjection;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -44,14 +44,12 @@ public class BookRepositoryImpl extends BaseDslRepository<Book> implements BookD
         applyIContainsCondition(filter.getName(), whereClause, qBook.name);
         applyIContainsCondition(filter.getIsbn(), whereClause, qBook.isbn);
 
-        JPAQuery<?> baseQuery = getBaseQuery(filter, whereClause);
+        JPAQuery<?> filterQuery = getBaseFilterQuery(filter, whereClause);
 
-        long count = getCount(baseQuery);
-        if (count == 0) {
+        List<UUID> ids = selectIds(filterQuery, pageable);
+        if (CollectionUtils.isEmpty(ids)) {
             return Page.empty(pageable);
         }
-
-        List<UUID> ids = selectIds(baseQuery, pageable);
 
         Map<UUID, BookShortProjection> transformed = queryFactory
                 .from(qBook)
@@ -73,11 +71,11 @@ public class BookRepositoryImpl extends BaseDslRepository<Book> implements BookD
         return PageableExecutionUtils.getPage(
                 result,
                 pageable,
-                () -> count
+                () -> getCount(filterQuery)
         );
     }
 
-    private JPAQuery<?> getBaseQuery(BookFilter filter, BooleanBuilder whereClause) {
+    private JPAQuery<?> getBaseFilterQuery(BookFilter filter, BooleanBuilder whereClause) {
         JPAQuery<?> baseQuery = queryFactory.from(qBook);
 
         String authorName = filter.getAuthorName();
@@ -92,12 +90,6 @@ public class BookRepositoryImpl extends BaseDslRepository<Book> implements BookD
         }
 
         return baseQuery.where(whereClause);
-    }
-
-    private static long getCount(JPAQuery<?> baseQuery) {
-        JPAQuery<Long> countQuery = baseQuery.clone().select(qBook.id.count());
-
-        return Optional.ofNullable(countQuery.fetchOne()).orElse(0L);
     }
 
     private List<UUID> selectIds(JPAQuery<?> baseQuery, Pageable pageable) {

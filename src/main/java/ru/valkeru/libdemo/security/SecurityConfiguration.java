@@ -32,9 +32,9 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .csrf(AbstractHttpConfigurer::disable) // NOSONAR
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
-                        .requestMatchers("/service/**").hasAnyAuthority(Role.LIBRARIAN.name(), Role.ADMIN.name())
-                        .requestMatchers("/personal/**").hasAuthority(Role.USER.name())
+                        .requestMatchers("/admin/**").hasAuthority(Role.ROLE_ADMIN.name())
+                        .requestMatchers("/service/**").hasAnyAuthority(Role.ROLE_LIBRARIAN.name(), Role.ROLE_ADMIN.name())
+                        .requestMatchers("/personal/**").hasAuthority(Role.ROLE_USER.name())
                         .requestMatchers("/security/revoke-sessions").authenticated()
                         .anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

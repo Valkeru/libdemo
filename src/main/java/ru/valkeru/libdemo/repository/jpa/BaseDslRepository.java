@@ -1,15 +1,19 @@
 package ru.valkeru.libdemo.repository.jpa;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.PathBuilderFactory;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.JPQLSubQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.repository.support.Querydsl;
+
+import java.util.Optional;
 
 public abstract class BaseDslRepository<T> {
 
@@ -19,6 +23,14 @@ public abstract class BaseDslRepository<T> {
     protected BaseDslRepository(Class<T> domainClass, EntityManager em, JPAQueryFactory queryFactory) {
         this.querydsl = new Querydsl(em, new PathBuilderFactory().create(domainClass));
         this.queryFactory = queryFactory;
+    }
+
+    protected long getCount(JPAQuery<?> baseQuery) {
+        return getCount(baseQuery, false);
+    }
+
+    protected long getCountDistinct(JPAQuery<?> baseQuery) {
+        return getCount(baseQuery, true);
     }
 
     protected void applyIContainsCondition(String condition, JPAQuery<?> query, StringPath path) {
@@ -51,5 +63,20 @@ public abstract class BaseDslRepository<T> {
         }
 
         from.where(expression.containsIgnoreCase(condition));
+    }
+
+    /**
+     * Подсчёт записей в БД, соответствующих заданному запросу
+     * @param baseQuery Базовый запрос, используемый для выборки из БД
+     * @param distinct Использовать countDistinct
+     * @return Количество строк в базе (при результате null будет возвращён 0)
+     */
+    private long getCount(JPAQuery<?> baseQuery, boolean distinct) {
+        JPAQuery<?> cloned = baseQuery.clone();
+
+        NumberExpression<Long> countExpression = distinct ? Wildcard.countDistinct : Wildcard.count;
+        JPAQuery<Long> countQuery = cloned.select(countExpression);
+
+        return Optional.ofNullable(countQuery.fetchOne()).orElse(0L);
     }
 }

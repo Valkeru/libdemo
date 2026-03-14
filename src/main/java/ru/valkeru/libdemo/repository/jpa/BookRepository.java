@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.model.entity.Book;
 import ru.valkeru.libdemo.repository.jpa.book.BookDslRepository;
-import ru.valkeru.libdemo.repository.jpa.projection.BookShortProjection;
 
 import java.util.UUID;
 

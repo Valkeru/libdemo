@@ -1,4 +1,4 @@
-package ru.valkeru.libdemo.repository.jpa.projection;
+package ru.valkeru.libdemo.repository.jpa.book.projection;
 
 import java.util.Collection;
 import java.util.UUID;

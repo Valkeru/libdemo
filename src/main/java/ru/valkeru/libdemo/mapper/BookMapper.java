@@ -10,7 +10,7 @@ import ru.valkeru.libdemo.model.entity.Book;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
 import ru.valkeru.libdemo.model.transport.BookListDto;
-import ru.valkeru.libdemo.repository.jpa.projection.BookShortProjection;
+import ru.valkeru.libdemo.repository.jpa.book.projection.BookShortProjection;
 
 import java.util.Collection;
 import java.util.List;

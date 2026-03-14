@@ -8,7 +8,7 @@ import ru.valkeru.libdemo.model.entity.Book;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
 import ru.valkeru.libdemo.model.request.book.BookFilter;
-import ru.valkeru.libdemo.repository.jpa.projection.BookShortProjection;
+import ru.valkeru.libdemo.repository.jpa.book.projection.BookShortProjection;
 
 import java.util.List;
 import java.util.UUID;

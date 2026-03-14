@@ -16,7 +16,7 @@ import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
 import ru.valkeru.libdemo.model.request.book.BookFilter;
 import ru.valkeru.libdemo.model.transport.BookListDto;
-import ru.valkeru.libdemo.repository.jpa.projection.BookShortProjection;
+import ru.valkeru.libdemo.repository.jpa.book.projection.BookShortProjection;
 import ru.valkeru.libdemo.service.core.AuthorService;
 import ru.valkeru.libdemo.service.core.BookService;
 import ru.valkeru.libdemo.service.core.CycleService;

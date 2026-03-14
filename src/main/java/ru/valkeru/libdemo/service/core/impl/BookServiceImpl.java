@@ -3,7 +3,6 @@ package ru.valkeru.libdemo.service.core.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.exception.impl.BookNotFoundException;
 import ru.valkeru.libdemo.mapper.BookMapper;
@@ -11,11 +10,10 @@ import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.model.entity.Book;
 import ru.valkeru.libdemo.model.entity.Cycle;
-import ru.valkeru.libdemo.model.entity.QBook;
 import ru.valkeru.libdemo.model.entity.Series;
 import ru.valkeru.libdemo.model.request.book.BookFilter;
 import ru.valkeru.libdemo.repository.jpa.BookRepository;
-import ru.valkeru.libdemo.repository.jpa.projection.BookShortProjection;
+import ru.valkeru.libdemo.repository.jpa.book.projection.BookShortProjection;
 import ru.valkeru.libdemo.service.core.BookService;
 
 import java.util.List;
@@ -68,9 +66,5 @@ public class BookServiceImpl implements BookService {
         return Optional.ofNullable(dto.getId())
                 .map(this::getBookEntity)
                 .orElse(new Book());
-    }
-
-    private Sort getDefaultSort() {
-        return Sort.by(Sort.Direction.ASC, QBook.book.createdAt.getMetadata().getName());
     }
 }
