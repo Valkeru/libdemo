@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Immutable;
+import ru.valkeru.libdemo.constants.Database;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -26,7 +27,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(schema = "public", name = "user_token")
+@Table(schema = Database.SCHEMA_SECURITY, name = "user_token")
 public class Token {
 
     @Id

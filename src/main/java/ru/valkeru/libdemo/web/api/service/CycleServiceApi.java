@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -51,7 +52,7 @@ public interface CycleServiceApi extends DefaultApi {
             }
     )
     @PostMapping
-    default ResponseEntity<CycleDto> addCycle(@RequestBody CycleDto cycleDto) {
+    default ResponseEntity<CycleDto> addCycle(@RequestBody @Valid CycleDto cycleDto) {
         return defaultApiResponse();
     }
 

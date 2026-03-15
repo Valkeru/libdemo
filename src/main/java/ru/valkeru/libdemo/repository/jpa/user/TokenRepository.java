@@ -8,12 +8,12 @@ import ru.valkeru.libdemo.model.entity.user.Token;
 import ru.valkeru.libdemo.model.entity.user.User;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 public interface TokenRepository extends BaseJpaRepository<Token, UUID> {
 
-    List<Token> getTokensByUserAndIdNot(User user, UUID id);
+    @Modifying
+    void deleteByUserAndIdNot(User user, UUID id);
 
     @Query("select t.jwt from Token t where t.id = :id")
     String getJwtById(UUID id);
@@ -27,16 +27,7 @@ public interface TokenRepository extends BaseJpaRepository<Token, UUID> {
     @Query("select t from Token t where t.refreshToken = :refreshToken and t.refreshTokenExpiry > :now")
     Token getNotExpired(String refreshToken, Instant now);
 
-    @Transactional
     @Modifying
     @Query("delete from Token t where t.refreshTokenExpiry <= :now")
     void deleteExpired(Instant now);
-
-    @Transactional
-    @Modifying
-    @Query("""
-        update Token t set t.jwt = :newJwt, t.refreshToken = :newRefresh,
-             t.refreshTokenExpiry = :newRefreshTokenExpiry where t.id = :id
-    """)
-    void updateTokenById(UUID id, String newJwt, String newRefresh, Instant newRefreshTokenExpiry);
 }

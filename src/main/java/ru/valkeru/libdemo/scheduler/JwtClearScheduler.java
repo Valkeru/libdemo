@@ -3,16 +3,16 @@ package ru.valkeru.libdemo.scheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import ru.valkeru.libdemo.service.core.security.JWTService;
+import ru.valkeru.libdemo.service.infrastructure.application.SecurityApplicationService;
 
 @Component
 @RequiredArgsConstructor
 public class JwtClearScheduler {
 
-    private final JWTService jwtService;
+    private final SecurityApplicationService securityService;
 
     @Scheduled(cron = "0 */5 * * * *")
     public void schedule() {
-        jwtService.deleteExpiredTokens();
+        securityService.deleteExpiredTokens();
     }
 }

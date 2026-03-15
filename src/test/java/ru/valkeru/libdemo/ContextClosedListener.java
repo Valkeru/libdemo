@@ -32,6 +32,7 @@ public class ContextClosedListener implements ApplicationListener<ContextClosedE
 
             statement.execute("DROP SCHEMA IF EXISTS public CASCADE;");
             statement.execute("DROP SCHEMA IF EXISTS library CASCADE;");
+            statement.execute("DROP SCHEMA IF EXISTS security CASCADE;");
 
             log.info("Test database successfully purged");
         } catch (SQLException e) {

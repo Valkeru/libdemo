@@ -21,7 +21,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @Entity
-@Table(schema = Database.Schema.LIBRARY, name = "author", uniqueConstraints = {
+@Table(schema = Database.SCHEMA_LIBRARY, name = "author", uniqueConstraints = {
         @UniqueConstraint(
                 name = "author_full_name_uc",
                 columnNames = {"first_name", "middle_name", "last_name"}

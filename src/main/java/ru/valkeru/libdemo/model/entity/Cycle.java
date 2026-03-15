@@ -23,7 +23,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @Entity
-@Table(schema = Database.Schema.LIBRARY, name = "cycle")
+@Table(schema = Database.SCHEMA_LIBRARY, name = "cycle")
 public class Cycle extends TimestampedEntity {
 
     @Id

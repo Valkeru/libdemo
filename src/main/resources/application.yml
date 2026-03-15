@@ -74,6 +74,10 @@ app:
       secret: uSfKFfguss9AMp7cswFvHEmR4KvqnvfxwE7Fkp4Xj34vof72khNN7cFE7PnWKcLy
       lifetime: 3600
       refresh-lifetime: 604800
+    permissions:
+      ROLE_LIBRARIAN:
+        - BOOK_CREATE
+        - BOOK_UPDATE
   system:
     elasticsearch-enabled: false
 management:

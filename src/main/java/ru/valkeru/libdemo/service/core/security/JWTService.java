@@ -1,11 +1,10 @@
 package ru.valkeru.libdemo.service.core.security;
 
-import jakarta.persistence.Tuple;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.valkeru.libdemo.model.dto.security.TokenPayload;
 import ru.valkeru.libdemo.model.entity.user.Token;
 import ru.valkeru.libdemo.model.entity.user.User;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -17,17 +16,18 @@ public interface JWTService {
      * Возвращает данные о субъекте и его роли, упакованные в кортеж
      * Ключи кортежа - subject и role
      */
-    Tuple getPayload(String token);
+    TokenPayload getPayload(String token);
 
     boolean isValidToken(String token);
 
     /**
      * Сгенерировать токен и сохранить в базу
-     * @param user Пользователь
      *
-     * @return ID сгенерированного токена
+     * @param userDetails  Информация о пользователе
+     * @param user reference на пользователя
+     * @return Сгенерированный токен
      */
-    Token generateToken(UserDetails user);
+    Token generateToken(UserDetails userDetails, User user);
 
     /**
      * Получить токен по refresh
@@ -57,9 +57,9 @@ public interface JWTService {
     UUID getTokenId(String token);
 
     /**
-     * Получить все токены пользователя, кроме текущего
+     * Удалить все токены пользователя, кроме текущего
      */
-    List<Token> getAllTokensExceptPresent(User user, UUID tokenId);
+    void deleteAllTokensExceptPresent(User user, String currentToken);
 
     void deleteExpiredTokens();
 

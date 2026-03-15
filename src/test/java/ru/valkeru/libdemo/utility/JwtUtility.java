@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.model.entity.user.Token;
+import ru.valkeru.libdemo.model.entity.user.User;
 import ru.valkeru.libdemo.service.core.security.JWTService;
 import ru.valkeru.libdemo.service.core.security.UserService;
 
@@ -46,8 +47,9 @@ public class JwtUtility {
     }
 
     private Token getToken(String userName) {
-        UserDetails user = userService.loadUserByUsername(userName);
-        return jwtService.generateToken(user);
+        UserDetails userDetails = userService.loadUserByUsername(userName);
+        User user = userService.getReferenceByUsername(userName);
+        return jwtService.generateToken(userDetails, user);
     }
 
     private boolean isInvalidToken(Token token) {

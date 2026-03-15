@@ -5,8 +5,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Database {
 
-    @UtilityClass
-    public class Schema {
-        public static final String LIBRARY = "library";
-    }
+    public static final String SCHEMA_LIBRARY = "library";
+    public static final String SCHEMA_SECURITY = "security";
 }

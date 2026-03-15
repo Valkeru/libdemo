@@ -1,6 +1,7 @@
 package ru.valkeru.libdemo.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class CycleDto {
     @Schema(description = "ID записи", example = "8e468a24-1cb5-4564-8b91-8ccda21cbce2")
     private UUID id;
 
+    @NotBlank
     @Schema(description = "Название", example = "Хроники Мидкемии")
     private String name;
 }

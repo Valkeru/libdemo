@@ -7,20 +7,24 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import jakarta.persistence.Tuple;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import ru.valkeru.libdemo.model.dto.security.LibraryUser;
+import ru.valkeru.libdemo.model.dto.security.TokenPayload;
 import ru.valkeru.libdemo.model.entity.user.Token;
 import ru.valkeru.libdemo.model.entity.user.User;
 import ru.valkeru.libdemo.repository.jpa.user.TokenRepository;
+import ru.valkeru.libdemo.security.Role;
 import ru.valkeru.libdemo.service.core.security.JWTService;
-import ru.valkeru.libdemo.util.CustomTuple;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -35,6 +39,7 @@ import java.util.UUID;
 public class JWTServiceImpl implements JWTService {
 
     private static final int REFRESH_TOKEN_LENGTH = 32;
+    private static final String CLAIM_AUTHORITIES = "authorities";
 
     private final TokenRepository tokenRepository;
     private final String jwtSecret;
@@ -64,32 +69,36 @@ public class JWTServiceImpl implements JWTService {
     }
 
     @Override
-    public Token generateToken(UserDetails user) {
+    public Token generateToken(UserDetails userDetails, User user) {
         Instant now = Instant.now();
 
         Date iat = Date.from(now);
         Date exp = Date.from(now.plus(Duration.ofSeconds(jwtLifetime)));
 
-        UUID id = UUID.randomUUID();
+        UUID tokenId = UUID.randomUUID();
 
         String jwt = Jwts.builder()
-                .subject(user.getUsername())
-                .issuedAt(iat)
-                .expiration(exp)
-                .claim("role", ((User) user).getRole())
-                .claim("id", id.toString())
-                .signWith(getJwtSigningKey())
-                .compact();
+            .subject(userDetails.getUsername())
+            .issuedAt(iat)
+            .expiration(exp)
+            .claim(CLAIM_AUTHORITIES, getAuthoritiesString(userDetails))
+            .claim("id", tokenId.toString())
+            .signWith(getJwtSigningKey())
+            .compact();
 
         Token token = Token.builder()
-                .id(id)
-                .jwt(jwt)
-                .refreshToken(getRefreshToken())
-                .refreshTokenExpiry(now.plus(Duration.ofSeconds(refreshLifetime)))
-                .user((User) user)
-                .build();
+            .id(tokenId)
+            .jwt(jwt)
+            .refreshToken(getRefreshToken())
+            .refreshTokenExpiry(now.plus(Duration.ofSeconds(refreshLifetime)))
+            .user(user)
+            .build();
 
         return tokenRepository.persist(token);
+    }
+
+    private static @NonNull List<@Nullable String> getAuthoritiesString(UserDetails userDetails) {
+        return userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     }
 
     @Override
@@ -109,13 +118,14 @@ public class JWTServiceImpl implements JWTService {
         Date exp = Date.from(now.plus(Duration.ofSeconds(jwtLifetime)));
 
         String newJwt = Jwts.builder()
-                .subject(payload.getSubject())
-                .issuedAt(iat)
-                .expiration(exp)
-                .claim("role", payload.get("role"))
-                .claim("id", token.getId().toString())
-                .signWith(getJwtSigningKey())
-                .compact();
+            .subject(payload.getSubject())
+            .issuedAt(iat)
+            .expiration(exp)
+            .claim(CLAIM_AUTHORITIES, payload.get(CLAIM_AUTHORITIES))
+            .claim("id", token.getId().toString())
+            .signWith(getJwtSigningKey())
+            .compact();
+
         String newRefresh = getRefreshToken();
 
         Instant refreshTokenExpiry = now.plus(Duration.ofSeconds(refreshLifetime));
@@ -156,18 +166,23 @@ public class JWTServiceImpl implements JWTService {
     }
 
     @Override
-    public List<Token> getAllTokensExceptPresent(User user, UUID tokenId) {
-        return tokenRepository.getTokensByUserAndIdNot(user, tokenId);
+    public void deleteAllTokensExceptPresent(User user, String currentToken) {
+        UUID tokenId = getTokenId(currentToken);
+        tokenRepository.deleteByUserAndIdNot(user, tokenId);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Tuple getPayload(String token) {
+    public TokenPayload getPayload(String token) {
         JwtParser jwtParser = getJwtParser();
 
         Jws<Claims> claimsJws = jwtParser.parseSignedClaims(token);
         Claims payload = claimsJws.getPayload();
 
-        return CustomTuple.of("subject", payload.getSubject(), "role", payload.get("role"));
+        return new TokenPayload(
+            payload.getSubject(),
+            (List<String>) payload.getOrDefault(CLAIM_AUTHORITIES, List.of())
+        );
     }
 
     @Override

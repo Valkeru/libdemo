@@ -1,18 +1,20 @@
 package ru.valkeru.libdemo.service.infrastructure.application.impl;
 
 import io.jsonwebtoken.JwtException;
-import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import ru.valkeru.libdemo.config.security.LibraryPrincipal;
+import ru.valkeru.libdemo.model.dto.security.LibraryPrincipal;
 import ru.valkeru.libdemo.model.dto.security.TokenDto;
+import ru.valkeru.libdemo.model.dto.security.TokenPayload;
 import ru.valkeru.libdemo.model.entity.user.Token;
 import ru.valkeru.libdemo.model.entity.user.User;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
@@ -35,11 +37,13 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
     public TokenDto performSignIn(SignUpRequest request) {
         UserDetails user = userService.loadUserByUsername(request.getUsername());
 
+        String username = user.getUsername();
         if (!userService.isValidPassword(user, request.getPassword())) {
-            throw new BadCredentialsException("Invalid password for user %s".formatted(user.getUsername()));
+            throw new BadCredentialsException("Invalid password for user %s".formatted(username));
         }
 
-        Token token = jwtService.generateToken(user);
+        User referenceByUsername = userService.getReferenceByUsername(username);
+        Token token = jwtService.generateToken(user, referenceByUsername);
 
         return TokenDto.builder()
                 .accessToken(token.getJwt())
@@ -61,9 +65,12 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
                 return null;
             }
 
-            Tuple payload = jwtService.getPayload(actualJwt);
+            TokenPayload payload = jwtService.getPayload(actualJwt);
 
-            return new LibraryPrincipal(payload.get("subject", String.class), payload.get("role", String.class));
+            return new LibraryPrincipal(
+                payload.subject(),
+                getAuthorities(payload.authorities())
+            );
         } catch (JwtException | IllegalArgumentException e) {
             log.warn("Invalid JWT: {}", e.getMessage());
 
@@ -98,18 +105,24 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
         jwtService.deleteToken(tokenId);
     }
 
+    @Transactional
     @Override
     public void revokeTokens(String currentToken) {
-
         String userName = jwtService.getUserName(currentToken);
 
-        User user = (User) userService.loadUserByUsername(userName);
-        UUID tokenId = jwtService.getTokenId(currentToken);
+        User user = userService.getReferenceByUsername(userName);
+        jwtService.deleteAllTokensExceptPresent(user, currentToken);
+    }
 
-        List<Token> tokensToRevoke = jwtService.getAllTokensExceptPresent(user, tokenId);
+    @Transactional
+    @Override
+    public void deleteExpiredTokens() {
+        jwtService.deleteExpiredTokens();
+    }
 
-        for (Token token: tokensToRevoke) {
-            jwtService.deleteToken(token.getId());
-        }
+    private static List<? extends GrantedAuthority> getAuthorities(List<String> authorities) {
+        return authorities.stream()
+            .map(SimpleGrantedAuthority::new)
+            .toList();
     }
 }

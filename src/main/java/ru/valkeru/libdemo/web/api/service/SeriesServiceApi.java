@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -51,7 +52,7 @@ public interface SeriesServiceApi extends DefaultApi {
             }
     )
     @PostMapping
-    default ResponseEntity<SeriesDto> createSeries(@RequestBody SeriesDto series) {
+    default ResponseEntity<SeriesDto> createSeries(@RequestBody @Valid SeriesDto series) {
         return defaultApiResponse();
     }
 
@@ -78,8 +79,8 @@ public interface SeriesServiceApi extends DefaultApi {
     )
     @PatchMapping("/{seriesId}")
     default ResponseEntity<SeriesDto> updateSeries(@PathVariable(name = "seriesId")
-                                           @Schema(description = "ID серии") UUID id,
-                                           @RequestBody SeriesDto series) {
+                                                   @Schema(description = "ID серии") UUID id,
+                                                   @RequestBody @Valid SeriesDto series) {
         return defaultApiResponse();
     }
 

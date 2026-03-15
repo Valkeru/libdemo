@@ -29,7 +29,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @Entity
-@Table(schema = Database.Schema.LIBRARY, name = "series", indexes = {
+@Table(schema = Database.SCHEMA_LIBRARY, name = "series", indexes = {
         @Index(name = "series_cycle_id_ix", columnList = "cycle_id")
 })
 public class Series extends TimestampedEntity {

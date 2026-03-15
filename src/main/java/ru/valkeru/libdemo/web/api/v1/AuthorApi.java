@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import ru.valkeru.libdemo.model.transport.AuthorListDto;
 import ru.valkeru.libdemo.web.api.DefaultApi;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
@@ -33,8 +34,8 @@ public interface AuthorApi extends DefaultApi {
             tags = ApiTags.AUTHOR
     )
     @GetMapping
-    default ResponseEntity<Page<AuthorDto>> listAllAuthors(@ParameterObject AuthorFilter filter,
-                                                                 @ParameterObject @PageableDefault Pageable pageable) {
+    default ResponseEntity<Page<AuthorListDto>> listAllAuthors(@ParameterObject AuthorFilter filter,
+                                                               @ParameterObject @PageableDefault Pageable pageable) {
         return defaultApiResponse();
     }
 

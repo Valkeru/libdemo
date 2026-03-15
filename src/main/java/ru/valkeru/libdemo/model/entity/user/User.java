@@ -13,15 +13,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.jspecify.annotations.NonNull;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import ru.valkeru.libdemo.constants.Database;
 import ru.valkeru.libdemo.security.Role;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -30,8 +24,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema = Database.Schema.LIBRARY, name = "user")
-public class User implements UserDetails {
+@Table(schema = Database.SCHEMA_LIBRARY, name = "user")
+public class User {
 
     @Id
     @Column(name = "id", nullable = false)
@@ -47,10 +41,4 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
-
-    @Override
-    @NonNull
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
 }

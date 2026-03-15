@@ -31,7 +31,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @Entity
-@Table(schema = Database.Schema.LIBRARY, name = "book", indexes = {
+@Table(schema = Database.SCHEMA_LIBRARY, name = "book", indexes = {
         @Index(name = "book_name_ix", columnList = "name"),
         @Index(name = "book_cycle_id_ix", columnList = "cycle_id"),
         @Index(name = "book_series_id_ix", columnList = "series_id")
@@ -71,7 +71,7 @@ public class Book extends TimestampedEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            schema = Database.Schema.LIBRARY,
+            schema = Database.SCHEMA_LIBRARY,
             name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),
             foreignKey = @ForeignKey(name = "book_author_book_id_fk"),

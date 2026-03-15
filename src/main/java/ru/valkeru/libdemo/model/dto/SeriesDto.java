@@ -1,6 +1,7 @@
 package ru.valkeru.libdemo.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -16,6 +17,7 @@ public class SeriesDto {
     @Schema(description = "ID записи", example = "bea5db6f-0c17-471d-a3f4-2c348560adea")
     private UUID id;
 
+    @NotBlank
     @Schema(description = "Название", example = "Стальная Крыса")
     private String name;
 
