@@ -10,12 +10,15 @@ public class RequestIdUtil {
 
     private final String MDC_REQUEST_ID_PROP = "requestId";
 
-    public void setMDCRequestId() {
-        MDC.put(MDC_REQUEST_ID_PROP, UUID.randomUUID().toString());
+    public UUID setMDCRequestId() {
+        UUID requestId = UUID.randomUUID();
+        MDC.put(MDC_REQUEST_ID_PROP, requestId.toString());
+
+        return requestId;
     }
 
-    public String getMDCRequestId() {
-        return MDC.get(MDC_REQUEST_ID_PROP);
+    public UUID getMDCRequestId() {
+        return UUID.fromString(MDC.get(MDC_REQUEST_ID_PROP));
     }
 
     public void clearMDCRequestId() {

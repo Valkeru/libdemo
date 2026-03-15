@@ -9,7 +9,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -121,6 +124,13 @@ public class LibDemoExceptionHandler {
         log.info(getRootMessage(ae));
 
         return buildErrorDto("Неверное имя пользователя или пароль", HttpStatus.UNAUTHORIZED);
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ErrorDto handleAuthorizationDeniedException() {
+        return buildErrorDto("Доступ запрещён", HttpStatus.FORBIDDEN);
     }
 
     private ErrorDto buildErrorDto(Exception e, HttpStatus status) {

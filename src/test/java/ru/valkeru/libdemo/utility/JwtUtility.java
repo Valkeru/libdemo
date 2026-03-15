@@ -3,6 +3,7 @@ package ru.valkeru.libdemo.utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import ru.valkeru.libdemo.model.dto.security.LibraryUser;
 import ru.valkeru.libdemo.model.entity.user.Token;
 import ru.valkeru.libdemo.model.entity.user.User;
 import ru.valkeru.libdemo.service.core.security.JWTService;
@@ -48,7 +49,8 @@ public class JwtUtility {
 
     private Token getToken(String userName) {
         UserDetails userDetails = userService.loadUserByUsername(userName);
-        User user = userService.getReferenceByUsername(userName);
+        User user = userService.getReference(((LibraryUser) userDetails).getId());
+
         return jwtService.generateToken(userDetails, user);
     }
 

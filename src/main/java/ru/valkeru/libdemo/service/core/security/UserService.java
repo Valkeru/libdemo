@@ -4,9 +4,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.valkeru.libdemo.model.entity.user.User;
 
+import java.util.UUID;
+
 public interface UserService extends UserDetailsService {
 
-    User getReferenceByUsername(String username);
+    User getReference(UUID id);
 
     boolean isValidPassword(UserDetails user, String providedPassword);
 

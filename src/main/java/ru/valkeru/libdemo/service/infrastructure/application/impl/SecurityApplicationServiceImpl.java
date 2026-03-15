@@ -1,7 +1,6 @@
 package ru.valkeru.libdemo.service.infrastructure.application.impl;
 
 import io.jsonwebtoken.JwtException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -12,26 +11,63 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import ru.valkeru.libdemo.config.security.RolePermissionProperties;
 import ru.valkeru.libdemo.model.dto.security.LibraryPrincipal;
+import ru.valkeru.libdemo.model.dto.security.LibraryUser;
 import ru.valkeru.libdemo.model.dto.security.TokenDto;
 import ru.valkeru.libdemo.model.dto.security.TokenPayload;
 import ru.valkeru.libdemo.model.entity.user.Token;
 import ru.valkeru.libdemo.model.entity.user.User;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
+import ru.valkeru.libdemo.security.Permission;
+import ru.valkeru.libdemo.security.Role;
 import ru.valkeru.libdemo.service.core.security.JWTService;
 import ru.valkeru.libdemo.service.core.security.UserService;
 import ru.valkeru.libdemo.service.infrastructure.application.SecurityApplicationService;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class SecurityApplicationServiceImpl implements SecurityApplicationService {
 
+    private final Map<Role, List<? extends GrantedAuthority>> roleAuthoritiesMap;
     private final UserService userService;
     private final JWTService jwtService;
+
+    public SecurityApplicationServiceImpl(RolePermissionProperties permissionProperties,
+                                          UserService userService, JWTService jwtService) {
+        this.userService = userService;
+        this.jwtService = jwtService;
+
+        Map<Role, Collection<Permission>> rolePermissionsMap = permissionProperties.getPermissions();
+        Set<Role> roles = rolePermissionsMap.keySet();
+        this.roleAuthoritiesMap = roles.stream()
+            .collect(Collectors.toUnmodifiableMap(
+                Function.identity(),
+                role -> {
+                    Set<String> permissions = rolePermissionsMap.getOrDefault(role, List.of())
+                        .stream()
+                        .map(Permission::name)
+                        .collect(Collectors.toSet());
+
+                    List<String> authorities = new ArrayList<>();
+                    authorities.add(role.name());
+                    authorities.addAll(permissions);
+
+                    return authorities.stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .toList();
+                }
+            ));
+    }
 
     @Override
     public TokenDto performSignIn(SignUpRequest request) {
@@ -42,7 +78,7 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
             throw new BadCredentialsException("Invalid password for user %s".formatted(username));
         }
 
-        User referenceByUsername = userService.getReferenceByUsername(username);
+        User referenceByUsername = userService.getReference(((LibraryUser) user).getId());
         Token token = jwtService.generateToken(user, referenceByUsername);
 
         return TokenDto.builder()
@@ -68,8 +104,10 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
             TokenPayload payload = jwtService.getPayload(actualJwt);
 
             return new LibraryPrincipal(
+                payload.userId(),
                 payload.subject(),
-                getAuthorities(payload.authorities())
+                payload.role(),
+                roleAuthoritiesMap.getOrDefault(payload.role(), List.of())
             );
         } catch (JwtException | IllegalArgumentException e) {
             log.warn("Invalid JWT: {}", e.getMessage());
@@ -108,9 +146,9 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
     @Transactional
     @Override
     public void revokeTokens(String currentToken) {
-        String userName = jwtService.getUserName(currentToken);
+        UUID id = jwtService.getUserId(currentToken);
+        User user = userService.getReference(id);
 
-        User user = userService.getReferenceByUsername(userName);
         jwtService.deleteAllTokensExceptPresent(user, currentToken);
     }
 
@@ -118,11 +156,5 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
     @Override
     public void deleteExpiredTokens() {
         jwtService.deleteExpiredTokens();
-    }
-
-    private static List<? extends GrantedAuthority> getAuthorities(List<String> authorities) {
-        return authorities.stream()
-            .map(SimpleGrantedAuthority::new)
-            .toList();
     }
 }

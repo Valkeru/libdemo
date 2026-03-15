@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,6 +20,7 @@ import ru.valkeru.libdemo.service.infrastructure.application.SecurityApplication
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
@@ -32,17 +34,15 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .csrf(AbstractHttpConfigurer::disable) // NOSONAR
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/**").hasAuthority(Role.ROLE_ADMIN.name())
-                        .requestMatchers("/service/**").hasAnyAuthority(Role.ROLE_LIBRARIAN.name(), Role.ROLE_ADMIN.name())
-                        .requestMatchers("/personal/**").hasAuthority(Role.ROLE_USER.name())
-                        .requestMatchers("/security/revoke-sessions").authenticated()
-                        .anyRequest().permitAll())
+                    .requestMatchers("/service/**").hasAnyRole(Role.ROLE_LIBRARIAN.getRoleName(), Role.ROLE_ADMIN.getRoleName())
+                    .requestMatchers("/security/revoke-sessions").authenticated()
+                    .anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .userDetailsService(userService)
                 .logout(logout -> logout
-                        .logoutUrl("/security/sign-out")
-                        .addLogoutHandler(new LibraryLogoutHandler(securityApplicationService))
-                        .logoutSuccessHandler((rq, rs, auth) -> SecurityContextHolder.clearContext()))
+                    .logoutUrl("/security/sign-out")
+                    .addLogoutHandler(new LibraryLogoutHandler(securityApplicationService))
+                    .logoutSuccessHandler((rq, rs, auth) -> SecurityContextHolder.clearContext()))
                 .addFilterBefore(new TokenValidationFilter(securityApplicationService), BasicAuthenticationFilter.class);
 
         return security.build();

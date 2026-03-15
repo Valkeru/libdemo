@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
@@ -28,7 +27,6 @@ public class AuthorController implements AuthorApi {
     }
 
     @Override
-    @PreAuthorize("hasPermission()")
     public ResponseEntity<AuthorDto> getAuthor(UUID id) {
         return ResponseEntity.ok(authorService.getAuthorById(id));
     }

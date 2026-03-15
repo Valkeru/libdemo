@@ -1,9 +1,12 @@
 package ru.valkeru.libdemo.model.dto.security;
 
-import java.util.List;
+import ru.valkeru.libdemo.security.Role;
+
+import java.util.UUID;
 
 public record TokenPayload(
+    UUID userId,
     String subject,
-    List<String> authorities
+    Role role
 ) {
 }

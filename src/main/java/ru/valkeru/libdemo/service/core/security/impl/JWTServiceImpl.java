@@ -10,12 +10,9 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.model.dto.security.LibraryUser;
@@ -31,7 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -39,7 +35,8 @@ import java.util.UUID;
 public class JWTServiceImpl implements JWTService {
 
     private static final int REFRESH_TOKEN_LENGTH = 32;
-    private static final String CLAIM_AUTHORITIES = "authorities";
+    private static final String CLAIM_ROLE = "role";
+    private static final String CLAIM_USER_ID = "userId";
 
     private final TokenRepository tokenRepository;
     private final String jwtSecret;
@@ -68,6 +65,8 @@ public class JWTServiceImpl implements JWTService {
         this.refreshLifetime = refreshLifetime;
     }
 
+    // В user тут всегда ожидается reference. Использовать только для связки в токене,
+    // остальные данные брать из user details
     @Override
     public Token generateToken(UserDetails userDetails, User user) {
         Instant now = Instant.now();
@@ -77,12 +76,14 @@ public class JWTServiceImpl implements JWTService {
 
         UUID tokenId = UUID.randomUUID();
 
+        LibraryUser libraryUser = (LibraryUser) userDetails;
         String jwt = Jwts.builder()
+            .id(tokenId.toString())
             .subject(userDetails.getUsername())
             .issuedAt(iat)
             .expiration(exp)
-            .claim(CLAIM_AUTHORITIES, getAuthoritiesString(userDetails))
-            .claim("id", tokenId.toString())
+            .claim(CLAIM_USER_ID, libraryUser.getId())
+            .claim(CLAIM_ROLE, libraryUser.getRole())
             .signWith(getJwtSigningKey())
             .compact();
 
@@ -95,10 +96,6 @@ public class JWTServiceImpl implements JWTService {
             .build();
 
         return tokenRepository.persist(token);
-    }
-
-    private static @NonNull List<@Nullable String> getAuthoritiesString(UserDetails userDetails) {
-        return userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     }
 
     @Override
@@ -118,11 +115,12 @@ public class JWTServiceImpl implements JWTService {
         Date exp = Date.from(now.plus(Duration.ofSeconds(jwtLifetime)));
 
         String newJwt = Jwts.builder()
+            .id(token.getId().toString())
             .subject(payload.getSubject())
             .issuedAt(iat)
             .expiration(exp)
-            .claim(CLAIM_AUTHORITIES, payload.get(CLAIM_AUTHORITIES))
-            .claim("id", token.getId().toString())
+            .claim(CLAIM_USER_ID, payload.get(CLAIM_USER_ID))
+            .claim(CLAIM_ROLE, payload.get(CLAIM_ROLE))
             .signWith(getJwtSigningKey())
             .compact();
 
@@ -162,7 +160,7 @@ public class JWTServiceImpl implements JWTService {
         JwtParser parser = getJwtParser();
 
         Jws<Claims> claimsJws = parser.parseSignedClaims(token);
-        return UUID.fromString((String) claimsJws.getPayload().get("id"));
+        return UUID.fromString(claimsJws.getPayload().getId());
     }
 
     @Override
@@ -171,7 +169,6 @@ public class JWTServiceImpl implements JWTService {
         tokenRepository.deleteByUserAndIdNot(user, tokenId);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public TokenPayload getPayload(String token) {
         JwtParser jwtParser = getJwtParser();
@@ -180,8 +177,9 @@ public class JWTServiceImpl implements JWTService {
         Claims payload = claimsJws.getPayload();
 
         return new TokenPayload(
+            UUID.fromString(payload.get(CLAIM_USER_ID, String.class)),
             payload.getSubject(),
-            (List<String>) payload.getOrDefault(CLAIM_AUTHORITIES, List.of())
+            Role.valueOf(payload.get(CLAIM_ROLE, String.class))
         );
     }
 
@@ -208,11 +206,13 @@ public class JWTServiceImpl implements JWTService {
     }
 
     @Override
-    public String getUserName(String token) {
+    public UUID getUserId(String token) {
         JwtParser jwtParser = getJwtParser();
 
         Jws<Claims> claimsJws = jwtParser.parseSignedClaims(token);
-        return claimsJws.getPayload().getSubject();
+        String userId = claimsJws.getPayload().get(CLAIM_USER_ID, String.class);
+
+        return UUID.fromString(userId);
     }
 
     private SecretKey getJwtSigningKey() {

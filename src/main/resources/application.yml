@@ -78,6 +78,7 @@ app:
       ROLE_LIBRARIAN:
         - BOOK_CREATE
         - BOOK_UPDATE
+        - AUTHOR_CREATE
   system:
     elasticsearch-enabled: false
 management:

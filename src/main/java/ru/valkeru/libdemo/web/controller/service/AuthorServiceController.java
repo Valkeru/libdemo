@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import ru.valkeru.libdemo.config.security.annotations.CanCreateAuthor;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.service.infrastructure.application.AuthorApplicationService;
 import ru.valkeru.libdemo.web.api.service.AuthorServiceApi;
@@ -18,6 +19,7 @@ public class AuthorServiceController implements AuthorServiceApi {
     private final AuthorApplicationService authorService;
 
     @Override
+    @CanCreateAuthor
     public ResponseEntity<AuthorDto> createAuthor(@Valid AuthorDto author) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(authorService.createOrUpdateAuthor(author));

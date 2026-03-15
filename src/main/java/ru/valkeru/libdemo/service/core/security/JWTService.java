@@ -64,7 +64,7 @@ public interface JWTService {
     void deleteExpiredTokens();
 
     /**
-     * Извлекает имя пользователя из токена
+     * Извлекает ID пользователя из токена
      */
-    String getUserName(String token);
+    UUID getUserId(String token);
 }
