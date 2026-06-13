@@ -15,18 +15,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.model.request.book.BookFilter;
 import ru.valkeru.libdemo.model.transport.BookListDto;
-import ru.valkeru.libdemo.web.api.DefaultApi;
+import ru.valkeru.libdemo.web.api.LibraryCommonApi;
 import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.web.api.definition.ApiTags;
+import ru.valkeru.libdemo.config.api.ApiTags;
 
 import java.util.UUID;
 
 @RequestMapping("/v1/books")
-public interface BookApi extends DefaultApi {
+public interface BookApi extends LibraryCommonApi {
 
     @Operation(
-            summary = "Получить список книг",
+            summary = "Get books paged list",
             tags = ApiTags.BOOK
     )
     @GetMapping
@@ -38,16 +38,16 @@ public interface BookApi extends DefaultApi {
     }
 
     @Operation(
-            summary = "Информация о книге",
+            summary = "Get a book info",
             tags = ApiTags.BOOK,
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Успех"
+                            description = "Success"
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Данные не найдены",
+                            description = "Data is not exists",
                             content = {
                                     @Content(schema = @Schema(implementation = ErrorDto.class))
                             }
@@ -55,7 +55,7 @@ public interface BookApi extends DefaultApi {
             }
     )
     @GetMapping("/{id}")
-    default ResponseEntity<BookDto> getBookById(@PathVariable @Schema(description = "ID книги") UUID id) {
+    default ResponseEntity<BookDto> getBookById(@PathVariable @Schema(description = "Book ID") UUID id) {
         return defaultApiResponse();
     }
 }

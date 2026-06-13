@@ -11,9 +11,9 @@ public class BookFilter {
     @Schema(description = "ISBN")
     private String isbn;
 
-    @Schema(description = "Название")
+    @Schema(description = "Book title")
     private String name;
 
-    @Schema(description = "Имя автора")
+    @Schema(description = "Book author name")
     private String authorName;
 }

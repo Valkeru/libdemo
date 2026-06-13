@@ -29,17 +29,29 @@ public class SecretSerializer<T> extends ValueSerializer<T> {
     }
 
     @Override
+    public ValueSerializer<?> createContextual(SerializationContext ctxt, BeanProperty property) {
+        if (property != null) {
+            Secret annotation = property.getAnnotation(Secret.class);
+            if (annotation != null) {
+                return new SecretSerializer<>(annotation.absolute());
+            }
+        }
+
+        return super.createContextual(ctxt, property);
+    }
+
+    @Override
     public void serialize(T value, JsonGenerator gen, SerializationContext context) {
         gen.writeString(getMaskedString(value));
     }
 
     /**
-     * Метод возвращает маскированную строку
-     * Значения типов, для которых не определены методы, маскируются значением по умолчанию
-     * null возвращается как есть
+     * Method to get masked string
+     * If masking method for variable type is not defined, default mask value would be returned
+     * null value returns as is
      *
-     * @param value Маскируемое значение
-     * @return Маскированная строка
+     * @param value Value to mask
+     * @return Masked string
      */
     private String getMaskedString(T value) {
         if (absolute) {
@@ -55,12 +67,11 @@ public class SecretSerializer<T> extends ValueSerializer<T> {
     }
 
     /**
-     * Метод для маскирования строк. Пустая строка возвращается как есть.
-     * Единственный символ в строке заменяется на PATTERN. Строки длиной до 10 символов маскируются по половине длины.
-     * Для более длинных строк немаскированными остаются первые 6 символов
+     * Strings masking method. Empty string returns as is
+     * If string contains of a single symbol it will be replaced with PATTERN. String up to 10 symbols length would be masked up to half string length.
+     * For larger strings, first 6 symbols are unmasked
      *
-     * @param value Маскируемое значение
-     * @return Маскированная строка
+     * @param value Value to mask
      */
     private String maskString(String value) {
         if (value.isBlank()) {
@@ -81,17 +92,5 @@ public class SecretSerializer<T> extends ValueSerializer<T> {
 
     private String maskNumber(Number value) {
         return maskString(String.valueOf(value));
-    }
-
-    @Override
-    public ValueSerializer<?> createContextual(SerializationContext ctxt, BeanProperty property) {
-        if (property != null) {
-            Secret annotation = property.getAnnotation(Secret.class);
-            if (annotation != null) {
-                return new SecretSerializer<>(annotation.absolute());
-            }
-        }
-
-        return super.createContextual(ctxt, property);
     }
 }

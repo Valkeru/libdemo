@@ -12,40 +12,53 @@ import ru.valkeru.libdemo.model.entity.Series;
 import ru.valkeru.libdemo.repository.jpa.SeriesRepository;
 import ru.valkeru.libdemo.service.core.SeriesService;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class SeriesServiceImpl implements SeriesService {
 
-    private final SeriesRepository seriesRepository;
+    private final SeriesRepository repository;
     private final SeriesMapper seriesMapper;
 
     @Override
-    public Series createOrUpdateSeries(SeriesDto dto, Cycle cycle, Series series) {
+    public Series createSeries(SeriesDto dto, Cycle cycle) {
+        Series series = new Series();
         seriesMapper.updateSeries(dto, cycle, series);
 
-        return dto.getId() == null
-                ? seriesRepository.persist(series)
-                : seriesRepository.merge(series);
+        return repository.persist(series);
+    }
+
+    @Override
+    public void updateSeries(SeriesDto dto, Cycle cycle, Series series) {
+        seriesMapper.updateSeries(dto, cycle, series);
+
+        repository.merge(series);
     }
 
     @Override
     public Page<Series> listAllSeries() {
-        return seriesRepository.findAll(Pageable.unpaged());
+        return repository.findAll(Pageable.unpaged());
     }
 
     @Override
-    public Series getSeries(UUID id) {
-        return id != null
-                ? seriesRepository.findById(id)
-                    .orElseThrow(() -> SeriesNotFoundException.seriesNotFound(id))
-                : new Series();
+    public Optional<Series> getReference(UUID id) {
+        if (!repository.existsById(id)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(repository.getReferenceById(id));
+    }
+
+    @Override
+    public Optional<Series> findSeries(UUID id) {
+        return repository.findById(id);
     }
 
     @Override
     public void deleteSeriesById(UUID id) {
-        if (seriesRepository.deleteSeriesById(id) == 0) {
+        if (repository.deleteSeriesById(id) == 0) {
             throw SeriesNotFoundException.seriesNotFound(id);
         }
     }

@@ -12,9 +12,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.proxy.HibernateProxy;
 import ru.valkeru.libdemo.constants.Database;
 import ru.valkeru.libdemo.model.entity.base.TimestampedEntity;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -51,4 +53,20 @@ public class Author extends TimestampedEntity {
     @Version
     @Column(name = "version", nullable = false)
     private long version = 1L;
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Author that)) {
+            return false;
+        }
+
+        return Objects.equals(firstName, that.firstName)
+            && Objects.equals(middleName, that.middleName)
+            && Objects.equals(lastName, that.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, middleName, lastName);
+    }
 }

@@ -11,9 +11,9 @@ import ru.valkeru.libdemo.component.message.MessageProvider;
 @Fallback
 public class ShortMessageProvider implements MessageProvider {
 
-    protected static final String BAD_REQUEST_MESSAGE = "Неверный запрос";
-    protected static final String INTERNAL_ERROR_MESSAGE = "Произошла внутренняя ошибка";
-    protected static final String DATA_INTEGRITY_MESSAGE = "Некорректные данные. Проверьте заполнение формы";
+    protected static final String BAD_REQUEST_MESSAGE = "Invalid request";
+    protected static final String INTERNAL_ERROR_MESSAGE = "Internal server error";
+    protected static final String DATA_INTEGRITY_MESSAGE = "Invalid data. Please check data you entered in the form";
 
     @PostConstruct
     protected void logComponentStarted() {

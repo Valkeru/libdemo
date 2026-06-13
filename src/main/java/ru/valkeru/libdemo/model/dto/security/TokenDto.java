@@ -9,7 +9,7 @@ import ru.valkeru.libdemo.annotation.Secret;
 @Getter
 @Setter
 @Builder
-@Schema(description = "Токен для доступа к api")
+@Schema(description = "API access token")
 public class TokenDto {
 
     /**

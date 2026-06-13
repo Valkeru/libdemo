@@ -5,18 +5,20 @@ import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface SeriesService {
 
-    Series createOrUpdateSeries(SeriesDto dto, Cycle cycle, Series series);
+    Series createSeries(SeriesDto dto, Cycle cycle);
+
+    void updateSeries(SeriesDto dto, Cycle cycle, Series series);
 
     Page<Series> listAllSeries();
 
-    /**
-     * Возвращает серию с заданным ID. Если ID == null, возвращает новую сущность
-     */
-    Series getSeries(UUID id);
+    Optional<Series> getReference(UUID id);
+
+    Optional<Series> findSeries(UUID id);
 
     void deleteSeriesById(UUID id);
 }

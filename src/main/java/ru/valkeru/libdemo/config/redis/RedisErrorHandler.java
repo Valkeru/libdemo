@@ -6,10 +6,9 @@ import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.jspecify.annotations.NonNull;
 
 /**
- * Обработчик ошибок работы с кэшем Redis.
- * Если при работе с кэшем произошла ошибка, то исключение проглатывается.
- * В этом случае Spring выполнит обёрнутый метод.
- * Исходная логика библиотеки такова, что исключение бросается дальше
+ * Redis cache errors handler.
+ * Exception would be logged and wrapped method will be executed.
+ * Without this handler exception will be thrown up the stack, so app would be broken if cache is unavailable now
  */
 @Slf4j
 public class RedisErrorHandler implements CacheErrorHandler {

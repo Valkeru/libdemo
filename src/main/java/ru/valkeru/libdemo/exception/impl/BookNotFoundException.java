@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public final class BookNotFoundException extends NotFoundException {
 
-    private static final String BOOK_NOT_FOUND = "Книга %s не найдена";
+    private static final String BOOK_NOT_FOUND = "Book %s not found";
 
     private BookNotFoundException(String message) {
         super(message);

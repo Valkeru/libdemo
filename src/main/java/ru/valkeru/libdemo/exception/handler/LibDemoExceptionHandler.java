@@ -10,9 +10,7 @@ import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -113,7 +111,7 @@ public class LibDemoExceptionHandler {
     public ErrorDto handlePropertyReference(PropertyReferenceException pre) {
         log.warn("Property reference exception: {}", pre.getMessage());
 
-        return buildErrorDto("Неверное поле для сортировки: %s".formatted(pre.getPropertyName()), HttpStatus.BAD_REQUEST);
+        return buildErrorDto("Invalid sort field: %s".formatted(pre.getPropertyName()), HttpStatus.BAD_REQUEST);
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
@@ -123,14 +121,14 @@ public class LibDemoExceptionHandler {
         log.info("Authentication failed");
         log.info(getRootMessage(ae));
 
-        return buildErrorDto("Неверное имя пользователя или пароль", HttpStatus.UNAUTHORIZED);
+        return buildErrorDto("Invalid login or password", HttpStatus.UNAUTHORIZED);
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ErrorDto handleAuthorizationDeniedException() {
-        return buildErrorDto("Доступ запрещён", HttpStatus.FORBIDDEN);
+        return buildErrorDto("Access denied", HttpStatus.FORBIDDEN);
     }
 
     private ErrorDto buildErrorDto(Exception e, HttpStatus status) {

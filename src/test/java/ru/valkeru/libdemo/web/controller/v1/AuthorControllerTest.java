@@ -22,7 +22,7 @@ class AuthorControllerTest extends AbstractIntegrationTest {
                     "classpath:sql/01.create_author.sql"
             }
     )
-    @DisplayName("Получить данные об авторе по ID - успешно")
+    @DisplayName("Get author info by ID - success")
     void testGetAuthorOk() throws Exception {
         performNotAuthenticated(
                 get("%s/{id}".formatted(AuthorApi.AUTHOR_V1_URL), "84c1599c-21e6-47f3-a03b-12f6071da20b")
@@ -42,7 +42,7 @@ class AuthorControllerTest extends AbstractIntegrationTest {
             },
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
     )
-    @DisplayName("Получить данные об авторе по ID - автор не найден")
+    @DisplayName("Get author info by ID - author not found")
     void testGetAuthorNotFound() throws Exception {
         performNotAuthenticated(get("%s/{id}".formatted(AuthorApi.AUTHOR_V1_URL), UUID.randomUUID()))
                 .andExpect(status().isNotFound())
@@ -56,7 +56,7 @@ class AuthorControllerTest extends AbstractIntegrationTest {
                     "classpath:sql/01.create_author.sql"
             }
     )
-    @DisplayName("Получить список авторов")
+    @DisplayName("Get authors list")
     void testAuthorsListOk() throws Exception {
         performNotAuthenticated(get(AuthorApi.AUTHOR_V1_URL))
                 .andExpect(status().isOk())

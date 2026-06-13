@@ -5,10 +5,10 @@ import org.springframework.http.HttpStatus;
 
 @Schema(description = "Представление ошибки обработки запроса")
 public record ErrorDto(
-        @Schema(description = "HTTP статус", example = "NOT_FOUND")
+        @Schema(description = "HTTP status", example = "NOT_FOUND")
         HttpStatus status,
 
-        @Schema(description = "Сообщение об ошибке", example = "Данные не найдены")
+        @Schema(description = "Error message", example = "Data is not exists")
         String message
 ) {
 }

@@ -3,7 +3,6 @@ package ru.valkeru.libdemo.repository.jpa.user;
 import io.hypersistence.utils.spring.repository.BaseJpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.model.entity.user.Token;
 import ru.valkeru.libdemo.model.entity.user.User;
 
@@ -22,7 +21,7 @@ public interface TokenRepository extends BaseJpaRepository<Token, UUID> {
     String getRefreshTokenById(UUID id);
 
     /**
-     * Получить ID токена, если не истёк refresh токен
+     * Get token ID if refresh token is not expired
      */
     @Query("select t from Token t where t.refreshToken = :refreshToken and t.refreshTokenExpiry > :now")
     Token getNotExpired(String refreshToken, Instant now);

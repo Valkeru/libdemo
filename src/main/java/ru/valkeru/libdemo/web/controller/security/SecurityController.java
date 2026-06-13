@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.model.dto.security.TokenDto;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
-import ru.valkeru.libdemo.service.infrastructure.application.SecurityApplicationService;
+import ru.valkeru.libdemo.service.application.SecurityApplicationService;
 import ru.valkeru.libdemo.web.api.security.SecurityApi;
 
 @RestController

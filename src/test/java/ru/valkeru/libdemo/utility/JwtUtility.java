@@ -33,7 +33,7 @@ public class JwtUtility {
 
     public String adminToken() {
         if (isInvalidToken(adminToken)) {
-            adminToken = getToken("default_admin");
+            adminToken = getToken("admin");
         }
 
         return adminToken.getJwt();
@@ -49,7 +49,7 @@ public class JwtUtility {
 
     private Token getToken(String userName) {
         UserDetails userDetails = userService.loadUserByUsername(userName);
-        User user = userService.getReference(((LibraryUser) userDetails).getId());
+        User user = userService.getReference(((LibraryUser) userDetails).id());
 
         return jwtService.generateToken(userDetails, user);
     }

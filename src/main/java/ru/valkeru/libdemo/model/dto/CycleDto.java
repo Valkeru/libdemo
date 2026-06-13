@@ -15,13 +15,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@Schema(description = "Цикл — несколько книг, объединённых общим сеттингом, но с разным сюжетом")
+@Schema(description = "A cycle is several books with a common setting but differs in a plot")
 public class CycleDto {
 
-    @Schema(description = "ID записи", example = "8e468a24-1cb5-4564-8b91-8ccda21cbce2")
+    @Schema(description = "Object ID", example = "8e468a24-1cb5-4564-8b91-8ccda21cbce2")
     private UUID id;
 
     @NotBlank
-    @Schema(description = "Название", example = "Хроники Мидкемии")
+    @Schema(description = "Title", example = "Chronicles of Midkemia")
     private String name;
 }

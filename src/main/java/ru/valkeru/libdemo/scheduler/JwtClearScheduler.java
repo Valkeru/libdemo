@@ -3,7 +3,7 @@ package ru.valkeru.libdemo.scheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import ru.valkeru.libdemo.service.infrastructure.application.SecurityApplicationService;
+import ru.valkeru.libdemo.service.application.SecurityApplicationService;
 
 @Component
 @RequiredArgsConstructor

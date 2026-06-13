@@ -8,12 +8,12 @@ import lombok.Setter;
 @Setter
 public class AuthorFilter {
 
-    @Schema(description = "Имя")
+    @Schema(description = "Author first name")
     private String firstName;
 
-    @Schema(description = "Имя")
+    @Schema(description = "Author last name")
     private String lastName;
 
-    @Schema(description = "Имя")
+    @Schema(description = "Author middle name or names")
     private String middleName;
 }

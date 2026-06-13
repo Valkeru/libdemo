@@ -4,7 +4,7 @@ import ru.valkeru.libdemo.exception.InternalException;
 
 public final class NoCachedRequestException extends InternalException {
 
-    private static final String NO_REQUEST_CACHED = "В хранилище отсутствует кэшированный запрос";
+    private static final String NO_REQUEST_CACHED = "No cached request in the storage";
 
     private NoCachedRequestException(String message) {
         super(message);

@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import ru.valkeru.libdemo.constants.CustomHeaders;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
-import ru.valkeru.libdemo.service.infrastructure.application.SeriesApplicationService;
+import ru.valkeru.libdemo.service.application.SeriesApplicationService;
 import ru.valkeru.libdemo.web.api.service.SeriesServiceApi;
 
 import java.util.UUID;
@@ -17,16 +18,20 @@ public class SeriesServiceController implements SeriesServiceApi {
     private final SeriesApplicationService seriesService;
 
     @Override
-    public ResponseEntity<SeriesDto> createSeries(SeriesDto series) {
+    public ResponseEntity<Void> createSeries(SeriesDto series) {
+        UUID createdId = seriesService.createSeries(series);
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(seriesService.createOrUpdateSeries(series));
+            .header(CustomHeaders.RESOURCE_ID, createdId.toString())
+            .build();
     }
 
     @Override
     public ResponseEntity<SeriesDto> updateSeries(UUID id, SeriesDto series) {
         series.setId(id);
+        seriesService.updateSeries(series);
 
-        return ResponseEntity.ok(seriesService.createOrUpdateSeries(series));
+        return ResponseEntity.noContent().build();
     }
 
     @Override

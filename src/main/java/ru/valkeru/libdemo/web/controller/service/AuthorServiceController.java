@@ -4,10 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
-import ru.valkeru.libdemo.config.security.annotations.CanCreateAuthor;
+import ru.valkeru.libdemo.constants.CustomHeaders;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
-import ru.valkeru.libdemo.service.infrastructure.application.AuthorApplicationService;
+import ru.valkeru.libdemo.service.application.AuthorApplicationService;
 import ru.valkeru.libdemo.web.api.service.AuthorServiceApi;
 
 import java.util.UUID;
@@ -19,21 +20,29 @@ public class AuthorServiceController implements AuthorServiceApi {
     private final AuthorApplicationService authorService;
 
     @Override
-    @CanCreateAuthor
-    public ResponseEntity<AuthorDto> createAuthor(@Valid AuthorDto author) {
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).AUTHOR_CREATE.name())")
+    public ResponseEntity<Void> createAuthor(@Valid AuthorDto author) {
+        author.setId(null);
+
+        UUID createdAuthorID = authorService.createAuthor(author);
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(authorService.createOrUpdateAuthor(author));
+            .header(CustomHeaders.RESOURCE_ID, createdAuthorID.toString())
+            .build();
 
     }
 
     @Override
-    public ResponseEntity<AuthorDto> updateAuthor(UUID id, @Valid AuthorDto author) {
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).AUTHOR_UPDATE.name())")
+    public ResponseEntity<Void> updateAuthor(UUID id, @Valid AuthorDto author) {
         author.setId(id);
+        authorService.updateAuthor(author);
 
-        return ResponseEntity.ok(authorService.createOrUpdateAuthor(author));
+        return ResponseEntity.noContent().build();
     }
 
     @Override
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).AUTHOR_DELETE.name())")
     public ResponseEntity<Void> deleteAuthor(UUID id) {
         authorService.deleteAuthor(id);
 

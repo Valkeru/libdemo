@@ -17,7 +17,7 @@ import ru.valkeru.libdemo.model.entity.base.TimestampedEntity;
 import java.util.UUID;
 
 /**
- * Цикл — несколько книг, объединённых общим сеттингом, но с разным сюжетом
+ * A cycle is several books with a common setting but differs in a plot
  */
 @Getter
 @Setter

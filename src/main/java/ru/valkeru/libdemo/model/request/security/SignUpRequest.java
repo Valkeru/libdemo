@@ -8,16 +8,16 @@ import ru.valkeru.libdemo.annotation.Secret;
 
 @Getter
 @Setter
-@Schema(description = "Данные для регистрации")
+@Schema(description = "Registration data")
 public class SignUpRequest {
 
-    @Schema(description = "Имя пользователя")
-    @Size(max = 12, message = "Имя пользователя должно содержать не более {max} символов")
-    @Size(min = 3, message = "Имя пользователя должно содержать не менее {min} символов")
+    @Schema(description = "User name (login)")
+    @Size(max = 12, message = "Login should be no more {max} characters long")
+    @Size(min = 3, message = "Login should be at least {min} characters long")
     private String username;
 
     @Secret(absolute = true)
-    @Schema(description = "Пароль")
-    @Size(min = 12, message = "Пароль должен содержать не менее {min} символов")
+    @Schema(description = "Password")
+    @Size(min = 12, message = "Password should be at least {min} characters long")
     private String password;
 }

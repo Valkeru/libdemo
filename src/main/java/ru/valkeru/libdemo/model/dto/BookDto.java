@@ -13,18 +13,18 @@ import java.util.UUID;
 @Getter
 @Setter
 @Accessors(chain = true)
-@Schema(description = "Книга")
+@Schema(description = "Book")
 public class BookDto {
 
-    @Schema(description = "ID записи", example = "849ee885-e013-485f-a03f-de0be0403210")
+    @Schema(description = "Object ID", example = "849ee885-e013-485f-a03f-de0be0403210")
     private UUID id;
 
-    @Schema(description = "Название", example = "Ещё один великолепный МИФ")
+    @Schema(description = "Title", example = "Another Fine Myth")
     private String name;
 
     @Size(max = 17, min = 17)
     @Schema(
-            description = "ISBN формата <u>ISBN-13</u>",
+            description = "<u>ISBN-13</u> ISBN",
             example = "978-5-17-049678-5"
     )
     @Pattern(
@@ -32,12 +32,12 @@ public class BookDto {
     )
     private String isbn;
 
-    @Schema(description = "Авторы")
+    @Schema(description = "Authors")
     private Collection<AuthorDto> authors;
 
-    @Schema(description = "Серия")
+    @Schema(description = "Series")
     private SeriesDto series;
 
-    @Schema(description = "Цикл")
+    @Schema(description = "Cycle")
     private CycleDto cycle;
 }

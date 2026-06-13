@@ -12,23 +12,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.valkeru.libdemo.web.api.DefaultApi;
+import ru.valkeru.libdemo.web.api.LibraryCommonApi;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.web.api.definition.ApiTags;
+import ru.valkeru.libdemo.config.api.ApiTags;
 
 import java.util.UUID;
 
 @RequestMapping("/v1/cycle")
-public interface CycleApi extends DefaultApi {
+public interface CycleApi extends LibraryCommonApi {
 
     @Operation(
-            summary = "Получить все циклы",
+            summary = "Get cycles paged list",
             tags = ApiTags.CYCLE,
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Успех"
+                            description = "Success"
                     )
             }
     )
@@ -38,16 +38,16 @@ public interface CycleApi extends DefaultApi {
     }
 
     @Operation(
-            summary = "Получить цикл",
+            summary = "Get a cycle data",
             tags = ApiTags.CYCLE,
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Успех"
+                            description = "Success"
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Данные не найдены",
+                            description = "Data is not exists",
                             content = {
                                     @Content(schema = @Schema(implementation = ErrorDto.class))
                             }

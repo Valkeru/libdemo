@@ -11,15 +11,20 @@ import ru.valkeru.libdemo.model.request.book.BookFilter;
 import ru.valkeru.libdemo.repository.jpa.book.projection.BookShortProjection;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface BookService {
 
-    Book createOrUpdateBook(BookDto bookDto, List<Author> authors, Series series, Cycle cycle);
+    Book createBook(BookDto bookDto, List<Author> authors, Series series, Cycle cycle);
+
+    void updateBook(BookDto bookDto, List<Author> authors, Series series, Cycle cycle, Book book);
 
     Page<BookShortProjection> getAllBooks(BookFilter filter, Pageable pageable);
 
     BookDto getBookById(UUID id);
 
     void deleteBookById(UUID id);
+
+    Optional<Book> findById(UUID id);
 }

@@ -9,18 +9,15 @@ import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.model.entity.Series;
 
-import java.util.Collection;
-import java.util.List;
-
 @Mapper(
-        componentModel = MappingConstants.ComponentModel.SPRING
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    uses = {
+        CycleMapper.class
+    }
 )
 public interface SeriesMapper {
 
-//    @Mapping(target = "cycle", ignore = true)
     SeriesDto toDto(Series entity);
-
-    List<SeriesDto> toDtoList(Collection<Series> seriesCollection);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "name", source = "dto.name")

@@ -15,7 +15,7 @@ spring:
       default-view-inclusion: false
   datasource:
     hikari:
-      maximum-pool-size: 100
+      maximum-pool-size: 30
     driver-class-name: org.postgresql.Driver
   flyway:
     create-schemas: true
@@ -24,16 +24,6 @@ spring:
       - public
       - library
   jpa:
-    properties:
-      hibernate:
-#        integrator_provider: ru.valkeru.libdemo.config.persistence.ClassImportIntegratorProvider
-#        cache:
-#          use_second_level_cache: true
-#          region:
-#            factory_class: org.hibernate.cache.jcache.internal.JCacheRegionFactory
-#        javax:
-#          cache:
-#            provider: org.ehcache.jsr107.EhcacheCachingProvider
     open-in-view: false
   main:
     banner-mode: off
@@ -44,7 +34,7 @@ spring:
 logging:
   config: classpath:logback-spring.xml
   pattern:
-    console: "[%X{requestId:-no-request-id}] %clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd'T'HH:mm:ss.SSSXXX}}){faint} \
+    console: "[%X{requestId:-no-request-id}] [%X{userId:-no-user-id}] %clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd'T'HH:mm:ss.SSSXXX}}){faint} \
                %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} \
                %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"
   level:
@@ -58,10 +48,10 @@ springdoc:
   open-api:
     info:
       version: 0.0.1-alpha
-      title: Вавилонская библиотека
+      title: Babylon library
       license:
         name: WTFPL
-        url: https://natribu.org
+        url: https://example.org
   swagger-ui:
     filter: true
     syntax-highlight:
@@ -75,10 +65,15 @@ app:
       lifetime: 3600
       refresh-lifetime: 604800
     permissions:
-      ROLE_LIBRARIAN:
+      role-manager:
         - BOOK_CREATE
         - BOOK_UPDATE
         - AUTHOR_CREATE
+        - AUTHOR_UPDATE
+        - AUTHOR_DELETE
+      role-librarian:
+        - BOOK_CREATE
+        - BOOK_UPDATE
   system:
     elasticsearch-enabled: false
 management:

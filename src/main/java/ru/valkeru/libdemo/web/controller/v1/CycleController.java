@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.valkeru.libdemo.web.api.v1.CycleApi;
 import ru.valkeru.libdemo.model.dto.CycleDto;
-import ru.valkeru.libdemo.service.infrastructure.application.CycleApplicationService;
+import ru.valkeru.libdemo.service.application.CycleApplicationService;
 
 import java.util.UUID;
 

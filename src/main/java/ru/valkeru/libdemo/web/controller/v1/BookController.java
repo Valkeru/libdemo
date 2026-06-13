@@ -9,7 +9,7 @@ import ru.valkeru.libdemo.model.request.book.BookFilter;
 import ru.valkeru.libdemo.model.transport.BookListDto;
 import ru.valkeru.libdemo.web.api.v1.BookApi;
 import ru.valkeru.libdemo.model.dto.BookDto;
-import ru.valkeru.libdemo.service.infrastructure.application.BookApplicationService;
+import ru.valkeru.libdemo.service.application.BookApplicationService;
 
 import java.util.UUID;
 

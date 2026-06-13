@@ -8,44 +8,43 @@ import ru.valkeru.libdemo.model.entity.user.User;
 import java.util.UUID;
 
 /**
- * Сервис реализует логику работы с jwt
+ * This service is used to implement JWT token handling logic
  */
 public interface JWTService {
 
     /**
-     * Возвращает данные о субъекте и его роли, упакованные в кортеж
-     * Ключи кортежа - subject и role
+     * Principal info and theirs roles
      */
     TokenPayload getPayload(String token);
 
     boolean isValidToken(String token);
 
     /**
-     * Сгенерировать токен и сохранить в базу
+     * Generate token and store into a database
      *
-     * @param userDetails  Информация о пользователе
-     * @param user reference на пользователя
-     * @return Сгенерированный токен
+     * @param userDetails User details
+     * @param user User object (typically should be a reference)
+     * @return Generated token
      */
     Token generateToken(UserDetails userDetails, User user);
 
     /**
-     * Получить токен по refresh
-     * @param refreshToken Действительный refresh токен
+     * Get a jwt using refresh token
+     * @param refreshToken Valid refresh token
      *
-     * @return Сущность токена либо null, если запись по refresh токену не найдена
-     * (refresh токен истёк, токен был отозван или обновлён ранее)
+     * @return Token entity or null, if token wasn't found
+     * (refresh is expired, token is rejected or already rotated)
      */
     Token getByRefreshToken(String refreshToken);
 
     /**
-     * Ротация токена
-     * @param token Обновляемый токен
+     * Token rotation
+     * @param token Token to refresh
      */
     Token refreshToken(Token token);
 
     /**
-     * Возвращает строку jwt токена
+     * Returns a jwt string
      * @param id id токена
      */
     String getJwtById(UUID id);
@@ -57,14 +56,14 @@ public interface JWTService {
     UUID getTokenId(String token);
 
     /**
-     * Удалить все токены пользователя, кроме текущего
+     * Remove all user's token except current token
      */
     void deleteAllTokensExceptPresent(User user, String currentToken);
 
     void deleteExpiredTokens();
 
     /**
-     * Извлекает ID пользователя из токена
+     * Extract user's id from token
      */
     UUID getUserId(String token);
 }

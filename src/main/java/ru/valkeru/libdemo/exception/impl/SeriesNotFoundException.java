@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public final class SeriesNotFoundException extends NotFoundException {
 
-    private static final String SERIES_NOT_FOUND = "Серия с ID %s не найдена";
+    private static final String SERIES_NOT_FOUND = "Series with ID %s not found";
 
     private SeriesNotFoundException(String message) {
         super(message);

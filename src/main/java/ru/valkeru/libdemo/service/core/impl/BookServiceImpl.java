@@ -28,14 +28,18 @@ public class BookServiceImpl implements BookService {
     private final BookMapper mapper;
 
     @Override
-    public Book createOrUpdateBook(BookDto bookDto, List<Author> authors, Series series, Cycle cycle) {
-        Book book = getBookEntity(bookDto);
-
+    public Book createBook(BookDto bookDto, List<Author> authors, Series series, Cycle cycle) {
+        Book book = new Book();
         mapper.updateBookEntity(bookDto, authors, series, cycle, book);
 
-        return bookDto.getId() == null
-                ? repository.persist(book)
-                : repository.merge(book);
+        return repository.persist(book);
+    }
+
+    @Override
+    public void updateBook(BookDto bookDto, List<Author> authors, Series series, Cycle cycle, Book book) {
+        mapper.updateBookEntity(bookDto, authors, series, cycle, book);
+
+        repository.merge(book);
     }
 
     @Override
@@ -57,14 +61,17 @@ public class BookServiceImpl implements BookService {
         }
     }
 
+    @Override
+    public Optional<Book> findById(UUID id) {
+        if (!repository.existsById(id)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(repository.getReferenceById(id));
+    }
+
     private Book getBookEntity(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> BookNotFoundException.bookNotFound(id));
-    }
-
-    private Book getBookEntity(BookDto dto) {
-        return Optional.ofNullable(dto.getId())
-                .map(this::getBookEntity)
-                .orElse(new Book());
     }
 }

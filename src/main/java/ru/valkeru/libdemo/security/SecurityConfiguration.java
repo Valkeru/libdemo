@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import ru.valkeru.libdemo.config.security.TokenValidationFilter;
 import ru.valkeru.libdemo.config.security.LibraryLogoutHandler;
 import ru.valkeru.libdemo.service.core.security.UserService;
-import ru.valkeru.libdemo.service.infrastructure.application.SecurityApplicationService;
+import ru.valkeru.libdemo.service.application.SecurityApplicationService;
 
 @Configuration
 @EnableWebSecurity
@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .csrf(AbstractHttpConfigurer::disable) // NOSONAR
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/service/**").hasAnyRole(Role.ROLE_LIBRARIAN.getRoleName(), Role.ROLE_ADMIN.getRoleName())
+                    .requestMatchers("/service/**").hasAnyRole(Role.getServiceRoleNames())
                     .requestMatchers("/security/revoke-sessions").authenticated()
                     .anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

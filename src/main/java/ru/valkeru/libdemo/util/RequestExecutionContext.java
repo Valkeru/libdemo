@@ -10,6 +10,7 @@ import java.util.Map;
 @UtilityClass
 public class RequestExecutionContext {
 
+    public static final String READ_BODY = "readBody";
     public static final String REQUEST_WRAPPER_KEY = "requestWrapper";
 
     private static final ThreadLocal<Map<String, Object>> contextStorage = ThreadLocal.withInitial(HashMap::new);

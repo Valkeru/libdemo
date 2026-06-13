@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.UUID;
 
 public record AuthorListDto(
-    @Schema(description = "ID записи")
+    @Schema(description = "Object ID")
     UUID id,
-    @Schema(description = "Имя автора", example = "Михаил Афанасьевич Булгаков")
+    @Schema(description = "Author name", example = "Mikhail Afanasievich Bulgakov")
     String fullName) {
 }

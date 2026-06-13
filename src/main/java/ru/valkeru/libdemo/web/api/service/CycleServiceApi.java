@@ -1,6 +1,7 @@
 package ru.valkeru.libdemo.web.api.service;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,113 +15,115 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.config.OpenApiConfig;
+import ru.valkeru.libdemo.constants.CustomHeaders;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.web.api.DefaultApi;
-import ru.valkeru.libdemo.web.api.definition.ApiTags;
+import ru.valkeru.libdemo.web.api.LibraryCommonApi;
+import ru.valkeru.libdemo.config.api.ApiTags;
 
 import java.util.UUID;
 
 @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
 @RequestMapping(CycleServiceApi.CYCLE_SERVICE_URL)
-public interface CycleServiceApi extends DefaultApi {
+public interface CycleServiceApi extends LibraryCommonApi {
 
     String CYCLE_SERVICE_URL = "/service/cycle";
 
     @Operation(
-            summary = "Добавить цикл",
-            tags = {ApiTags.CYCLE, ApiTags.SERVICE},
-            responses = {
-                    @ApiResponse(
-                            responseCode = "201",
-                            description = "Успех"
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Некорректный запрос",
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    ),
-                    @ApiResponse(
-                            responseCode = "409",
-                            description = "Нарушение целостности данных",
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    )
-            }
+        summary = "Add a cycle",
+        tags = {ApiTags.CYCLE, ApiTags.SERVICE},
+        responses = {
+            @ApiResponse(
+                responseCode = "201",
+                description = "Created",
+                headers = @Header(name = CustomHeaders.RESOURCE_ID, ref = OpenApiConfig.RESOURCE_ID_HEADER_REF)
+            ),
+            @ApiResponse(
+                responseCode = "400",
+                description = "Invalid request",
+                content = {
+                    @Content(schema = @Schema(implementation = ErrorDto.class))
+                }
+            ),
+            @ApiResponse(
+                responseCode = "409",
+                description = "Data integrity violation",
+                content = {
+                    @Content(schema = @Schema(implementation = ErrorDto.class))
+                }
+            )
+        }
     )
     @PostMapping
-    default ResponseEntity<CycleDto> addCycle(@RequestBody @Valid CycleDto cycleDto) {
+    default ResponseEntity<Void> addCycle(@RequestBody @Valid CycleDto cycleDto) {
         return defaultApiResponse();
     }
 
     @Operation(
-            summary = "Обновить цикл",
-            tags = {ApiTags.CYCLE, ApiTags.SERVICE},
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Успех"
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Данные не найдены",
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Некорректный запрос",
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    ),
-                    @ApiResponse(
-                            responseCode = "409",
-                            description = "Нарушение целостности данных",
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    )
-            }
+        summary = "Update a cycle data",
+        tags = {ApiTags.CYCLE, ApiTags.SERVICE},
+        responses = {
+            @ApiResponse(
+                responseCode = "204",
+                description = "Updated"
+            ),
+            @ApiResponse(
+                responseCode = "404",
+                description = "Data is not exists",
+                content = {
+                    @Content(schema = @Schema(implementation = ErrorDto.class))
+                }
+            ),
+            @ApiResponse(
+                responseCode = "400",
+                description = "Invalid request",
+                content = {
+                    @Content(schema = @Schema(implementation = ErrorDto.class))
+                }
+            ),
+            @ApiResponse(
+                responseCode = "409",
+                description = "Data integrity violation",
+                content = {
+                    @Content(schema = @Schema(implementation = ErrorDto.class))
+                }
+            )
+        }
     )
     @PatchMapping("/{cycleId}")
-    default ResponseEntity<CycleDto> updateCycle(@PathVariable(name = "cycleId")
-                                         @Schema(description = "ID цикла") UUID id,
-                                         @RequestBody CycleDto cycleDto) {
+    default ResponseEntity<Void> updateCycle(@PathVariable(name = "cycleId")
+                                             @Schema(description = "ID цикла") UUID id,
+                                             @RequestBody CycleDto cycleDto) {
         return defaultApiResponse();
     }
 
     @Operation(
-            summary = "Удалить цикл",
-            tags = {ApiTags.CYCLE, ApiTags.SERVICE},
-            responses = {
-                    @ApiResponse(
-                            responseCode = "204",
-                            description = "Успех"
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Данные не найдены",
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    ),
-                    @ApiResponse(
-                            responseCode = "409",
-                            description = "Нарушение целостности данных",
-                            content = {
-                                    @Content(schema = @Schema(implementation = ErrorDto.class))
-                            }
-                    )
-            }
+        summary = "Remove a cycle",
+        tags = {ApiTags.CYCLE, ApiTags.SERVICE},
+        responses = {
+            @ApiResponse(
+                responseCode = "204",
+                description = "Success"
+            ),
+            @ApiResponse(
+                responseCode = "404",
+                description = "Data is not exists",
+                content = {
+                    @Content(schema = @Schema(implementation = ErrorDto.class))
+                }
+            ),
+            @ApiResponse(
+                responseCode = "409",
+                description = "Data integrity violation",
+                content = {
+                    @Content(schema = @Schema(implementation = ErrorDto.class))
+                }
+            )
+        }
     )
     @DeleteMapping("/{cycleId}")
     default ResponseEntity<Void> deleteCycle(@PathVariable(name = "cycleId")
-                                     @Schema(description = "ID цикла") UUID id) {
+                                             @Schema(description = "ID цикла") UUID id) {
         return defaultApiResponse();
     }
 }

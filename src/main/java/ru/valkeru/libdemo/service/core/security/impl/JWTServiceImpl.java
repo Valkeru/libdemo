@@ -42,12 +42,12 @@ public class JWTServiceImpl implements JWTService {
     private final String jwtSecret;
 
     /**
-     * Время жизни jwt в секундах
+     * JWT lifetime in seconds
      */
     private final Long jwtLifetime;
 
     /**
-     * Время жизни refresh токена в секундах
+     * Refresh token lifetime in seconds
      */
     private final Long refreshLifetime;
 
@@ -65,8 +65,8 @@ public class JWTServiceImpl implements JWTService {
         this.refreshLifetime = refreshLifetime;
     }
 
-    // В user тут всегда ожидается reference. Использовать только для связки в токене,
-    // остальные данные брать из user details
+    // Reference is typically expected for User object. It should be only used to create a relation in Token entity,
+    // UserDetails should be used as data source
     @Override
     public Token generateToken(UserDetails userDetails, User user) {
         Instant now = Instant.now();
@@ -82,8 +82,8 @@ public class JWTServiceImpl implements JWTService {
             .subject(userDetails.getUsername())
             .issuedAt(iat)
             .expiration(exp)
-            .claim(CLAIM_USER_ID, libraryUser.getId())
-            .claim(CLAIM_ROLE, libraryUser.getRole())
+            .claim(CLAIM_USER_ID, libraryUser.id())
+            .claim(CLAIM_ROLE, libraryUser.role())
             .signWith(getJwtSigningKey())
             .compact();
 

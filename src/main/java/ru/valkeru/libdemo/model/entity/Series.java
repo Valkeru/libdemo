@@ -22,8 +22,8 @@ import ru.valkeru.libdemo.model.entity.base.TimestampedEntity;
 import java.util.UUID;
 
 /**
- * Серия — несколько книг, объединённых общим сеттингом и персонажами <br/>
- * Может входить в цикл
+ * A series is several books with a common setting and characters <br/>
+ * Series may be a part of a cycle
  */
 @Getter
 @Setter

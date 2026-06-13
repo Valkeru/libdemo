@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.config.OpenApiConfig;
 import ru.valkeru.libdemo.model.dto.security.TokenDto;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
-import ru.valkeru.libdemo.web.api.DefaultApi;
-import ru.valkeru.libdemo.web.api.definition.ApiTags;
+import ru.valkeru.libdemo.web.api.LibraryCommonApi;
+import ru.valkeru.libdemo.config.api.ApiTags;
 
 @RequestMapping("/security")
-public interface SecurityApi extends DefaultApi {
+public interface SecurityApi extends LibraryCommonApi {
 
     @Operation(
-            summary = "Регистрация",
+            summary = "New user sign up",
             tags = ApiTags.SECURITY
     )
     @PostMapping("/sign-up")
@@ -29,7 +29,7 @@ public interface SecurityApi extends DefaultApi {
     }
 
     @Operation(
-            summary = "Вход",
+            summary = "User logging in",
             tags = ApiTags.SECURITY
     )
     @PostMapping("/sign-in")
@@ -38,7 +38,7 @@ public interface SecurityApi extends DefaultApi {
     }
 
     @Operation(
-            summary = "Выполнить ротацию access токена",
+            summary = "Rotate an access token",
             tags = ApiTags.SECURITY
     )
     @PostMapping("/refresh-token")
@@ -47,7 +47,7 @@ public interface SecurityApi extends DefaultApi {
     }
 
     @Operation(
-            summary = "Завершить все сессии, кроме текущей",
+            summary = "Terminate all sessions except current session",
             tags = ApiTags.SECURITY,
             security = @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
     )

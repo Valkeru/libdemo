@@ -6,4 +6,5 @@ import lombok.experimental.UtilityClass;
 public class CustomHeaders {
 
     public static final String REQUEST_ID = "X-Request-ID";
+    public static final String RESOURCE_ID = "X-Resource-ID";
 }

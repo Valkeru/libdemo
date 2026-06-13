@@ -11,16 +11,16 @@ import java.util.UUID;
 @Getter
 @Setter
 @Accessors(chain = true)
-@Schema(description = "Серия — несколько книг, объединённых общим сеттингом и персонажами")
+@Schema(description = "A series is several books with a common setting and characters. Series may be a part of a cycle")
 public class SeriesDto {
 
-    @Schema(description = "ID записи", example = "bea5db6f-0c17-471d-a3f4-2c348560adea")
+    @Schema(description = "Object ID", example = "bea5db6f-0c17-471d-a3f4-2c348560adea")
     private UUID id;
 
     @NotBlank
-    @Schema(description = "Название", example = "Стальная Крыса")
+    @Schema(description = "Title", example = "The Stainless Steel Rat")
     private String name;
 
-    @Schema(description = "Цикл")
+    @Schema(description = "Cycle ID")
     private CycleDto cycle;
 }

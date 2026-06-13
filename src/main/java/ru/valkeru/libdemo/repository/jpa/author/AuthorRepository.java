@@ -9,11 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.model.entity.Author;
 import ru.valkeru.libdemo.repository.jpa.author.qdsl.AuthorDslRepository;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface AuthorRepository extends BaseJpaRepository<Author, UUID>, AuthorDslRepository {
-
-    Author getAuthorById(UUID id);
 
     @Transactional
     @Modifying
@@ -21,4 +22,6 @@ public interface AuthorRepository extends BaseJpaRepository<Author, UUID>, Autho
     int deleteAuthorById(UUID id);
 
     Page<Author> findAll(Pageable pageable);
+
+    List<Author> findByIdIn(Collection<UUID> ids);
 }

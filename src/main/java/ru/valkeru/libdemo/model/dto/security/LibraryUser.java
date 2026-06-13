@@ -1,7 +1,7 @@
 package ru.valkeru.libdemo.model.dto.security;
 
-import lombok.Getter;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.valkeru.libdemo.security.Role;
@@ -10,27 +10,23 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-@Getter
-public class LibraryUser implements UserDetails {
-
-    private final UUID id;
-
-    private final String username;
-
-    private final String password;
-
-    private final Role role;
-
-    public LibraryUser(UUID id, String username, String password, Role role) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.role = role;
-    }
+public record LibraryUser(UUID id, String username, String password, Role role) implements UserDetails {
 
     @Override
     @NonNull
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
+    }
+
+    @Override
+    @Nullable
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    @NonNull
+    public String getUsername() {
+        return username;
     }
 }

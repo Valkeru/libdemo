@@ -6,14 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Этой аннотацией должны быть помечены поля DTO, подлежащие маскированию в логе
+ * Annotation to mark secret fields to be masked in log
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface Secret {
 
     /**
-     * Указывает, что строка должна быть маскирована полностью
+     * Indicates string should be masked completely
      */
     boolean absolute() default false;
 }

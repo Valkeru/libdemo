@@ -8,20 +8,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.valkeru.libdemo.web.api.DefaultApi;
+import ru.valkeru.libdemo.web.api.LibraryCommonApi;
 import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.web.api.definition.ApiTags;
+import ru.valkeru.libdemo.config.api.ApiTags;
 
 import java.util.List;
 import java.util.UUID;
 
-@RequestMapping("/v1/series")
-public interface SeriesApi extends DefaultApi {
+@RequestMapping(SeriesApi.SERIES_V1_URL)
+public interface SeriesApi extends LibraryCommonApi {
+
+    String SERIES_V1_URL = "/v1/series";
 
     @GetMapping
     @Operation(
-            summary = "Получить все серии",
+            summary = "Get series paged list",
             tags = ApiTags.SERIES
     )
     default ResponseEntity<List<SeriesDto>> listAllSeries() {
@@ -29,16 +31,16 @@ public interface SeriesApi extends DefaultApi {
     }
 
     @Operation(
-            summary = "Данные о серии",
+            summary = "Get a series data",
             tags = ApiTags.SERIES,
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Успех"
+                            description = "Success"
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Данные не найдены",
+                            description = "Data is not exists",
                             content = {
                                     @Content(schema = @Schema(implementation = ErrorDto.class))
                             }
@@ -46,7 +48,7 @@ public interface SeriesApi extends DefaultApi {
             }
     )
     @GetMapping("/{id}")
-    default ResponseEntity<SeriesDto> getSeries(@PathVariable @Schema(description = "ID серии") UUID id) {
+    default ResponseEntity<SeriesDto> getSeries(@PathVariable @Schema(description = "Series ID") UUID id) {
         return defaultApiResponse();
     }
 }

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public final class CycleNotFoundException extends NotFoundException {
 
-    private static final String CYCLE_NOT_FOUND = "Цикл %s не найден";
+    private static final String CYCLE_NOT_FOUND = "Cycle %s not found";
 
     private CycleNotFoundException(String message) {
         super(message);

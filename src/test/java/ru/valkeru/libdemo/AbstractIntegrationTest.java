@@ -45,4 +45,11 @@ public abstract class AbstractIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON)
         );
     }
+
+    protected final ResultActions performAsAdmin(MockHttpServletRequestBuilder builder) throws Exception {
+        return mockMvc.perform(
+            builder.header(OpenApiConfig.ACCESS_TOKEN_HEADER_NAME, jwtUtility.adminToken())
+                .accept(MediaType.APPLICATION_JSON)
+        );
+    }
 }

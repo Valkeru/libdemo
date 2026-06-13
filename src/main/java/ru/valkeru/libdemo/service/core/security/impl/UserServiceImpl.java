@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import ru.valkeru.libdemo.model.dto.security.LibraryUser;
 import ru.valkeru.libdemo.model.entity.user.User;
 import ru.valkeru.libdemo.repository.jpa.user.UserRepository;
 import ru.valkeru.libdemo.service.core.security.UserService;
@@ -27,10 +26,8 @@ public class UserServiceImpl implements UserService {
     @NonNull
     @Override
     public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
+        return userRepository.findByUsername(username)
             .orElseThrow(() -> getUsernameNotFoundException(username));
-
-        return new LibraryUser(user.getId(), username, user.getPassword(), user.getRole());
     }
 
     @Override

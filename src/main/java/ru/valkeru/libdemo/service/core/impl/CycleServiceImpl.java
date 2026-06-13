@@ -11,6 +11,7 @@ import ru.valkeru.libdemo.model.entity.Cycle;
 import ru.valkeru.libdemo.repository.jpa.CycleRepository;
 import ru.valkeru.libdemo.service.core.CycleService;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,13 +22,23 @@ public class CycleServiceImpl implements CycleService {
     private final CycleMapper mapper;
 
     @Override
-    public Cycle createOrUpdateCycle(CycleDto dto) {
-        Cycle entity = getCycleById(dto.getId());
-        mapper.updateCycle(dto, entity);
+    public Cycle createCycle(CycleDto dto) {
+        Cycle cycle = new Cycle();
+        mapper.updateCycle(dto, cycle);
 
-        return dto.getId() == null
-                ? repository.persist(entity)
-                : repository.merge(entity);
+        return repository.persist(cycle);
+    }
+
+    @Override
+    public void updateCycle(CycleDto dto, Cycle cycle) {
+        mapper.updateCycle(dto, cycle);
+
+        repository.merge(cycle);
+    }
+
+    @Override
+    public Optional<Cycle> findById(UUID id) {
+        return repository.findById(id);
     }
 
     @Override
@@ -36,11 +47,12 @@ public class CycleServiceImpl implements CycleService {
     }
 
     @Override
-    public Cycle getCycleById(UUID id) {
-        return id != null
-                ? repository.findById(id)
-                    .orElseThrow(() -> CycleNotFoundException.cycleNotFound(id))
-                : new Cycle();
+    public Optional<Cycle> getReference(UUID id) {
+        if (!repository.existsById(id)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(repository.getReferenceById(id));
     }
 
     @Override
