@@ -19,24 +19,3 @@ FROM public.user_token;
 DROP TABLE public.user_token;
 
 CREATE INDEX refresh_token_ix ON security.user_token (refresh_token);
-
-CREATE TABLE security.role
-(
-    name VARCHAR(20) PRIMARY KEY NOT NULL
-);
-CREATE TABLE security.permissions
-(
-    id         UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
-    role_name  VARCHAR(20),
-    permission VARCHAR(50),
-    CONSTRAINT permission_role_fk FOREIGN KEY (role_name) REFERENCES security.role (name)
-);
-INSERT INTO security.role
-VALUES ('ROLE_ADMIN'),
-       ('ROLE_LIBRARIAN'),
-       ('ROLE_USER');
-
-
-ALTER TABLE library."user"
-    ADD CONSTRAINT user_role_fk FOREIGN KEY (role) REFERENCES security.role (name);
-

@@ -19,8 +19,8 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 @EnableAsync
 @SpringBootApplication
 @EnableJpaRepositories(
-        basePackages = {"ru.valkeru.libdemo.repository.jpa"},
-        repositoryBaseClass = BaseJpaRepositoryImpl.class
+    basePackages = {"ru.valkeru.libdemo.domain.repository.jpa"},
+    repositoryBaseClass = BaseJpaRepositoryImpl.class
 )
 @EnableConfigurationProperties({
     SystemConfiguration.class,
@@ -34,6 +34,6 @@ public class LibdemoApplication {
         System.setProperty(AppEnvironment.ENV_INSTANCE_ID, UUID.randomUUID().toString());
 
         new SpringApplicationBuilder(LibdemoApplication.class)
-                .run();
+            .run();
     }
 }

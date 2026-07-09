@@ -1,17 +1,19 @@
 package ru.valkeru.libdemo.service.application;
 
 import org.springframework.data.domain.Page;
-import ru.valkeru.libdemo.model.dto.SeriesDto;
+import org.springframework.data.domain.Pageable;
+import ru.valkeru.libdemo.model.dto.series.SeriesDto;
+import ru.valkeru.libdemo.model.dto.series.SeriesEditDto;
 
 import java.util.UUID;
 
 public interface SeriesApplicationService {
 
-    UUID createSeries(SeriesDto dto);
+    UUID createSeries(SeriesEditDto dto);
 
-    void updateSeries(SeriesDto dto);
+    void updateSeries(UUID id, SeriesEditDto dto);
 
-    Page<SeriesDto> listAllSeries();
+    Page<SeriesDto> listAllSeries(Pageable pageable);
 
     SeriesDto getSeriesById(UUID id);
 

@@ -6,27 +6,22 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.config.OpenApiConfig;
-import ru.valkeru.libdemo.constants.CustomHeaders;
 import ru.valkeru.libdemo.model.dto.BookDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.web.api.LibraryCommonApi;
 import ru.valkeru.libdemo.config.api.ApiTags;
 
 import java.util.UUID;
 
-@SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
-@RequestMapping(BookServiceApi.BOOK_SERVICE_URL)
-public interface BookServiceApi extends LibraryCommonApi {
-
-    String BOOK_SERVICE_URL = "/service/book";
+public interface BookServiceApi {
 
     @Operation(
         summary = "Add a book",
@@ -35,7 +30,7 @@ public interface BookServiceApi extends LibraryCommonApi {
             @ApiResponse(
                 responseCode = "201",
                 description = "Success",
-                headers = @Header(name = CustomHeaders.RESOURCE_ID, ref = OpenApiConfig.RESOURCE_ID_HEADER_REF)
+                headers = @Header(name = HttpHeaders.LOCATION)
             ),
             @ApiResponse(
                 responseCode = "400",
@@ -51,12 +46,12 @@ public interface BookServiceApi extends LibraryCommonApi {
                     @Content(schema = @Schema(implementation = ErrorDto.class))
                 }
             )
-        }
+        },
+        security = @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
     )
-    @PostMapping
-    default ResponseEntity<Void> addBook(@RequestBody BookDto book) {
-        return defaultApiResponse();
-    }
+    @PostMapping("/service/book")
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).BOOK_CREATE.name())")
+    ResponseEntity<Void> addBook(@RequestBody BookDto book);
 
     @Operation(
         summary = "Update a book data",
@@ -79,26 +74,24 @@ public interface BookServiceApi extends LibraryCommonApi {
                     @Content(schema = @Schema(implementation = ErrorDto.class))
                 }
             )
-        }
+        },
+        security = @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
     )
-    @PatchMapping("/{bookId}")
-    default ResponseEntity<Void> updateBook(@PathVariable(name = "bookId")
-                                               @Schema(description = "Book ID") UUID id,
-                                               @RequestBody BookDto book) {
-        return defaultApiResponse();
-    }
+    @PatchMapping("/service/book/{id}")
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).BOOK_UPDATE.name())")
+    ResponseEntity<Void> updateBook(@PathVariable @Schema(description = "Book ID") UUID id,
+                                    @RequestBody BookDto book);
 
     @Operation(
         summary = "Add a book copy",
         tags = { ApiTags.BOOK, ApiTags.SERVICE },
-        responses = @ApiResponse(responseCode = "202", description = "Success", headers = {
-            @Header(name = CustomHeaders.RESOURCE_ID, ref = OpenApiConfig.RESOURCE_ID_HEADER_REF)
+        responses = @ApiResponse(responseCode = "201", description = "Success", headers = {
+            @Header(name = HttpHeaders.LOCATION)
         })
     )
-    @PostMapping("/add-copy")
-    default ResponseEntity<Void> addBookCopy() {
-        return defaultApiResponse();
-    }
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).BOOK_INSTANCE_CREATE.name())")
+    @PostMapping("/service/book/add-copy")
+    ResponseEntity<Void> addBookCopy();
 
     @Operation(
         summary = "Delete a book",
@@ -115,11 +108,10 @@ public interface BookServiceApi extends LibraryCommonApi {
                     @Content(schema = @Schema(implementation = ErrorDto.class))
                 }
             )
-        }
+        },
+        security = @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
     )
-    @DeleteMapping("/{bookId}")
-    default ResponseEntity<Void> deleteBookById(@PathVariable(name = "bookId")
-                                                @Schema(description = "Book ID") UUID id) {
-        return defaultApiResponse();
-    }
+    @DeleteMapping("/service/book/{id}")
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).BOOK_DELETE.name())")
+    ResponseEntity<Void> deleteBookById(@PathVariable @Schema(description = "Book ID") UUID id);
 }

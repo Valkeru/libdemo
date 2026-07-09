@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.valkeru.libdemo.constants.TestConstants.SERIES_ID;
 
 @Sql(value = "classpath:sql/delete/00.truncate.sql")
 @Sql(value = "classpath:sql/delete/00.truncate.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
@@ -27,12 +28,12 @@ class SeriesControllerTest extends AbstractIntegrationTest {
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.size()").value(0))
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.size()").value(0))
                 .andDo(print());
 
         mockMvc.perform(
-                        get("/v1/series/{seriesId}", "caa60384-eccf-4c68-973a-5a69421c56ed")
+                        get("/v1/series/{id}", "caa60384-eccf-4c68-973a-5a69421c56ed")
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound())
@@ -53,16 +54,16 @@ class SeriesControllerTest extends AbstractIntegrationTest {
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.size()").value(2))
                 .andDo(print());
 
         mockMvc.perform(
-                        get("/v1/series/{seriesId}", "697792d6-8d57-4d6f-9ea2-c91b01159612")
+                        get("/v1/series/{id}", SERIES_ID)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("test_42db2cab8e"))
+                .andExpect(jsonPath("$.title").value("test_42db2cab8e"))
                 .andDo(print());
     }
 }

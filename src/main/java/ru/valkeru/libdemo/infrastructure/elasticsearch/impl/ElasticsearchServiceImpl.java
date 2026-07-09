@@ -23,9 +23,11 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         log.info("Create or update elasticsearch index {} requested", indexName);
 
         if (indexOperations.exists()) {
-            log.info("Index {} exists, update mapping only", indexOperations);
+            log.info("Index {} exists, only update mapping", indexOperations);
 
             indexOperations.putMapping();
+
+            return;
         }
 
         indexOperations.create(indexOperations.createSettings(), indexOperations.createMapping());

@@ -2,7 +2,7 @@ package ru.valkeru.libdemo.service.core.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import ru.valkeru.libdemo.model.entity.user.User;
+import ru.valkeru.libdemo.domain.entity.user.User;
 
 import java.util.UUID;
 

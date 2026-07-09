@@ -4,7 +4,7 @@ CREATE TABLE library.author
 (
     id          UUID                        NOT NULL,
     created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at  TIMESTAMP WITHOUT TIME ZONE,
     first_name  VARCHAR(255)                NOT NULL,
     middle_name VARCHAR(255),
     last_name   VARCHAR(255)                NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE library.book
 (
     id         UUID                        NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
     name       TEXT                        NOT NULL,
     isbn       CHAR(17)                    NOT NULL,
     cycle_id   UUID,
@@ -36,7 +36,7 @@ CREATE TABLE library.cycle
 (
     id         UUID                        NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
     name       TEXT,
     version    BIGINT                      NOT NULL DEFAULT 1,
     CONSTRAINT pk_cycle PRIMARY KEY (id)
@@ -46,7 +46,7 @@ CREATE TABLE library.series
 (
     id         UUID                        NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
     name       TEXT                        NOT NULL,
     cycle_id   UUID,
     version    BIGINT                      NOT NULL DEFAULT 1,

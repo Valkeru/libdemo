@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import ru.valkeru.libdemo.model.entity.user.User;
-import ru.valkeru.libdemo.repository.jpa.user.UserRepository;
+import ru.valkeru.libdemo.domain.entity.user.User;
+import ru.valkeru.libdemo.domain.repository.jpa.user.UserRepository;
 import ru.valkeru.libdemo.service.core.security.UserService;
 
 import java.util.UUID;
@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
-            .orElseThrow(() -> getUsernameNotFoundException(username));
+            .orElseThrow(() -> new UsernameNotFoundException("User %s not found".formatted(username)));
     }
 
     @Override
@@ -43,9 +43,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
-    }
-
-    private UsernameNotFoundException getUsernameNotFoundException(String username) {
-        return new UsernameNotFoundException("User %s not found".formatted(username));
     }
 }

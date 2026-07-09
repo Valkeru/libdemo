@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,9 +22,12 @@ import ru.valkeru.libdemo.component.message.MessageProvider;
 import ru.valkeru.libdemo.exception.BadRequestException;
 import ru.valkeru.libdemo.exception.IntegrityViolationException;
 import ru.valkeru.libdemo.exception.NotFoundException;
+import ru.valkeru.libdemo.exception.impl.LibraryCardRestrictedException;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
+import ru.valkeru.libdemo.model.dto.error.FormFieldErrorDto;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -58,13 +62,27 @@ public class LibDemoExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorDto validationExceptionHandler(MethodArgumentNotValidException manve) {
+    public List<FormFieldErrorDto> validationExceptionHandler(MethodArgumentNotValidException manve) {
         log.info("Request validation failed: {}", getRootMessage(manve), manve);
 
-        Map<String, String> fieldErrorMap = new HashMap<>();
-        manve.getFieldErrors().forEach(error -> fieldErrorMap.put(error.getField(), error.getDefaultMessage()));
+        Map<String, List<String>> fieldErrorsMap = manve.getFieldErrors().stream()
+            .collect(Collectors.groupingBy(
+                    FieldError::getField,
+                    Collectors.mapping(
+                        FieldError::getDefaultMessage,
+                        Collectors.toList()
+                    )
+                )
+            );
 
-        return buildErrorDto(fieldErrorMap, HttpStatus.BAD_REQUEST);
+        List<FormFieldErrorDto> violations = new ArrayList<>();
+
+        for (Map.Entry<String, List<String>> fieldErrors : fieldErrorsMap.entrySet()) {
+            FormFieldErrorDto violation = new FormFieldErrorDto(fieldErrors.getKey(), fieldErrors.getValue());
+            violations.add(violation);
+        }
+
+        return violations;
     }
 
     @Hidden
@@ -131,16 +149,15 @@ public class LibDemoExceptionHandler {
         return buildErrorDto("Access denied", HttpStatus.FORBIDDEN);
     }
 
-    private ErrorDto buildErrorDto(Exception e, HttpStatus status) {
-        return buildErrorDto(e.getMessage(), status);
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    @ExceptionHandler(LibraryCardRestrictedException.class)
+    public ErrorDto handle(LibraryCardRestrictedException lcre) {
+        return buildErrorDto(lcre, HttpStatus.CONFLICT);
     }
 
-    private ErrorDto buildErrorDto(Map<String, String> errors, HttpStatus status) {
-        String result = errors.entrySet().stream()
-                .map(kv -> String.format("%s: %s", kv.getKey(), kv.getValue()))
-                .collect(Collectors.joining("; "));
-
-        return buildErrorDto(result, status);
+    private ErrorDto buildErrorDto(Exception e, HttpStatus status) {
+        return buildErrorDto(e.getMessage(), status);
     }
 
     private ErrorDto buildErrorDto(String message, HttpStatus status) {

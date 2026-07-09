@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.headers.Header;
+import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +27,8 @@ public class OpenApiConfig {
     public static final String ACCESS_TOKEN_SCHEME = "AccessToken";
     public static final String ACCESS_TOKEN_HEADER_NAME = "Access-Token";
     public static final String REQUEST_ID_HEADER_REF = "#/components/headers/RequestIdHeader";
-    public static final String RESOURCE_ID_HEADER_REF = "#/components/headers/ResourceIdHeader";
+    public static final String ACCESS_TOKEN_HEADER_REF = "#/components/headers/AccessTokenHeader";
+    public static final String REFRESH_TOKEN_HEADER_REF = "#/components/headers/RefreshTokenHeader";
 
     @Bean
     public OpenAPI customOpenApi() {
@@ -36,10 +38,12 @@ public class OpenApiConfig {
                     .description("Unique request ID")
                     .schema(new UUIDSchema().example("7066f4ef-9c6e-4086-af07-d072975e37d7"))
                 )
-                .addHeaders("ResourceIdHeader", new Header()
-                    .description("Created resource ID")
-                    .schema(new UUIDSchema().example("539489eb-726c-4981-8791-ed488d81584d"))
-                )
+                .addHeaders("AccessTokenHeader", new Header()
+                    .description("Access token replacement. If present, the client MUST replace the stored access token")
+                    .schema(new StringSchema().example("eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJlNGFmNmQ5YS1hYWM0LTQ1MzgtOWQzNC1mNDc4YTY0YmUzOTQiLCJzdWIiOiJhZG1pbiIsImlhdCI6MTc4MzQwNzU2MSwiZXhwIjoxNzgzNDExMTYxLCJ1c2VySWQiOiJlOGI4M2FhYy01YmJlLTQwZTItYjg1Yi1kZDE0MzdmZTMwMjIiLCJyb2xlIjoiUk9MRV9BRE1JTiJ9.MAvPjTzooL-JY2fkUKpBK9M7FkcuMRiIoUugBJd8u5P2RKaEkKFVNXFURkeiW9VxAafcZAuArrHGI9DtMYq9Tg")))
+                .addHeaders("RefreshTokenHeader", new Header()
+                    .description("Refresh token replacement. If present, the client MUST replace the stored refresh token")
+                    .schema(new StringSchema().example("Fr4JKlidS26inAei6b1YADQns169i3V9")))
             );
     }
 

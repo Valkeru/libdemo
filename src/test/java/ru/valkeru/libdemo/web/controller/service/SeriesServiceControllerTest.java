@@ -1,267 +1,183 @@
 package ru.valkeru.libdemo.web.controller.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlMergeMode;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.valkeru.libdemo.AbstractIntegrationTest;
-import ru.valkeru.libdemo.constants.CustomHeaders;
+import ru.valkeru.libdemo.constants.TestConstants;
+import ru.valkeru.libdemo.web.api.service.SeriesServiceApi;
 import ru.valkeru.libdemo.web.controller.v1.SeriesController;
 
+import java.util.stream.Stream;
+
+import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.valkeru.libdemo.constants.TestConstants.SERIES_ID;
 
+@SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 class SeriesServiceControllerTest extends AbstractIntegrationTest {
 
-    @Test
-    void testCreateSeriesBadRequest() throws Exception {
-        performAsAdmin(
-            post(SeriesServiceController.SERIES_SERVICE_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                    {
-                      "name": null
-                    }
-                    """)
+    @ParameterizedTest
+    @MethodSource("validationFailedArguments")
+    void testCreateSeriesBadRequest(String contentPath, String expectedResultPath) throws Exception {
+        String content = readResourceAsString(contentPath);
+        String expected = readResourceAsString(expectedResultPath);
+
+        performAsAdmin(post(SeriesServiceApi.SERIES_SERVICE_URL)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(content)
         )
             .andExpect(status().isBadRequest())
-            .andDo(print());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().isEqualTo(expected));
     }
 
     @Test
     void testCreateSeriesCycleNotFound() throws Exception {
-        performAsAdmin(
-            post(SeriesServiceController.SERIES_SERVICE_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                    {
-                      "name": "test_58c6ac3d30",
-                      "cycle": {
-                        "id": "42860c68-21fe-438e-95ae-4555c35f5150"
-                      }
-                    }
-                    """)
+        String content = readResourceAsString("json/series/request/add_cycle_not_found.json");
+        String expected = readResourceAsString("json/series/response/cycle_not_found.json");
+
+        performAsAdmin(post(SeriesServiceApi.SERIES_SERVICE_URL)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(content)
         )
             .andExpect(status().isNotFound())
-            .andDo(print());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().isEqualTo(expected));
     }
 
-    @Test
-    void testCreateSeriesNoCycleOk() throws Exception {
-        MvcResult result = performAsAdmin(
-            post(SeriesServiceController.SERIES_SERVICE_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                    {
-                        "name": "test_23e17f5cca"
-                    }
-                    """)
-        )
-            .andExpect(status().isCreated())
-            .andReturn();
-
-        String id = (String) result.getResponse().getHeaderValue(CustomHeaders.RESOURCE_ID);
-
-        performNotAuthenticated(get("%s/{id}".formatted(SeriesController.SERIES_V1_URL), id))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$").exists())
-            .andExpect(jsonPath("$.id").isString())
-            .andExpect(jsonPath("$.name").value("test_23e17f5cca"))
-            .andExpect(jsonPath("$.cycle").isEmpty())
-            .andDo(print());
-    }
-
-    @Test
-    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
     @Sql(
         value = {
-            "classpath:sql/02.create_cycle.sql"
+            "classpath:sql/cycle/truncate.sql",
+            "classpath:sql/cycle/insert.sql",
         }
     )
-    void testCreateSeriesOk() throws Exception {
+    @ParameterizedTest
+    @MethodSource("validArguments")
+    void testCreateSeriesOk(String contentPath, String expectedPath) throws Exception {
+        String content = readResourceAsString(contentPath);
+        String expected = readResourceAsString(expectedPath);
+
         MvcResult result = performAsAdmin(
-            post(SeriesServiceController.SERIES_SERVICE_URL)
+            post(SeriesServiceApi.SERIES_SERVICE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                    {
-                        "name": "test_23e17f5cca",
-                        "cycle": {
-                          "id": "7cc6be9b-7649-4955-bff9-8cbf7c4c429a"
-                        }
-                    }
-                    """)
+                .content(content)
         )
             .andExpect(status().isCreated())
-            .andExpect(header().exists(CustomHeaders.RESOURCE_ID))
+            .andExpect(header().exists(HttpHeaders.LOCATION))
             .andReturn();
 
-        String id = (String) result.getResponse().getHeaderValue(CustomHeaders.RESOURCE_ID);
+        String location = result.getResponse().getHeader(HttpHeaders.LOCATION);
+        Assertions.assertNotNull(location);
 
-        performNotAuthenticated(get("%s/{id}".formatted(SeriesController.SERIES_V1_URL), id))
+        performNotAuthenticated(get(location))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("test_23e17f5cca"))
-            .andExpect(jsonPath("$.cycle.id").value("7cc6be9b-7649-4955-bff9-8cbf7c4c429a"))
-            .andExpect(jsonPath("$.cycle.name").value("test_9411799dad"))
-            .andDo(print());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().isEqualTo(expected));
     }
 
-    @Test
-    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
+    @ParameterizedTest
+    @MethodSource("validationFailedArguments")
     @Sql(
         value = {
-            "classpath:sql/02.create_cycle.sql",
-            "classpath:sql/03.create_series.sql",
+            "classpath:sql/cycle/truncate.sql",
+            "classpath:sql/cycle/insert.sql",
+            "classpath:sql/series/insert.sql",
         }
     )
-    void testUpdateSeriesBadRequest() throws Exception {
+    void testUpdateSeriesBadRequest(String contentPath, String expectedResultPath) throws Exception {
+        String content = readResourceAsString(contentPath);
+        String expected = readResourceAsString(expectedResultPath);
+
         performAsAdmin(
-            patch("%s/{id}".formatted(SeriesServiceController.SERIES_SERVICE_URL), "697792d6-8d57-4d6f-9ea2-c91b01159612")
+            patch("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_URL), SERIES_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                            {
-                              "name": "   "
-                            }
-                    """
-                )
+                .content(content)
         )
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().isEqualTo(expected));
     }
 
     @Test
-    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
     @Sql(
         value = {
-            "classpath:sql/02.create_cycle.sql",
-            "classpath:sql/03.create_series.sql",
+            "classpath:sql/cycle/truncate.sql",
+            "classpath:sql/cycle/insert.sql",
+            "classpath:sql/series/insert.sql",
         }
     )
     void testUpdateSeriesCycleNotFound() throws Exception {
-        performNotAuthenticated(
-            get("/v1/series")
-                .accept(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$.size()").value(2))
-            .andExpect(jsonPath("$[0].cycle").exists())
-            .andDo(print());
+        String content = readResourceAsString("json/series/request/add_cycle_not_found.json");
+        String expected = readResourceAsString("json/series/response/cycle_not_found.json");
 
-        performAsAdmin(
-            patch("%s/{id}".formatted(SeriesServiceController.SERIES_SERVICE_URL), "697792d6-8d57-4d6f-9ea2-c91b01159612")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                    {
-                      "name": "test_5fed320cf3",
-                      "cycle": {
-                        "id": "42860c68-21fe-438e-95ae-4555c35f5150"
-                      }
-                    }
-                    """
-                )
+        performAsAdmin(patch("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_URL), SERIES_ID)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(content)
         )
             .andExpect(status().isNotFound())
-            .andDo(print());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().isEqualTo(expected));
     }
 
-    @Test
-    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
+    @ParameterizedTest
+    @MethodSource("updateValidArguments")
     @Sql(
         value = {
-            "classpath:sql/02.create_cycle.sql",
-            "classpath:sql/03.create_series.sql",
+            "classpath:sql/cycle/truncate.sql",
+            "classpath:sql/cycle/insert.sql",
+            "classpath:sql/series/insert.sql",
         }
     )
-    void testUpdateSeriesOk() throws Exception {
-        performNotAuthenticated(
-            get("/v1/series")
-                .accept(MediaType.APPLICATION_JSON)
+    void testUpdateSeriesOk(String contentPath, String expectedResultPath) throws Exception {
+        String initial = readResourceAsString("json/series/request/series.json");
+        String content = readResourceAsString(contentPath);
+        String expected = readResourceAsString(expectedResultPath);
+
+        performNotAuthenticated(get("/v1/series/{id}", SERIES_ID)
+            .accept(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$.size()").value(2))
-            .andExpect(jsonPath("$[0].cycle").exists())
-            .andDo(print());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().isEqualTo(initial));
 
         performAsAdmin(
-            patch("%s/{id}".formatted(SeriesServiceController.SERIES_SERVICE_URL), "697792d6-8d57-4d6f-9ea2-c91b01159612")
+            patch("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_URL), SERIES_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                    {
-                      "name": "test_4233baa1c1",
-                      "cycle": {
-                        "id": "7febe13e-19c2-4c12-82cc-b354546d360e"
-                      }
-                    }
-                    """
-                )
+                .content(content)
         )
             .andExpect(status().isNoContent());
 
-        performNotAuthenticated(get("%s/{id}".formatted(SeriesController.SERIES_V1_URL), "697792d6-8d57-4d6f-9ea2-c91b01159612"))
+        performNotAuthenticated(get("%s/{id}".formatted(SeriesController.SERIES_V1_URL), SERIES_ID))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$").exists())
-            .andExpect(jsonPath("$.id").value("697792d6-8d57-4d6f-9ea2-c91b01159612"))
-            .andExpect(jsonPath("$.name").value("test_4233baa1c1"))
-            .andExpect(jsonPath("$.cycle").exists())
-            .andExpect(jsonPath("$.cycle.id").value("7febe13e-19c2-4c12-82cc-b354546d360e"))
-            .andExpect(jsonPath("$.cycle.name").value("test_ba77861515"))
-            .andDo(print());
-    }
-
-    @Test
-    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
-    @Sql(
-        value = {
-            "classpath:sql/02.create_cycle.sql",
-            "classpath:sql/03.create_series.sql",
-        }
-    )
-    void testUpdateSeriesNoCycleOk() throws Exception {
-        performNotAuthenticated(
-            get("/v1/series")
-                .accept(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$.size()").value(2))
-            .andExpect(jsonPath("$[0].cycle").exists())
-            .andDo(print());
-
-        performAsAdmin(
-            patch("%s/{id}".formatted(SeriesServiceController.SERIES_SERVICE_URL), "697792d6-8d57-4d6f-9ea2-c91b01159612")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                    {
-                      "name": "test_b7b7e7577d"
-                    }
-                    """
-                )
-        )
-            .andExpect(status().isNoContent());
-
-        performNotAuthenticated(get("%s/{id}".formatted(SeriesController.SERIES_V1_URL), "697792d6-8d57-4d6f-9ea2-c91b01159612"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value("697792d6-8d57-4d6f-9ea2-c91b01159612"))
-            .andExpect(jsonPath("$.name").value("test_b7b7e7577d"))
-            .andExpect(jsonPath("$.cycle").isEmpty())
-            .andDo(print());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().isEqualTo(expected));
     }
 
     @Test
     void testDeleteSeriesNotFound() throws Exception {
+        String expected = readResourceAsString("json/series/response/not_found.json");
+
         performAsAdmin(
-            delete("%s/{id}".formatted(SeriesServiceController.SERIES_SERVICE_URL), "697792d6-8d57-4d6f-9ea2-c91b01159612")
+            delete("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_URL), TestConstants.START_UUID_VALUE)
                 .accept(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isNotFound())
-            .andDo(print());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().isEqualTo(expected));
     }
 
     @Test
@@ -276,12 +192,13 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
         }
     )
     void testDeleteSeriesConflict() throws Exception {
-        performAsAdmin(
-            delete("%s/{id}".formatted(SeriesServiceController.SERIES_SERVICE_URL), "697792d6-8d57-4d6f-9ea2-c91b01159612")
-                .accept(MediaType.APPLICATION_JSON)
+        String expected = readResourceAsString("json/conflict.json");
+
+        performAsAdmin(delete("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_URL), SERIES_ID)
+            .accept(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isConflict())
-            .andDo(print());
+            .andExpect(json().isEqualTo(expected));
     }
 
     @Test
@@ -294,10 +211,30 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
     )
     void testDeleteSeriesOk() throws Exception {
         performAsAdmin(
-            delete("%s/{id}".formatted(SeriesServiceController.SERIES_SERVICE_URL), "697792d6-8d57-4d6f-9ea2-c91b01159612")
+            delete("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_URL), SERIES_ID)
                 .accept(MediaType.APPLICATION_JSON)
         )
-            .andExpect(status().isNoContent())
-            .andDo(print());
+            .andExpect(status().isNoContent());
+    }
+
+    private static Stream<Arguments> validationFailedArguments() {
+        return Stream.of(
+            Arguments.of("json/series/request/add_title_blank.json", "json/series/response/validation_error.json"),
+            Arguments.of("json/series/request/add_title_null.json", "json/series/response/validation_error.json")
+        );
+    }
+
+    private static Stream<Arguments> validArguments() {
+        return Stream.of(
+            Arguments.of("json/series/request/add_valid_no_cycle.json", "json/series/response/created_no_cycle.json"),
+            Arguments.of("json/series/request/add_valid_with_cycle.json", "json/series/response/created_with_cycle.json")
+        );
+    }
+
+    private static Stream<Arguments> updateValidArguments() {
+        return Stream.of(
+            Arguments.of("json/series/request/update_no_cycle.json", "json/series/response/updated_no_cycle.json"),
+            Arguments.of("json/series/request/update_with_cycle.json", "json/series/response/updated_with_cycle.json")
+        );
     }
 }

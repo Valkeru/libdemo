@@ -42,6 +42,9 @@ logging:
     ru:
       valkeru:
         libdemo: debug
+    co:
+      elastic:
+        clients: trace
 springdoc:
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
@@ -66,14 +69,25 @@ app:
       refresh-lifetime: 604800
     permissions:
       role-manager:
-        - BOOK_CREATE
-        - BOOK_UPDATE
         - AUTHOR_CREATE
         - AUTHOR_UPDATE
         - AUTHOR_DELETE
-      role-librarian:
+        - CYCLE_CREATE
+        - CYCLE_UPDATE
+        - CYCLE_DELETE
+        - SERIES_CREATE
+        - SERIES_UPDATE
+        - SERIES_DELETE
         - BOOK_CREATE
         - BOOK_UPDATE
+        - BOOK_DELETE
+        - BOOK_INSTANCE_CREATE
+        - BOOK_INSTANCE_UPDATE
+        - BOOK_INSTANCE_DELETE
+        - SERVICE_LIBRARY_CARD_VIEW
+      role-librarian:
+        - SERVICE_LIBRARY_CARD_CREATE
+        - SERVICE_LIBRARY_CARD_VIEW
   system:
     elasticsearch-enabled: false
 management:

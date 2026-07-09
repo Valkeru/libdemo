@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import ru.valkeru.libdemo.config.OpenApiConfig;
+import ru.valkeru.libdemo.utility.FileUtil;
 import ru.valkeru.libdemo.utility.JwtUtility;
 import ru.valkeru.libdemo.utility.RedisUtility;
 
@@ -34,15 +35,19 @@ public abstract class AbstractIntegrationTest {
         redisUtility.clearCaches();
     }
 
+    protected final String readResourceAsString(String path) {
+        return FileUtil.readResourceAsString(path);
+    }
+
     protected final ResultActions performNotAuthenticated(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder
-                .accept(MediaType.APPLICATION_JSON));
+            .accept(MediaType.APPLICATION_JSON));
     }
 
     protected final ResultActions performAsLibrarian(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(
-                builder.header(OpenApiConfig.ACCESS_TOKEN_HEADER_NAME, jwtUtility.librarianToken())
-                        .accept(MediaType.APPLICATION_JSON)
+            builder.header(OpenApiConfig.ACCESS_TOKEN_HEADER_NAME, jwtUtility.librarianToken())
+                .accept(MediaType.APPLICATION_JSON)
         );
     }
 

@@ -2,20 +2,20 @@ package ru.valkeru.libdemo.service.application.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.exception.impl.CycleNotFoundException;
 import ru.valkeru.libdemo.exception.impl.SeriesNotFoundException;
 import ru.valkeru.libdemo.mapper.SeriesMapper;
-import ru.valkeru.libdemo.model.dto.CycleDto;
-import ru.valkeru.libdemo.model.dto.SeriesDto;
-import ru.valkeru.libdemo.model.entity.Cycle;
-import ru.valkeru.libdemo.model.entity.Series;
-import ru.valkeru.libdemo.service.core.CycleService;
-import ru.valkeru.libdemo.service.core.SeriesService;
+import ru.valkeru.libdemo.model.dto.series.SeriesDto;
+import ru.valkeru.libdemo.model.dto.series.SeriesEditDto;
+import ru.valkeru.libdemo.domain.entity.Cycle;
+import ru.valkeru.libdemo.domain.entity.Series;
+import ru.valkeru.libdemo.domain.service.CycleService;
+import ru.valkeru.libdemo.domain.service.SeriesService;
 import ru.valkeru.libdemo.service.application.SeriesApplicationService;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,26 +30,25 @@ public class SeriesApplicationServiceImpl implements SeriesApplicationService {
 
     @Override
     @Transactional
-    public UUID createSeries(SeriesDto dto) {
-        Cycle cycle = getCycle(dto.getCycle());
+    public UUID createSeries(SeriesEditDto dto) {
+        Cycle cycle = getCycle(dto.getCycleId());
 
         return seriesService.createSeries(dto, cycle).getId();
     }
 
     @Override
     @Transactional
-    public void updateSeries(SeriesDto dto) {
-        UUID id = dto.getId();
+    public void updateSeries(UUID id, SeriesEditDto dto) {
         Series series = seriesService.findSeries(id)
             .orElseThrow(() -> SeriesNotFoundException.seriesNotFound(id));
-        Cycle cycle = getCycle(dto.getCycle());
+        Cycle cycle = getCycle(dto.getCycleId());
 
         seriesService.updateSeries(dto, cycle, series);
     }
 
     @Override
-    public Page<SeriesDto> listAllSeries() {
-        Page<Series> seriesList = seriesService.listAllSeries();
+    public Page<SeriesDto> listAllSeries(Pageable pageable) {
+        Page<Series> seriesList = seriesService.listAllSeries(pageable);
 
         return seriesList.map(seriesMapper::toDto);
     }
@@ -68,11 +67,7 @@ public class SeriesApplicationServiceImpl implements SeriesApplicationService {
         seriesService.deleteSeriesById(id);
     }
 
-    private Cycle getCycle(CycleDto cycleDto) {
-        UUID cycleId = Optional.ofNullable(cycleDto)
-            .map(CycleDto::getId)
-            .orElse(null);
-
+    private Cycle getCycle(UUID cycleId) {
         if (cycleId == null) {
             return null;
         }

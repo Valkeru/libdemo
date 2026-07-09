@@ -1,73 +1,80 @@
 package ru.valkeru.libdemo.web.controller.service;
 
+import net.javacrumbs.jsonunit.core.Option;
+import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlMergeMode;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.valkeru.libdemo.AbstractIntegrationTest;
 import ru.valkeru.libdemo.constants.CustomHeaders;
-import ru.valkeru.libdemo.web.api.service.AuthorServiceApi;
+import ru.valkeru.libdemo.domain.repository.jpa.author.AuthorRepository;
 import ru.valkeru.libdemo.web.controller.v1.AuthorController;
 
 import java.util.UUID;
+import java.util.stream.Stream;
 
+import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.valkeru.libdemo.constants.TestConstants.AUTHOR_ID;
+import static ru.valkeru.libdemo.constants.TestConstants.START_UUID_VALUE;
 
 class AuthorServiceControllerTest extends AbstractIntegrationTest {
 
-    private static final String AUTHOR_ID = "84c1599c-21e6-47f3-a03b-12f6071da20b";
+    @Autowired
+    private AuthorRepository authorRepository;
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("getBadRequestArguments")
     @DisplayName("Add an author - invalid request")
-    void testCreateAuthorBadRequest() throws Exception {
-        performAsAdmin(post(AuthorServiceApi.AUTHOR_SERVICE_URL)
+    void testCreateAuthorBadRequest(String payloadPath, String expectedResultPath) throws Exception {
+        String payload = readResourceAsString(payloadPath);
+        String expected = readResourceAsString(expectedResultPath);
+
+        performAsAdmin(post("/service/author")
             .contentType(MediaType.APPLICATION_JSON)
-            .content("""
-                {
-                   "firstName": "test_18287525cd",
-                   "middleName": "test_1812e70ce1"
-                }
-                """))
+            .content(payload)
+        )
             .andExpect(status().isBadRequest())
-            .andDo(print());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().when(Option.IGNORING_ARRAY_ORDER).isEqualTo(expected));
     }
 
     @Test
     @DisplayName("Add an author - success")
     void testCreateAuthorOk() throws Exception {
-        MvcResult result = performAsAdmin(post(AuthorServiceApi.AUTHOR_SERVICE_URL)
+        String payload = readResourceAsString("json/author/request/add_valid.json");
+        String expected = readResourceAsString("json/author/response/created.json");
+
+        MvcResult result = performAsAdmin(post("/service/author")
             .contentType(MediaType.APPLICATION_JSON)
-            .content("""
-                {
-                  "firstName": "test_42046185e0",
-                  "middleName": "test_a1bf02cb32",
-                  "lastName": "test_2cd02a475c"
-                }
-                """)
+            .content(payload)
         )
             .andExpect(status().isCreated())
-            .andExpect(header().exists(CustomHeaders.RESOURCE_ID))
+            .andExpect(header().exists(HttpHeaders.LOCATION))
             .andReturn();
 
-        String id = (String) result.getResponse().getHeaderValue(CustomHeaders.RESOURCE_ID);
+        String location = result.getResponse().getHeader(HttpHeaders.LOCATION);
+        Assertions.assertNotNull(location);
 
-        performNotAuthenticated(get("%s/{id}".formatted(AuthorController.AUTHOR_V1_URL), id))
-            .andExpect(jsonPath("$.id").isString())
-            .andExpect(jsonPath("$.firstName").exists())
-            .andExpect(jsonPath("$.firstName").value("test_42046185e0"))
-            .andExpect(jsonPath("$.middleName").exists())
-            .andExpect(jsonPath("$.middleName").value("test_a1bf02cb32"))
-            .andExpect(jsonPath("$.lastName").exists())
-            .andExpect(jsonPath("$.lastName").value("test_2cd02a475c"));
+        performNotAuthenticated(get(location))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().isEqualTo(expected));
     }
 
     @Test
@@ -79,38 +86,36 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
     )
     @DisplayName("Add an author - data integrity violation")
     void testCreateAuthorConflict() throws Exception {
-        performAsAdmin(post(AuthorServiceApi.AUTHOR_SERVICE_URL)
+        String payload = readResourceAsString("json/author/request/add_conflict.json");
+        String expected = readResourceAsString("json/conflict.json");
+
+        performAsAdmin(post("/service/author")
             .contentType(MediaType.APPLICATION_JSON)
-            .content("""
-                {
-                  "firstName": "test_9b844b884b",
-                  "middleName": "test_90321cca80",
-                  "lastName": "test_6012cf646d"
-                }
-                """
-            ))
-            .andExpect(status().isConflict());
+            .content(payload)
+        )
+            .andExpect(status().isConflict())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().isEqualTo(expected));
     }
 
     @Test
     @DisplayName("Update author info - 404")
     void testUpdateAuthorNotFound() throws Exception {
-        performAsAdmin(patch("%s/{id}".formatted(AuthorServiceApi.AUTHOR_SERVICE_URL), UUID.randomUUID())
+        String payload = readResourceAsString("json/author/request/update_valid.json");
+        String expected = readResourceAsString("json/author/response/not_found.json");
+
+        performAsAdmin(patch("/service/author/{id}", START_UUID_VALUE)
             .contentType(MediaType.APPLICATION_JSON)
-            .content("""
-                {
-                  "firstName": "test_9b844b884b",
-                  "middleName": "test_90321cca80",
-                  "lastName": "test_6b15281eae"
-                }
-                """
-            ))
+            .content(payload)
+        )
             .andExpect(status().isNotFound())
-            .andDo(print());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().isEqualTo(expected));
 
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("getBadRequestArguments")
     @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
     @Sql(
         value = {
@@ -118,19 +123,17 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
         }
     )
     @DisplayName("Update author info - 400")
-    void testUpdateAuthorBadRequest() throws Exception {
-        performAsAdmin(patch("%s/{id}".formatted(AuthorServiceApi.AUTHOR_SERVICE_URL), AUTHOR_ID)
+    void testUpdateAuthorBadRequest(String payloadPath, String expectedResultPath) throws Exception {
+        String payload = readResourceAsString(payloadPath);
+        String expected = readResourceAsString(expectedResultPath);
+
+        performAsAdmin(patch("/service/author/{id}", AUTHOR_ID)
             .contentType(MediaType.APPLICATION_JSON)
-            .content("""
-                {
-                  "firstName": null,
-                  "middleName": null,
-                  "lastName": null
-                }
-                """
-            ))
+            .content(payload)
+        )
             .andExpect(status().isBadRequest())
-            .andDo(print());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().when(Option.IGNORING_ARRAY_ORDER).isEqualTo(expected));
     }
 
     @Test
@@ -142,36 +145,29 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
     )
     @DisplayName("Update author info - success")
     void testUpdateAuthorOk() throws Exception {
-        performNotAuthenticated(get("%s/{id}".formatted(AuthorController.AUTHOR_V1_URL), AUTHOR_ID))
-            .andExpect(status().isOk())
-            .andDo(print());
+        String payload = readResourceAsString("json/author/request/update_valid.json");
+        String expected = readResourceAsString("json/author/response/updated.json");
 
-        performAsAdmin(patch("%s/{id}".formatted(AuthorServiceApi.AUTHOR_SERVICE_URL), AUTHOR_ID)
+        performNotAuthenticated(get("%s/{id}".formatted(AuthorController.AUTHOR_V1_URL), AUTHOR_ID))
+            .andExpect(status().isOk());
+
+        performAsAdmin(patch("/service/author/{id}", AUTHOR_ID)
             .contentType(MediaType.APPLICATION_JSON)
-            .content("""
-                {
-                  "firstName": "test_977de1b89b",
-                  "middleName": "test_f17ae88fac",
-                  "lastName": "test_1d44bb55e9"
-                }
-                """
-            ))
+            .content(payload)
+        )
             .andExpect(status().isNoContent());
 
         performNotAuthenticated(get("%s/{id}".formatted(AuthorController.AUTHOR_V1_URL), AUTHOR_ID))
-            .andExpect(jsonPath("$.id").value(AUTHOR_ID))
-            .andExpect(jsonPath("$.firstName").value("test_977de1b89b"))
-            .andExpect(jsonPath("$.middleName").value("test_f17ae88fac"))
-            .andExpect(jsonPath("$.lastName").value("test_1d44bb55e9"))
-            .andDo(print());
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(json().isEqualTo(expected));
     }
 
     @Test
     @DisplayName("Delete author info - 404")
     void deleteAuthorNotFound() throws Exception {
-        performAsAdmin(delete("%s/{id}".formatted(AuthorServiceApi.AUTHOR_SERVICE_URL), UUID.randomUUID()))
-            .andExpect(status().isNotFound())
-            .andDo(print());
+        performAsAdmin(delete("/service/author/{id}", START_UUID_VALUE))
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -183,8 +179,21 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
     )
     @DisplayName("Delete author info - success")
     void deleteAuthorOk() throws Exception {
-        performAsAdmin(delete("%s/{id}".formatted(AuthorServiceApi.AUTHOR_SERVICE_URL), AUTHOR_ID))
-            .andExpect(status().isNoContent())
-            .andDo(print());
+        UUID id = UUID.fromString(AUTHOR_ID);
+
+        Assert.assertTrue(authorRepository.existsById(id));
+
+        performAsAdmin(delete("/service/author/{id}", AUTHOR_ID))
+            .andExpect(status().isNoContent());
+
+        Assert.assertFalse(authorRepository.existsById(id));
+    }
+
+    private static Stream<Arguments> getBadRequestArguments() {
+        return Stream.of(
+            Arguments.of("json/author/request/invalid_no_fields.json", "json/author/response/validation_error.json"),
+            Arguments.of("json/author/request/invalid_blank_strings.json", "json/author/response/validation_error.json"),
+            Arguments.of("json/author/request/invalid_nulls.json", "json/author/response/validation_error.json")
+        );
     }
 }

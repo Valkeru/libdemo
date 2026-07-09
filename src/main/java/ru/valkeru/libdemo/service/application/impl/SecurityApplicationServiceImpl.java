@@ -3,6 +3,7 @@ package ru.valkeru.libdemo.service.application.impl;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,8 +17,8 @@ import ru.valkeru.libdemo.model.dto.security.LibraryPrincipal;
 import ru.valkeru.libdemo.model.dto.security.LibraryUser;
 import ru.valkeru.libdemo.model.dto.security.TokenDto;
 import ru.valkeru.libdemo.model.dto.security.TokenPayload;
-import ru.valkeru.libdemo.model.entity.user.Token;
-import ru.valkeru.libdemo.model.entity.user.User;
+import ru.valkeru.libdemo.domain.entity.user.Token;
+import ru.valkeru.libdemo.domain.entity.user.User;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
 import ru.valkeru.libdemo.security.Permission;
 import ru.valkeru.libdemo.security.Role;
@@ -28,6 +29,7 @@ import ru.valkeru.libdemo.service.application.SecurityApplicationService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +37,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Component
@@ -47,34 +48,42 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
 
     public SecurityApplicationServiceImpl(RolePermissionProperties permissionProperties,
                                           UserService userService, JWTService jwtService) {
+
+        Map<Role, Collection<Permission>> rolePermissionsMap = new HashMap<>(permissionProperties.getPermissions());
+        rolePermissionsMap.put(Role.ROLE_ADMIN, EnumSet.allOf(Permission.class));
+        Set<Role> roles = new HashSet<>(rolePermissionsMap.keySet());
+
+        Map<Role, List<SimpleGrantedAuthority>> roleAuthorityMap = roles.stream()
+            .collect(Collectors.toMap(
+                Function.identity(),
+                role -> getAuthoritiesForRole(rolePermissionsMap, role)
+            ));
+
         this.userService = userService;
         this.jwtService = jwtService;
+        this.roleAuthoritiesMap = Map.copyOf(roleAuthorityMap);
+    }
 
-        Map<Role, Collection<Permission>> rolePermissionsMap = permissionProperties.getPermissions();
-        Set<Role> roles = new HashSet<>(rolePermissionsMap.keySet());
-        roles.add(Role.ROLE_ADMIN);
+    private static List<SimpleGrantedAuthority> getAuthoritiesForRole(Map<Role, Collection<Permission>> rolePermissionsMap, Role role) {
+        Set<Permission> permissions = getPermissions(rolePermissionsMap, role);
 
-        this.roleAuthoritiesMap = roles.stream()
-            .collect(Collectors.toUnmodifiableMap(
-                Function.identity(),
-                role -> {
-                    Set<Permission> permissions = Role.ROLE_ADMIN.equals(role)
-                        ? EnumSet.allOf(Permission.class)
-                        : new HashSet<>(rolePermissionsMap.getOrDefault(role, List.of()));
+        Set<String> permissionsNames = permissions.stream()
+            .map(Permission::name)
+            .collect(Collectors.toSet());
 
-                    Set<String> permissionsNames = permissions.stream()
-                        .map(Permission::name)
-                        .collect(Collectors.toSet());
+        List<String> result = new ArrayList<>();
+        result.add(role.name());
+        result.addAll(permissionsNames);
 
-                    List<String> result = new ArrayList<>();
-                    result.add(role.name());
-                    result.addAll(permissionsNames);
+        return result.stream()
+            .map(SimpleGrantedAuthority::new)
+            .toList();
+    }
 
-                    return result.stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .toList();
-                }
-            ));
+    private static HashSet<Permission> getPermissions(Map<Role, Collection<Permission>> rolePermissionsMap, Role role) {
+        return rolePermissionsMap.getOrDefault(role, List.of()).stream()
+            .flatMap(permission -> permission.expand().stream())
+            .collect(Collectors.toCollection(HashSet::new));
     }
 
     @Override

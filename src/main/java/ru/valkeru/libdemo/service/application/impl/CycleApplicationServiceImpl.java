@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.exception.impl.CycleNotFoundException;
 import ru.valkeru.libdemo.mapper.CycleMapper;
 import ru.valkeru.libdemo.model.dto.CycleDto;
-import ru.valkeru.libdemo.model.entity.Cycle;
-import ru.valkeru.libdemo.service.core.CycleService;
+import ru.valkeru.libdemo.domain.entity.Cycle;
+import ru.valkeru.libdemo.domain.service.CycleService;
 import ru.valkeru.libdemo.service.application.CycleApplicationService;
 
 import java.util.UUID;

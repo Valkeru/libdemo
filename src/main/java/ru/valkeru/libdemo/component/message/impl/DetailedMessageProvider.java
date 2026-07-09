@@ -11,7 +11,7 @@ import ru.valkeru.libdemo.constants.Profiles;
 
 @Slf4j
 @Component
-@Profile({Profiles.PROFILE_DEV, Profiles.PROFILE_PRE_PRODUCTION, Profiles.PROFILE_TEST})
+@Profile({Profiles.PROFILE_DEV})
 public class DetailedMessageProvider implements MessageProvider {
 
     @PostConstruct

@@ -1,11 +1,14 @@
 package ru.valkeru.libdemo.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import ru.valkeru.libdemo.constants.ValidationConstants;
+import ru.valkeru.libdemo.model.dto.series.SeriesDto;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -19,16 +22,19 @@ public class BookDto {
     @Schema(description = "Object ID", example = "849ee885-e013-485f-a03f-de0be0403210")
     private UUID id;
 
+    @NotBlank(message = ValidationConstants.MSG_MANDATORY_FIELD)
     @Schema(description = "Title", example = "Another Fine Myth")
-    private String name;
+    private String title;
 
-    @Size(max = 17, min = 17)
+    @NotBlank(message = ValidationConstants.MSG_MANDATORY_FIELD)
+    @Size(max = 17, min = 17, message = "Invalid ISBN length")
     @Schema(
-            description = "<u>ISBN-13</u> ISBN",
-            example = "978-5-17-049678-5"
+        description = "<u>ISBN-13</u> ISBN",
+        example = "978-5-17-049678-5"
     )
     @Pattern(
-            regexp = "\\d{3}-\\d-\\d{2}-\\d{6}-\\d"
+        regexp = "\\d{3}-\\d-\\d{2}-\\d{6}-\\d",
+        message = "Invalid ISBN"
     )
     private String isbn;
 

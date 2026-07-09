@@ -2,29 +2,29 @@ package ru.valkeru.libdemo.web.api.service;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.config.OpenApiConfig;
-import ru.valkeru.libdemo.constants.CustomHeaders;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.web.api.LibraryCommonApi;
+import ru.valkeru.libdemo.model.dto.error.FormFieldErrorDto;
 import ru.valkeru.libdemo.config.api.ApiTags;
 
 import java.util.UUID;
 
-@SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
-@RequestMapping(AuthorServiceApi.AUTHOR_SERVICE_URL)
-public interface AuthorServiceApi extends LibraryCommonApi {
+public interface AuthorServiceApi {
 
     String AUTHOR_SERVICE_URL = "/service/author";
 
@@ -32,31 +32,25 @@ public interface AuthorServiceApi extends LibraryCommonApi {
         summary = "Add an author info",
         tags = ApiTags.AUTHOR,
         responses = {
-            @ApiResponse(
-                responseCode = "201",
-                description = "Success",
-                headers = @Header(name = CustomHeaders.RESOURCE_ID, ref = OpenApiConfig.RESOURCE_ID_HEADER_REF)
+            @ApiResponse(responseCode = "201", description = "Success",
+                headers = @Header(name = HttpHeaders.LOCATION, description = "Created resource location")
             ),
-            @ApiResponse(
-                responseCode = "400",
-                description = "Invalid request",
-                content = {
-                    @Content(schema = @Schema(implementation = ErrorDto.class))
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = {
+                    @Content(array = @ArraySchema(schema = @Schema(implementation = FormFieldErrorDto.class)))
                 }
             ),
-            @ApiResponse(
-                responseCode = "409",
-                description = "Data integrity violation",
-                content = {
+            @ApiResponse(responseCode = "409", description = "Data integrity violation", content = {
                     @Content(schema = @Schema(implementation = ErrorDto.class))
                 }
             )
+        },
+        security = {
+            @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
         }
     )
-    @PostMapping
-    default ResponseEntity<Void> createAuthor(@RequestBody AuthorDto author) {
-        return defaultApiResponse();
-    }
+    @PostMapping("/service/author")
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).AUTHOR_CREATE.name())")
+    ResponseEntity<Void> createAuthor(@RequestBody @Valid AuthorDto author);
 
     @Operation(
         summary = "Update an author info",
@@ -80,14 +74,15 @@ public interface AuthorServiceApi extends LibraryCommonApi {
                     @Content(schema = @Schema(implementation = ErrorDto.class))
                 }
             )
+        },
+        security = {
+            @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
         }
     )
-    @PatchMapping("/{id}")
-    default ResponseEntity<Void> updateAuthor(@PathVariable
-                                              @Schema(description = "Author ID") UUID id,
-                                              @RequestBody AuthorDto author) {
-        return defaultApiResponse();
-    }
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).AUTHOR_UPDATE.name())")
+    @PatchMapping("/service/author/{id}")
+    ResponseEntity<Void> updateAuthor(@PathVariable @Schema(description = "Author ID") UUID id,
+                                      @RequestBody @Valid AuthorDto author);
 
     @Operation(
         summary = "Delete an author",
@@ -114,26 +109,12 @@ public interface AuthorServiceApi extends LibraryCommonApi {
                     @Content(schema = @Schema(implementation = ErrorDto.class))
                 }
             )
+        },
+        security = {
+            @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
         }
     )
-    @DeleteMapping("/{authorId}")
-    default ResponseEntity<Void> deleteAuthor(@PathVariable(name = "authorId")
-                                              @Schema(description = "Author ID") UUID id) {
-        return defaultApiResponse();
-    }
-
-    @Operation(
-        summary = "Reindex authors in Elasticsearch",
-        tags = ApiTags.SERVICE,
-        responses = {
-            @ApiResponse(
-                responseCode = "204",
-                description = "Task is created"
-            )
-        }
-    )
-    @PostMapping("/reindex")
-    default ResponseEntity<Void> elasticsearchReindexAuthors() {
-        return defaultApiResponse();
-    }
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).AUTHOR_DELETE.name())")
+    @DeleteMapping("/service/author/{id}")
+    ResponseEntity<Void> deleteAuthor(@PathVariable @Schema(description = "Author ID") UUID id);
 }

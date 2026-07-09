@@ -9,7 +9,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 
 @Configuration
 @RequiredArgsConstructor
-@EnableElasticsearchRepositories(basePackages = {"ru.valkeru.libdemo.repository.elasticsearch"})
+@EnableElasticsearchRepositories(basePackages = {"ru.valkeru.libdemo.domain.repository.elasticsearch"})
 public class ElasticsearchConfiguration {
 
     private final ElasticsearchProperties elasticsearchProperties;

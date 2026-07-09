@@ -17,9 +17,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.model.dto.security.LibraryUser;
 import ru.valkeru.libdemo.model.dto.security.TokenPayload;
-import ru.valkeru.libdemo.model.entity.user.Token;
-import ru.valkeru.libdemo.model.entity.user.User;
-import ru.valkeru.libdemo.repository.jpa.user.TokenRepository;
+import ru.valkeru.libdemo.domain.entity.user.Token;
+import ru.valkeru.libdemo.domain.entity.user.User;
+import ru.valkeru.libdemo.domain.repository.jpa.user.TokenRepository;
 import ru.valkeru.libdemo.security.Role;
 import ru.valkeru.libdemo.service.core.security.JWTService;
 

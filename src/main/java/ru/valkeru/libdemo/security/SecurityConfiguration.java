@@ -30,20 +30,20 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity security) {
         security
-                .exceptionHandling(e -> e
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-                .csrf(AbstractHttpConfigurer::disable) // NOSONAR
-                .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/service/**").hasAnyRole(Role.getServiceRoleNames())
-                    .requestMatchers("/security/revoke-sessions").authenticated()
-                    .anyRequest().permitAll())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .userDetailsService(userService)
-                .logout(logout -> logout
-                    .logoutUrl("/security/sign-out")
-                    .addLogoutHandler(new LibraryLogoutHandler(securityApplicationService))
-                    .logoutSuccessHandler((rq, rs, auth) -> SecurityContextHolder.clearContext()))
-                .addFilterBefore(new TokenValidationFilter(securityApplicationService), BasicAuthenticationFilter.class);
+            .exceptionHandling(e -> e
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+            .csrf(AbstractHttpConfigurer::disable) // NOSONAR
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/service/**").hasAnyRole(Role.getServiceRoleNames())
+                .requestMatchers("/security/revoke-sessions").authenticated()
+                .anyRequest().permitAll())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .userDetailsService(userService)
+            .logout(logout -> logout
+                .logoutUrl("/security/sign-out")
+                .addLogoutHandler(new LibraryLogoutHandler(securityApplicationService))
+                .logoutSuccessHandler((rq, rs, auth) -> SecurityContextHolder.clearContext()))
+            .addFilterBefore(new TokenValidationFilter(securityApplicationService), BasicAuthenticationFilter.class);
 
         return security.build();
     }

@@ -7,25 +7,24 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.config.OpenApiConfig;
-import ru.valkeru.libdemo.constants.CustomHeaders;
+import ru.valkeru.libdemo.infrastructure.validation.groups.CycleGroups;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.web.api.LibraryCommonApi;
 import ru.valkeru.libdemo.config.api.ApiTags;
 
 import java.util.UUID;
 
 @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
-@RequestMapping(CycleServiceApi.CYCLE_SERVICE_URL)
-public interface CycleServiceApi extends LibraryCommonApi {
+public interface CycleServiceApi {
 
     String CYCLE_SERVICE_URL = "/service/cycle";
 
@@ -36,7 +35,7 @@ public interface CycleServiceApi extends LibraryCommonApi {
             @ApiResponse(
                 responseCode = "201",
                 description = "Created",
-                headers = @Header(name = CustomHeaders.RESOURCE_ID, ref = OpenApiConfig.RESOURCE_ID_HEADER_REF)
+                headers = @Header(name = HttpHeaders.LOCATION)
             ),
             @ApiResponse(
                 responseCode = "400",
@@ -54,10 +53,8 @@ public interface CycleServiceApi extends LibraryCommonApi {
             )
         }
     )
-    @PostMapping
-    default ResponseEntity<Void> addCycle(@RequestBody @Valid CycleDto cycleDto) {
-        return defaultApiResponse();
-    }
+    @PostMapping("/service/cycle")
+    ResponseEntity<Void> addCycle(@RequestBody @Validated(CycleGroups.CycleCreateGroup.class) CycleDto cycleDto);
 
     @Operation(
         summary = "Update a cycle data",
@@ -90,12 +87,9 @@ public interface CycleServiceApi extends LibraryCommonApi {
             )
         }
     )
-    @PatchMapping("/{cycleId}")
-    default ResponseEntity<Void> updateCycle(@PathVariable(name = "cycleId")
-                                             @Schema(description = "ID цикла") UUID id,
-                                             @RequestBody CycleDto cycleDto) {
-        return defaultApiResponse();
-    }
+    @PatchMapping("/service/cycle/{id}")
+    ResponseEntity<Void> updateCycle(@PathVariable @Schema(description = "ID цикла") UUID id,
+                                     @RequestBody @Validated(CycleGroups.CycleCreateGroup.class) CycleDto cycleDto);
 
     @Operation(
         summary = "Remove a cycle",
@@ -121,9 +115,6 @@ public interface CycleServiceApi extends LibraryCommonApi {
             )
         }
     )
-    @DeleteMapping("/{cycleId}")
-    default ResponseEntity<Void> deleteCycle(@PathVariable(name = "cycleId")
-                                             @Schema(description = "ID цикла") UUID id) {
-        return defaultApiResponse();
-    }
+    @DeleteMapping("/service/cycle/{id}")
+    ResponseEntity<Void> deleteCycle(@PathVariable @Schema(description = "ID цикла") UUID id);
 }

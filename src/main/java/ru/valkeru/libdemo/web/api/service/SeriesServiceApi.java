@@ -7,25 +7,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.config.OpenApiConfig;
-import ru.valkeru.libdemo.constants.CustomHeaders;
-import ru.valkeru.libdemo.model.dto.SeriesDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
-import ru.valkeru.libdemo.web.api.LibraryCommonApi;
+import ru.valkeru.libdemo.model.dto.series.SeriesEditDto;
 import ru.valkeru.libdemo.config.api.ApiTags;
 
 import java.util.UUID;
 
-@SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
-@RequestMapping(SeriesServiceApi.SERIES_SERVICE_URL)
-public interface SeriesServiceApi extends LibraryCommonApi {
+public interface SeriesServiceApi {
 
     String SERIES_SERVICE_URL = "/service/series";
 
@@ -36,7 +32,7 @@ public interface SeriesServiceApi extends LibraryCommonApi {
             @ApiResponse(
                 responseCode = "201",
                 description = "Series created",
-                headers = @Header(name = CustomHeaders.RESOURCE_ID, ref = OpenApiConfig.RESOURCE_ID_HEADER_REF)
+                headers = @Header(name = HttpHeaders.LOCATION)
             ),
             @ApiResponse(
                 responseCode = "400",
@@ -52,12 +48,11 @@ public interface SeriesServiceApi extends LibraryCommonApi {
                     @Content(schema = @Schema(implementation = ErrorDto.class))
                 }
             )
-        }
+        },
+        security = @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
     )
-    @PostMapping
-    default ResponseEntity<Void> createSeries(@RequestBody @Valid SeriesDto series) {
-        return defaultApiResponse();
-    }
+    @PostMapping("/service/series")
+    ResponseEntity<Void> createSeries(@Valid @RequestBody SeriesEditDto series);
 
     @Operation(
         summary = "Update a series",
@@ -78,14 +73,12 @@ public interface SeriesServiceApi extends LibraryCommonApi {
                 responseCode = "409",
                 description = "Data integrity violation"
             )
-        }
+        },
+        security = @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
     )
-    @PatchMapping("/{seriesId}")
-    default ResponseEntity<SeriesDto> updateSeries(@PathVariable(name = "seriesId")
-                                                   @Schema(description = "Series ID") UUID id,
-                                                   @RequestBody @Valid SeriesDto series) {
-        return defaultApiResponse();
-    }
+    @PatchMapping("/service/series/{id}")
+    ResponseEntity<Void> updateSeries(@PathVariable @Schema(description = "Series ID") UUID id,
+                                      @RequestBody @Valid SeriesEditDto series);
 
     @Operation(
         summary = "Delete a series",
@@ -109,11 +102,9 @@ public interface SeriesServiceApi extends LibraryCommonApi {
                     @Content(schema = @Schema(implementation = ErrorDto.class))
                 }
             )
-        }
+        },
+        security = @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
     )
-    @DeleteMapping("/{seriesId}")
-    default ResponseEntity<Void> deleteSeries(@PathVariable(name = "seriesId")
-                                              @Schema(description = "Series ID") UUID id) {
-        return defaultApiResponse();
-    }
+    @DeleteMapping("/service/series/{id}")
+    ResponseEntity<Void> deleteSeries(@PathVariable @Schema(description = "Series ID") UUID id);
 }

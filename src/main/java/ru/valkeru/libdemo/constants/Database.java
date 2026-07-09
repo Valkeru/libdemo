@@ -7,4 +7,5 @@ public class Database {
 
     public static final String SCHEMA_LIBRARY = "library";
     public static final String SCHEMA_SECURITY = "security";
+    public static final String SCHEMA_COUNTER = "counter";
 }

@@ -11,40 +11,34 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.valkeru.libdemo.config.OpenApiConfig;
+import ru.valkeru.libdemo.constants.CustomHeaders;
 import ru.valkeru.libdemo.model.dto.security.TokenDto;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
-import ru.valkeru.libdemo.web.api.LibraryCommonApi;
 import ru.valkeru.libdemo.config.api.ApiTags;
 
 @RequestMapping("/security")
-public interface SecurityApi extends LibraryCommonApi {
+public interface SecurityApi {
 
     @Operation(
             summary = "New user sign up",
             tags = ApiTags.SECURITY
     )
     @PostMapping("/sign-up")
-    default ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
-        return defaultApiResponse();
-    }
+    ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequest signUpRequest);
 
     @Operation(
             summary = "User logging in",
             tags = ApiTags.SECURITY
     )
     @PostMapping("/sign-in")
-    default ResponseEntity<TokenDto> signIn(@RequestBody SignUpRequest request) {
-        return defaultApiResponse();
-    }
+    ResponseEntity<TokenDto> signIn(@RequestBody SignUpRequest request);
 
     @Operation(
             summary = "Rotate an access token",
             tags = ApiTags.SECURITY
     )
     @PostMapping("/refresh-token")
-    default ResponseEntity<TokenDto> refreshToken(@RequestHeader(name = "Refresh-Token") String refreshToken) {
-        return defaultApiResponse();
-    }
+    ResponseEntity<TokenDto> refreshToken(@RequestHeader(name = CustomHeaders.REFRESH_TOKEN) String refreshToken);
 
     @Operation(
             summary = "Terminate all sessions except current session",
@@ -52,8 +46,6 @@ public interface SecurityApi extends LibraryCommonApi {
             security = @SecurityRequirement(name = OpenApiConfig.ACCESS_TOKEN_SCHEME)
     )
     @PostMapping("/revoke-sessions")
-    default ResponseEntity<Void> revokeTokens(@Parameter(in = ParameterIn.HEADER, name = OpenApiConfig.ACCESS_TOKEN_HEADER_NAME, hidden = true)
-                                              @RequestHeader(name = OpenApiConfig.ACCESS_TOKEN_HEADER_NAME) String token) {
-        return defaultApiResponse();
-    }
+    ResponseEntity<Void> revokeTokens(@Parameter(in = ParameterIn.HEADER, name = OpenApiConfig.ACCESS_TOKEN_HEADER_NAME, hidden = true)
+                                              @RequestHeader(name = OpenApiConfig.ACCESS_TOKEN_HEADER_NAME) String token);
 }
