@@ -1,7 +1,6 @@
 package ru.valkeru.libdemo.web.controller.v1;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
@@ -10,7 +9,7 @@ import ru.valkeru.libdemo.model.dto.LibraryCardCreateDto;
 import ru.valkeru.libdemo.model.dto.internal.LibraryCardCreateResult;
 import ru.valkeru.libdemo.model.dto.security.LibraryPrincipal;
 import ru.valkeru.libdemo.model.dto.security.TokenDto;
-import ru.valkeru.libdemo.service.application.LibraryCardApplicationService;
+import ru.valkeru.libdemo.application.LibraryCardApplicationService;
 import ru.valkeru.libdemo.web.api.service.LibraryCardApi;
 import ru.valkeru.libdemo.web.api.service.LibraryCardServiceApi;
 

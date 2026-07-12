@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.model.dto.security.LibraryUser;
 import ru.valkeru.libdemo.domain.entity.user.Token;
 import ru.valkeru.libdemo.domain.entity.user.User;
-import ru.valkeru.libdemo.service.core.security.JWTService;
-import ru.valkeru.libdemo.service.core.security.UserService;
+import ru.valkeru.libdemo.infrastructure.security.JWTService;
+import ru.valkeru.libdemo.infrastructure.security.UserService;
 
 /**
  * Генератор токенов пользователей в тестах

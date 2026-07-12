@@ -9,7 +9,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import ru.valkeru.libdemo.config.OpenApiConfig;
-import ru.valkeru.libdemo.service.application.SecurityApplicationService;
+import ru.valkeru.libdemo.application.SecurityApplicationService;
 
 @Slf4j
 @RequiredArgsConstructor

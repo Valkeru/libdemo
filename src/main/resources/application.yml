@@ -69,23 +69,14 @@ app:
       refresh-lifetime: 604800
     permissions:
       role-manager:
-        - AUTHOR_CREATE
-        - AUTHOR_UPDATE
-        - AUTHOR_DELETE
-        - CYCLE_CREATE
-        - CYCLE_UPDATE
-        - CYCLE_DELETE
-        - SERIES_CREATE
-        - SERIES_UPDATE
-        - SERIES_DELETE
-        - BOOK_CREATE
-        - BOOK_UPDATE
-        - BOOK_DELETE
-        - BOOK_INSTANCE_CREATE
-        - BOOK_INSTANCE_UPDATE
-        - BOOK_INSTANCE_DELETE
+        - AUTHOR_FULL
+        - CYCLE_FULL
+        - SERIES_FULL
+        - BOOK_FULL
+        - BOOK_INSTANCE_FULL
         - SERVICE_LIBRARY_CARD_VIEW
       role-librarian:
+        - BOOK_INSTANCE_VIEW
         - SERVICE_LIBRARY_CARD_CREATE
         - SERVICE_LIBRARY_CARD_VIEW
   system:
@@ -106,9 +97,3 @@ logging:
       ttddyy:
         dsproxy:
           listener: trace
-    ru:
-      valkeru:
-        libdemo:
-          config:
-            persistence:
-              ClassImportIntegratorProvider: debug

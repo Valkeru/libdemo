@@ -1,6 +1,5 @@
 package ru.valkeru.libdemo.web.controller.v1;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import ru.valkeru.libdemo.web.api.v1.CycleApi;
 import ru.valkeru.libdemo.model.dto.CycleDto;
-import ru.valkeru.libdemo.service.application.CycleApplicationService;
+import ru.valkeru.libdemo.application.CycleApplicationService;
 import ru.valkeru.libdemo.web.api.service.CycleServiceApi;
 
 import java.util.UUID;

@@ -3,7 +3,7 @@ package ru.valkeru.libdemo.web.controller.v1;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import ru.valkeru.libdemo.service.application.AuthorApplicationService;
+import ru.valkeru.libdemo.application.AuthorApplicationService;
 import ru.valkeru.libdemo.web.api.service.AuthorIndexingSupportApi;
 
 @RestController

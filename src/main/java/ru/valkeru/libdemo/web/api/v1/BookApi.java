@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.valkeru.libdemo.model.request.book.BookFilter;
 import ru.valkeru.libdemo.model.transport.BookListDto;
-import ru.valkeru.libdemo.model.dto.BookDto;
+import ru.valkeru.libdemo.model.dto.book.BookDto;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
 import ru.valkeru.libdemo.config.api.ApiTags;
 

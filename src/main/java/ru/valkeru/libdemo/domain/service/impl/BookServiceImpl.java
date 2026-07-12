@@ -6,13 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.exception.impl.BookNotFoundException;
 import ru.valkeru.libdemo.mapper.BookMapper;
-import ru.valkeru.libdemo.model.dto.BookDto;
+import ru.valkeru.libdemo.model.dto.book.BookDto;
 import ru.valkeru.libdemo.domain.entity.Author;
 import ru.valkeru.libdemo.domain.entity.Book;
 import ru.valkeru.libdemo.domain.entity.Cycle;
 import ru.valkeru.libdemo.domain.entity.Series;
 import ru.valkeru.libdemo.model.request.book.BookFilter;
-import ru.valkeru.libdemo.domain.repository.jpa.BookRepository;
+import ru.valkeru.libdemo.domain.repository.jpa.book.BookRepository;
 import ru.valkeru.libdemo.domain.projection.BookShortProjection;
 import ru.valkeru.libdemo.domain.service.BookService;
 
@@ -48,10 +48,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto getBookById(UUID id) {
-        Book bookEntity = getBookEntity(id);
+    public Book getBookById(UUID id) {
+        return repository.findById(id)
+            .orElseThrow(() -> BookNotFoundException.bookNotFound(id));
+    }
 
-        return mapper.toDto(bookEntity);
+    @Override
+    public Book getReference(UUID id) {
+        if (!repository.existsById(id)) {
+            throw BookNotFoundException.bookNotFound(id);
+        }
+
+        return repository.getReferenceById(id);
     }
 
     @Override
@@ -68,10 +76,5 @@ public class BookServiceImpl implements BookService {
         }
 
         return Optional.of(repository.getReferenceById(id));
-    }
-
-    private Book getBookEntity(UUID id) {
-        return repository.findById(id)
-                .orElseThrow(() -> BookNotFoundException.bookNotFound(id));
     }
 }

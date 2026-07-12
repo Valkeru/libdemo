@@ -3,7 +3,6 @@ package ru.valkeru.libdemo.domain.entity;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -47,10 +46,11 @@ public class BookInstance {
     private Book book;
 
     @NotBlank
-    @Column(name = "inventory_number", nullable = false)
+    @Column(name = "inventory_number", nullable = false, length = 25)
     private String inventoryNumber;
 
     @NotNull
+    @Type(JsonBinaryType.class)
     @Column(name = "notes", nullable = false)
     private List<String> notes = new ArrayList<>();
 

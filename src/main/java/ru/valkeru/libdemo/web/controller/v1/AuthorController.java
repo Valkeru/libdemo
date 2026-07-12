@@ -10,7 +10,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 import ru.valkeru.libdemo.model.transport.AuthorListDto;
-import ru.valkeru.libdemo.service.application.AuthorApplicationService;
+import ru.valkeru.libdemo.application.AuthorApplicationService;
 import ru.valkeru.libdemo.web.api.v1.AuthorApi;
 import ru.valkeru.libdemo.web.api.service.AuthorServiceApi;
 

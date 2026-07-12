@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.valkeru.libdemo.config.OpenApiConfig;
 import ru.valkeru.libdemo.model.dto.security.LibraryPrincipal;
-import ru.valkeru.libdemo.service.application.SecurityApplicationService;
+import ru.valkeru.libdemo.application.SecurityApplicationService;
 
 import java.io.IOException;
 

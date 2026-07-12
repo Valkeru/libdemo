@@ -2,7 +2,7 @@ package ru.valkeru.libdemo.domain.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import ru.valkeru.libdemo.model.dto.BookDto;
+import ru.valkeru.libdemo.model.dto.book.BookDto;
 import ru.valkeru.libdemo.domain.entity.Author;
 import ru.valkeru.libdemo.domain.entity.Book;
 import ru.valkeru.libdemo.domain.entity.Cycle;
@@ -22,7 +22,9 @@ public interface BookService {
 
     Page<BookShortProjection> getAllBooks(BookFilter filter, Pageable pageable);
 
-    BookDto getBookById(UUID id);
+    Book getBookById(UUID id);
+
+    Book getReference(UUID id);
 
     void deleteBookById(UUID id);
 

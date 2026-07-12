@@ -5,12 +5,17 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.headers.Header;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.UUIDSchema;
+import io.swagger.v3.oas.models.responses.ApiResponses;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.valkeru.libdemo.config.api.ApiTags;
 import ru.valkeru.libdemo.constants.CustomHeaders;
 
 @Configuration
@@ -29,6 +34,7 @@ public class OpenApiConfig {
     public static final String REQUEST_ID_HEADER_REF = "#/components/headers/RequestIdHeader";
     public static final String ACCESS_TOKEN_HEADER_REF = "#/components/headers/AccessTokenHeader";
     public static final String REFRESH_TOKEN_HEADER_REF = "#/components/headers/RefreshTokenHeader";
+    public static final String SIGN_OUT_PATH = "/security/sign-out";
 
     @Bean
     public OpenAPI customOpenApi() {
@@ -49,7 +55,26 @@ public class OpenApiConfig {
 
     @Bean
     public OpenApiCustomizer requestIdHeaderCustomizer() {
-        return openApi -> openApi.getPaths().values().forEach(pathItem ->
+        return openApi -> {
+            addSignOutEndpoint(openApi);
+            addHeaders(openApi);
+        };
+    }
+
+    private void addSignOutEndpoint(OpenAPI openApi) {
+        PathItem pathItem = new PathItem();
+        Operation operation = new Operation()
+            .summary("Sign out")
+            .addTagsItem(ApiTags.SECURITY)
+            .addSecurityItem(new SecurityRequirement().addList(ACCESS_TOKEN_SCHEME))
+            .responses(new ApiResponses());
+
+        pathItem.post(operation);
+        openApi.path(SIGN_OUT_PATH, pathItem);
+    }
+
+    private void addHeaders(OpenAPI openApi) {
+        openApi.getPaths().values().forEach(pathItem ->
             pathItem.readOperations().forEach(operation ->
                 operation.getResponses().forEach(((s, apiResponse) ->
                         apiResponse.addHeaderObject(CustomHeaders.REQUEST_ID, new Header().$ref(REQUEST_ID_HEADER_REF))

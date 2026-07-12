@@ -13,10 +13,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import ru.valkeru.libdemo.config.OpenApiConfig;
 import ru.valkeru.libdemo.config.security.TokenValidationFilter;
 import ru.valkeru.libdemo.config.security.LibraryLogoutHandler;
-import ru.valkeru.libdemo.service.core.security.UserService;
-import ru.valkeru.libdemo.service.application.SecurityApplicationService;
+import ru.valkeru.libdemo.infrastructure.security.UserService;
+import ru.valkeru.libdemo.application.SecurityApplicationService;
 
 @Configuration
 @EnableWebSecurity
@@ -40,7 +41,7 @@ public class SecurityConfiguration {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .userDetailsService(userService)
             .logout(logout -> logout
-                .logoutUrl("/security/sign-out")
+                .logoutUrl(OpenApiConfig.SIGN_OUT_PATH)
                 .addLogoutHandler(new LibraryLogoutHandler(securityApplicationService))
                 .logoutSuccessHandler((rq, rs, auth) -> SecurityContextHolder.clearContext()))
             .addFilterBefore(new TokenValidationFilter(securityApplicationService), BasicAuthenticationFilter.class);

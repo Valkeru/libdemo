@@ -1,5 +1,6 @@
 package ru.valkeru.libdemo.domain.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -83,7 +84,7 @@ public class Book {
     @Column(name = "updated_at", insertable = false)
     protected Instant updatedAt;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             schema = Database.SCHEMA_LIBRARY,
             name = "book_author",

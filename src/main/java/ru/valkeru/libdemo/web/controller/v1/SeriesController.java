@@ -10,7 +10,7 @@ import ru.valkeru.libdemo.model.dto.series.SeriesEditDto;
 import ru.valkeru.libdemo.web.api.service.SeriesServiceApi;
 import ru.valkeru.libdemo.web.api.v1.SeriesApi;
 import ru.valkeru.libdemo.model.dto.series.SeriesDto;
-import ru.valkeru.libdemo.service.application.SeriesApplicationService;
+import ru.valkeru.libdemo.application.SeriesApplicationService;
 
 import java.util.UUID;
 
