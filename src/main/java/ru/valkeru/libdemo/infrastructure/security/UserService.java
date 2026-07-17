@@ -3,14 +3,20 @@ package ru.valkeru.libdemo.infrastructure.security;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.valkeru.libdemo.domain.entity.user.User;
+import ru.valkeru.libdemo.model.request.security.SignUpRequest;
+import ru.valkeru.libdemo.security.Role;
 
 import java.util.UUID;
 
 public interface UserService extends UserDetailsService {
 
+    void createUser(SignUpRequest request, Role role);
+
     User getReference(UUID id);
 
-    boolean isValidPassword(UserDetails user, String providedPassword);
+    User getById(UUID id);
 
-    String hashPassword(String password);
+    void updateRole(User user, Role role);
+
+    boolean isValidPassword(UserDetails user, String providedPassword);
 }

@@ -13,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import ru.valkeru.libdemo.config.OpenApiConfig;
+import ru.valkeru.libdemo.config.api.ApiConfig;
 import ru.valkeru.libdemo.config.security.TokenValidationFilter;
 import ru.valkeru.libdemo.config.security.LibraryLogoutHandler;
 import ru.valkeru.libdemo.infrastructure.security.UserService;
@@ -32,18 +32,20 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity security) {
         security
             .exceptionHandling(e -> e
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+            )
             .csrf(AbstractHttpConfigurer::disable) // NOSONAR
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/service/**").hasAnyRole(Role.getServiceRoleNames())
                 .requestMatchers("/security/revoke-sessions").authenticated()
+                .requestMatchers("/admin/**").hasRole(Role.ROLE_ADMIN.getRoleName())
                 .anyRequest().permitAll())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .userDetailsService(userService)
             .logout(logout -> logout
-                .logoutUrl(OpenApiConfig.SIGN_OUT_PATH)
+                .logoutUrl(ApiConfig.SIGN_OUT_PATH)
                 .addLogoutHandler(new LibraryLogoutHandler(securityApplicationService))
-                .logoutSuccessHandler((rq, rs, auth) -> SecurityContextHolder.clearContext()))
+                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()))
             .addFilterBefore(new TokenValidationFilter(securityApplicationService), BasicAuthenticationFilter.class);
 
         return security.build();

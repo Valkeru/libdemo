@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
-import ru.valkeru.libdemo.config.OpenApiConfig;
 import ru.valkeru.libdemo.application.SecurityApplicationService;
+import ru.valkeru.libdemo.util.AuthenticationUtil;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,8 +18,9 @@ public class LibraryLogoutHandler implements LogoutHandler {
     private final SecurityApplicationService securityApplicationService;
 
     @Override
-    public void logout(HttpServletRequest request, @NonNull HttpServletResponse response, Authentication authentication) {
-        String token = request.getHeader(OpenApiConfig.ACCESS_TOKEN_HEADER_NAME);
+    public void logout(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                       Authentication authentication) {
+        String token = AuthenticationUtil.extractToken(request);
 
         if (StringUtils.isBlank(token)) {
             return;

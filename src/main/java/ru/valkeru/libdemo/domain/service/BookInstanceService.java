@@ -1,9 +1,10 @@
 package ru.valkeru.libdemo.domain.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.valkeru.libdemo.domain.entity.Book;
 import ru.valkeru.libdemo.domain.entity.BookInstance;
 import ru.valkeru.libdemo.model.dto.book.BookInstanceCreateDto;
-import ru.valkeru.libdemo.model.dto.book.BookInstanceViewDto;
 
 import java.util.UUID;
 
@@ -13,5 +14,7 @@ public interface BookInstanceService {
 
     BookInstance getBookInstance(UUID id);
 
-    void updateInstance(UUID id, BookInstanceViewDto dto);
+    BookInstance updateInstance(UUID id, BookInstanceCreateDto dto);
+
+    Page<BookInstance> findByBookId(UUID bookId, Pageable pageable);
 }

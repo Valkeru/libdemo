@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import ru.valkeru.libdemo.config.OpenApiConfig;
 import ru.valkeru.libdemo.utility.FileUtil;
 import ru.valkeru.libdemo.utility.JwtUtility;
 import ru.valkeru.libdemo.utility.RedisUtility;
@@ -46,14 +46,14 @@ public abstract class AbstractIntegrationTest {
 
     protected final ResultActions performAsLibrarian(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(
-            builder.header(OpenApiConfig.ACCESS_TOKEN_HEADER_NAME, jwtUtility.librarianToken())
+            builder.header(HttpHeaders.AUTHORIZATION, jwtUtility.librarianToken())
                 .accept(MediaType.APPLICATION_JSON)
         );
     }
 
     protected final ResultActions performAsAdmin(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(
-            builder.header(OpenApiConfig.ACCESS_TOKEN_HEADER_NAME, jwtUtility.adminToken())
+            builder.header(HttpHeaders.AUTHORIZATION, jwtUtility.adminToken())
                 .accept(MediaType.APPLICATION_JSON)
         );
     }

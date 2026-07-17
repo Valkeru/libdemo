@@ -1,5 +1,6 @@
 package ru.valkeru.libdemo.infrastructure.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -8,8 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.type.descriptor.jdbc.EnumJdbcType;
 import ru.valkeru.libdemo.security.Permission;
 import ru.valkeru.libdemo.security.Role;
 
@@ -27,9 +26,10 @@ public class RolePermissionPk implements Serializable {
     private static final long serialVersionUID = -4064024468725355674L;
 
     @Enumerated(EnumType.STRING)
-    @JdbcType(EnumJdbcType.class)
+    @Column(name = "role", length = 50, nullable = false)
     private Role role;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "permission", nullable = false)
     private Permission permission;
 }

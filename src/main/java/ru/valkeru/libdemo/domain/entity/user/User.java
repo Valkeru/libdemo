@@ -11,9 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.type.descriptor.jdbc.EnumJdbcType;
 import ru.valkeru.libdemo.constants.Database;
 import ru.valkeru.libdemo.security.Role;
 
@@ -40,7 +38,6 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @JdbcType(EnumJdbcType.class)
-    @Column(name = "role", nullable = false)
+    @Column(name = "role", nullable = false, length = 50)
     private Role role;
 }

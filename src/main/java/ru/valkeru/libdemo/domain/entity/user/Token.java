@@ -34,14 +34,14 @@ public class Token {
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column(name = "jwt", nullable = false, length = 2000)
+    @Column(name = "jwt", nullable = false, columnDefinition = "text")
     private String jwt;
 
     @Size(min = 32, max = 32)
     @Column(name = "refresh_token", nullable = false, unique = true)
     private String refreshToken;
 
-    @Column(name = "refresh_token_expiry", nullable = false)
+    @Column(name = "refresh_token_expiry", nullable = false, columnDefinition = "timestamptz")
     private Instant refreshTokenExpiry;
 
     @Immutable

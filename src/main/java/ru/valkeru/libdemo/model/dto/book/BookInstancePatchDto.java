@@ -13,11 +13,26 @@ import java.util.List;
 @Setter
 public class BookInstancePatchDto {
 
-    @Schema(description = "Book inventory number", example = "00025134", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(
+        implementation = String.class,
+        description = "Book inventory number",
+        example = "00025134",
+        requiredMode = Schema.RequiredMode.NOT_REQUIRED
+    )
     private JsonNullable<@NotBlank(message = ValidationConstants.MSG_MANDATORY_FIELD) String> inventoryNumber
         = JsonNullable.undefined();
 
-    @Schema(description = "Notes for book instance", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(
+        implementation = String[].class,
+        description = "Notes for book instance",
+        example = """
+            [
+                "Note 1",
+                "Another one note"
+            ]
+            """,
+        requiredMode = Schema.RequiredMode.NOT_REQUIRED
+    )
     private JsonNullable<List<@NotBlank(message = ValidationConstants.MSS_EMPTY_INVALID) String>> notes
         = JsonNullable.undefined();
 }

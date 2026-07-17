@@ -1,6 +1,9 @@
 package ru.valkeru.libdemo.domain.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.domain.entity.Book;
 import ru.valkeru.libdemo.domain.entity.BookInstance;
@@ -9,7 +12,6 @@ import ru.valkeru.libdemo.domain.repository.jpa.book.BookInstanceRepository;
 import ru.valkeru.libdemo.domain.service.BookInstanceService;
 import ru.valkeru.libdemo.mapper.BookInstanceMapper;
 import ru.valkeru.libdemo.model.dto.book.BookInstanceCreateDto;
-import ru.valkeru.libdemo.model.dto.book.BookInstanceViewDto;
 
 import java.util.UUID;
 
@@ -35,12 +37,19 @@ public class BookInstanceServiceImpl implements BookInstanceService {
     }
 
     @Override
-    public void updateInstance(UUID id, BookInstanceCreateDto dto) {
+    public BookInstance updateInstance(UUID id, BookInstanceCreateDto dto) {
         BookInstance instance = repository.findById(id)
             .orElseThrow(DomainNotFoundException::bookInstance);
 
         mapper.update(dto, instance);
 
-        repository.merge(instance);
+        return repository.merge(instance);
+    }
+
+    @Override
+    public Page<BookInstance> findByBookId(UUID bookId, Pageable pageable) {
+        Pageable request = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+
+        return repository.findAllByBookId(bookId, request);
     }
 }

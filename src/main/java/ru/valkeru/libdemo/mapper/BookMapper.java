@@ -9,7 +9,7 @@ import ru.valkeru.libdemo.domain.entity.Author;
 import ru.valkeru.libdemo.domain.entity.Book;
 import ru.valkeru.libdemo.domain.entity.Cycle;
 import ru.valkeru.libdemo.domain.entity.Series;
-import ru.valkeru.libdemo.model.dto.book.BookInstanceViewDto;
+import ru.valkeru.libdemo.model.dto.book.BookInstanceCreateDto;
 import ru.valkeru.libdemo.model.dto.book.BookInstancePatchDto;
 import ru.valkeru.libdemo.model.transport.BookListDto;
 import ru.valkeru.libdemo.domain.projection.BookShortProjection;
@@ -36,5 +36,5 @@ public interface BookMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "bookId", ignore = true)
-    BookInstanceViewDto toDto(BookInstancePatchDto patchDto);
+    BookInstanceCreateDto toDto(BookInstancePatchDto patchDto);
 }

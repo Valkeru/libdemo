@@ -1,6 +1,6 @@
 package ru.valkeru.libdemo.domain.repository.jpa.user;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import io.hypersistence.utils.spring.repository.BaseJpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.valkeru.libdemo.model.dto.security.LibraryUser;
 import ru.valkeru.libdemo.domain.entity.user.User;
@@ -8,7 +8,7 @@ import ru.valkeru.libdemo.domain.entity.user.User;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface UserRepository extends BaseJpaRepository<User, UUID> {
 
     @Query("""
         select

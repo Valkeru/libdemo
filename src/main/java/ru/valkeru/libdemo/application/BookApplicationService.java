@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.valkeru.libdemo.model.dto.book.BookDto;
 import ru.valkeru.libdemo.model.dto.book.BookInstanceCreateDto;
+import ru.valkeru.libdemo.model.dto.book.BookInstanceListDto;
 import ru.valkeru.libdemo.model.dto.book.BookInstanceViewDto;
 import ru.valkeru.libdemo.model.dto.book.BookInstancePatchDto;
 import ru.valkeru.libdemo.model.dto.security.LibraryPrincipal;
@@ -16,12 +17,6 @@ public interface BookApplicationService {
 
     UUID createBook(BookDto bookDto);
 
-    UUID createBookInstance(BookInstanceCreateDto dto);
-
-    BookInstanceViewDto getBookInstance(UUID id);
-
-    void updateBookInstance(UUID id, BookInstancePatchDto dto, LibraryPrincipal principal);
-
     void updateBook(UUID id, BookDto bookDto);
 
     Page<BookListDto> getAllBooks(BookFilter filter, Pageable pageable);
@@ -29,5 +24,13 @@ public interface BookApplicationService {
     BookDto getBookById(UUID id);
 
     void deleteBookById(UUID id);
+
+    UUID createBookInstance(BookInstanceCreateDto dto);
+
+    Page<BookInstanceListDto> getBookInstances(UUID bookId, Pageable pageable);
+
+    BookInstanceViewDto getBookInstance(UUID id);
+
+    BookInstanceViewDto updateBookInstance(UUID id, BookInstancePatchDto dto, LibraryPrincipal principal);
 }
 

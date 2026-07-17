@@ -75,13 +75,13 @@ public class Book {
     @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.NONE)
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "timestamptz")
     protected Instant createdAt;
 
     @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.NONE)
     @UpdateTimestamp
-    @Column(name = "updated_at", insertable = false)
+    @Column(name = "updated_at", insertable = false, columnDefinition = "timestamptz")
     protected Instant updatedAt;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})

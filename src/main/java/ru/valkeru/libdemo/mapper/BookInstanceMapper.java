@@ -9,6 +9,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import ru.valkeru.libdemo.domain.entity.Book;
 import ru.valkeru.libdemo.domain.entity.BookInstance;
 import ru.valkeru.libdemo.model.dto.book.BookInstanceCreateDto;
+import ru.valkeru.libdemo.model.dto.book.BookInstanceListDto;
 import ru.valkeru.libdemo.model.dto.book.BookInstanceViewDto;
 
 @Mapper(
@@ -24,4 +25,6 @@ public interface BookInstanceMapper {
     @Mapping(target = "book", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void update(BookInstanceCreateDto dto, @MappingTarget BookInstance instance);
+
+    BookInstanceListDto toListDto(BookInstance bookInstance);
 }

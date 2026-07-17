@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.valkeru.libdemo.constants.TestConstants.SERIES_ID;
 
 @Sql(value = "classpath:sql/delete/00.truncate.sql")
-@Sql(value = "classpath:sql/delete/00.truncate.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
+@SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 class SeriesControllerTest extends AbstractIntegrationTest {
 
     @Autowired
@@ -24,46 +24,45 @@ class SeriesControllerTest extends AbstractIntegrationTest {
     @Test
     void testGetSeriesNotFound() throws Exception {
         mockMvc.perform(
-                        get("/v1/series")
-                                .accept(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content.size()").value(0))
-                .andDo(print());
+                get("/v1/series")
+                    .accept(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").isArray())
+            .andExpect(jsonPath("$.content.size()").value(0))
+            .andDo(print());
 
         mockMvc.perform(
-                        get("/v1/series/{id}", "caa60384-eccf-4c68-973a-5a69421c56ed")
-                                .accept(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isNotFound())
-                .andDo(print());
+                get("/v1/series/{id}", "caa60384-eccf-4c68-973a-5a69421c56ed")
+                    .accept(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isNotFound())
+            .andDo(print());
     }
 
     @Test
-    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
     @Sql(
-            value = {
-                    "classpath:sql/02.create_cycle.sql",
-                    "classpath:sql/03.create_series.sql"
-            }
+        value = {
+            "classpath:sql/02.create_cycle.sql",
+            "classpath:sql/03.create_series.sql"
+        }
     )
     void testGetSeriesOk() throws Exception {
         mockMvc.perform(
-                        get("/v1/series")
-                                .accept(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content.size()").value(2))
-                .andDo(print());
+                get("/v1/series")
+                    .accept(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").isArray())
+            .andExpect(jsonPath("$.content.size()").value(2))
+            .andDo(print());
 
         mockMvc.perform(
-                        get("/v1/series/{id}", SERIES_ID)
-                                .accept(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("test_42db2cab8e"))
-                .andDo(print());
+                get("/v1/series/{id}", SERIES_ID)
+                    .accept(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.title").value("test_42db2cab8e"))
+            .andDo(print());
     }
 }

@@ -7,8 +7,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import ru.valkeru.libdemo.domain.entity.user.User;
+import ru.valkeru.libdemo.domain.exception.DomainNotFoundException;
 import ru.valkeru.libdemo.domain.repository.jpa.user.UserRepository;
 import ru.valkeru.libdemo.infrastructure.security.UserService;
+import ru.valkeru.libdemo.model.request.security.SignUpRequest;
+import ru.valkeru.libdemo.security.Role;
 
 import java.util.UUID;
 
@@ -16,18 +19,40 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepository repository;
+
+    public void createUser(SignUpRequest request, Role role) {
+        User user = User.builder()
+            .username(request.getUsername())
+            .password(hashPassword(request.getPassword()))
+            .role(role)
+            .build();
+
+        repository.persist(user);
+    }
 
     @Override
     public User getReference(UUID id) {
-        return userRepository.getReferenceById(id);
+        return repository.getReferenceById(id);
+    }
+
+    @Override
+    public User getById(UUID id) {
+        return repository.findById(id)
+            .orElseThrow(DomainNotFoundException::user);
     }
 
     @NonNull
     @Override
     public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username)
+        return repository.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User %s not found".formatted(username)));
+    }
+
+    @Override
+    public void updateRole(User user, Role role) {
+        user.setRole(role);
+        repository.merge(user);
     }
 
     @Override
@@ -40,8 +65,7 @@ public class UserServiceImpl implements UserService {
         return BCrypt.checkpw(providedPassword, hashedPassword);
     }
 
-    @Override
-    public String hashPassword(String password) {
+    private String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 }

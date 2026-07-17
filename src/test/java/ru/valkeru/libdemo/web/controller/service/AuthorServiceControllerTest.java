@@ -15,7 +15,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlMergeMode;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.valkeru.libdemo.AbstractIntegrationTest;
-import ru.valkeru.libdemo.constants.CustomHeaders;
 import ru.valkeru.libdemo.domain.repository.jpa.author.AuthorRepository;
 import ru.valkeru.libdemo.web.controller.v1.AuthorController;
 
@@ -148,7 +147,7 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
         String payload = readResourceAsString("json/author/request/update_valid.json");
         String expected = readResourceAsString("json/author/response/updated.json");
 
-        performNotAuthenticated(get("%s/{id}".formatted(AuthorController.AUTHOR_V1_URL), AUTHOR_ID))
+        performNotAuthenticated(get("/v1/author/{id}", AUTHOR_ID))
             .andExpect(status().isOk());
 
         performAsAdmin(patch("/service/author/{id}", AUTHOR_ID)
@@ -157,7 +156,7 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
         )
             .andExpect(status().isNoContent());
 
-        performNotAuthenticated(get("%s/{id}".formatted(AuthorController.AUTHOR_V1_URL), AUTHOR_ID))
+        performNotAuthenticated(get("/v1/author/{id}", AUTHOR_ID))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(json().isEqualTo(expected));

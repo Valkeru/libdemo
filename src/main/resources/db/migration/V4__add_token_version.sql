@@ -1,1 +1,0 @@
-ALTER TABLE public.user_token ADD COLUMN version BIGINT NOT NULL DEFAULT 1;

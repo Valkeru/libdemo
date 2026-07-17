@@ -16,6 +16,8 @@ import ru.valkeru.libdemo.infrastructure.security.UserService;
 @RequiredArgsConstructor
 public class JwtUtility {
 
+    private static final String SCHEME = "Bearer";
+
     private Token librarianToken = null;
     private Token adminToken = null;
     private Token userToken = null;
@@ -28,7 +30,7 @@ public class JwtUtility {
             librarianToken = getToken("default_librarian");
         }
 
-        return librarianToken.getJwt();
+        return tokenWithScheme(librarianToken);
     }
 
     public String adminToken() {
@@ -36,7 +38,7 @@ public class JwtUtility {
             adminToken = getToken("admin");
         }
 
-        return adminToken.getJwt();
+        return tokenWithScheme(adminToken);
     }
 
     public String userToken() {
@@ -44,7 +46,7 @@ public class JwtUtility {
             userToken = getToken("default_user");
         }
 
-        return userToken.getJwt();
+        return tokenWithScheme(userToken);
     }
 
     private Token getToken(String userName) {
@@ -56,5 +58,9 @@ public class JwtUtility {
 
     private boolean isInvalidToken(Token token) {
         return token == null || !jwtService.isValidToken(token.getJwt());
+    }
+
+    private static String tokenWithScheme(Token token) {
+        return "%s %s".formatted(SCHEME, token.getJwt());
     }
 }

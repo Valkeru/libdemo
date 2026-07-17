@@ -1,6 +1,7 @@
 package ru.valkeru.libdemo.security;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Role permissions<br/>
@@ -12,7 +13,7 @@ public enum Permission {
     AUTHOR_CREATE,
     AUTHOR_UPDATE,
     AUTHOR_DELETE,
-    AUTHOR_FULL(
+    AUTHOR_CRUD(
         AUTHOR_CREATE,
         AUTHOR_UPDATE,
         AUTHOR_DELETE
@@ -21,7 +22,7 @@ public enum Permission {
     CYCLE_CREATE,
     CYCLE_UPDATE,
     CYCLE_DELETE,
-    CYCLE_FULL(
+    CYCLE_CRUD(
         CYCLE_CREATE,
         CYCLE_UPDATE,
         CYCLE_DELETE
@@ -30,7 +31,7 @@ public enum Permission {
     SERIES_CREATE,
     SERIES_UPDATE,
     SERIES_DELETE,
-    SERIES_FULL(
+    SERIES_CRUD(
         SERIES_CREATE,
         SERIES_UPDATE,
         SERIES_DELETE
@@ -39,7 +40,7 @@ public enum Permission {
     BOOK_CREATE,
     BOOK_UPDATE,
     BOOK_DELETE,
-    BOOK_FULL(
+    BOOK_CRUD(
         BOOK_CREATE,
         BOOK_UPDATE,
         BOOK_DELETE
@@ -49,7 +50,8 @@ public enum Permission {
     BOOK_INSTANCE_UPDATE,
     BOOK_INSTANCE_VIEW,
     BOOK_INSTANCE_DELETE,
-    BOOK_INSTANCE_FULL(
+    BOOK_INSTANCE_INVENTORY_NUMBER_EDIT,
+    BOOK_INSTANCE_CRUD(
         BOOK_INSTANCE_CREATE,
         BOOK_INSTANCE_UPDATE,
         BOOK_INSTANCE_VIEW,
@@ -66,9 +68,19 @@ public enum Permission {
         this.includedPermissions = Set.of(includedPermissions);
     }
 
+    public boolean isComposite() {
+        return !includedPermissions.isEmpty();
+    }
+
+    public boolean isAtomic() {
+        return includedPermissions.isEmpty();
+    }
+
     public Set<Permission> resolvePermissions() {
-        return includedPermissions.isEmpty()
+        return isAtomic()
             ? Set.of(this)
-            : includedPermissions;
+            : includedPermissions.stream()
+              .flatMap(permission -> permission.resolvePermissions().stream())
+              .collect(Collectors.toUnmodifiableSet());
     }
 }

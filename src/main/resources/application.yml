@@ -17,6 +17,7 @@ spring:
     hikari:
       maximum-pool-size: 30
     driver-class-name: org.postgresql.Driver
+    url: ${spring.datasource.url}?reWriteBatchedInserts=true
   flyway:
     create-schemas: true
     table: flyway_library_schema_history
@@ -25,6 +26,14 @@ spring:
       - library
   jpa:
     open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+        query:
+          in_clause_parameter_padding: true
+        order_updates: true
+        order_inserts: true
   main:
     banner-mode: off
   autoconfigure:
@@ -53,8 +62,8 @@ springdoc:
       version: 0.0.1-alpha
       title: Babylon library
       license:
-        name: WTFPL
-        url: https://example.org
+        name: MIT
+        url: https://opensource.org/license/mit
   swagger-ui:
     filter: true
     syntax-highlight:
@@ -67,18 +76,6 @@ app:
       secret: uSfKFfguss9AMp7cswFvHEmR4KvqnvfxwE7Fkp4Xj34vof72khNN7cFE7PnWKcLy
       lifetime: 3600
       refresh-lifetime: 604800
-    permissions:
-      role-manager:
-        - AUTHOR_FULL
-        - CYCLE_FULL
-        - SERIES_FULL
-        - BOOK_FULL
-        - BOOK_INSTANCE_FULL
-        - SERVICE_LIBRARY_CARD_VIEW
-      role-librarian:
-        - BOOK_INSTANCE_VIEW
-        - SERVICE_LIBRARY_CARD_CREATE
-        - SERVICE_LIBRARY_CARD_VIEW
   system:
     elasticsearch-enabled: false
 management:

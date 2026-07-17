@@ -55,7 +55,7 @@ public class BookInstance {
     private List<String> notes = new ArrayList<>();
 
     @Setter(AccessLevel.NONE)
-    @Column(name = "version")
+    @Column(name = "version", nullable = false)
     private long version;
 
     @CreationTimestamp

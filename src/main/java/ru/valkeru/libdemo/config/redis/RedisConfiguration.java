@@ -39,7 +39,7 @@ public class RedisConfiguration implements CachingConfigurer {
                 .build();
 
         return RedisCacheConfiguration.defaultCacheConfig()
-                .prefixCacheNameWith("libdemo")
+                .prefixCacheNameWith("libdemo::")
                 .entryTtl(Duration.ofMinutes(5))
                 .disableCachingNullValues()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
@@ -50,7 +50,7 @@ public class RedisConfiguration implements CachingConfigurer {
     @Bean("jwtRedisConfiguration")
     public RedisCacheConfiguration jwtRedisConfiguration(@Value("${app.security.jwt.lifetime}") long ttl, ObjectMapper mapper) {
         return RedisCacheConfiguration.defaultCacheConfig()
-                .prefixCacheNameWith("libdemo-jwt")
+                .prefixCacheNameWith("libdemo-jwt::")
                 .entryTtl(Duration.ofSeconds(ttl))
                 .disableCachingNullValues()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(

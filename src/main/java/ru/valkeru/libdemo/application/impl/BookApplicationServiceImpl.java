@@ -17,6 +17,7 @@ import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.dto.book.BookDto;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.dto.book.BookInstanceCreateDto;
+import ru.valkeru.libdemo.model.dto.book.BookInstanceListDto;
 import ru.valkeru.libdemo.model.dto.book.BookInstanceViewDto;
 import ru.valkeru.libdemo.model.dto.book.BookInstancePatchDto;
 import ru.valkeru.libdemo.model.dto.security.LibraryPrincipal;
@@ -54,6 +55,10 @@ public class BookApplicationServiceImpl implements BookApplicationService {
     private final PermissionService permissionService;
     private final BookInstanceMapper bookInstanceMapper;
 
+    //**************************
+    // Book
+    //**************************
+
     @Override
     @Transactional
     public UUID createBook(BookDto bookDto) {
@@ -63,30 +68,6 @@ public class BookApplicationServiceImpl implements BookApplicationService {
         Cycle cycle = getCycle(bookDto.getCycle());
 
         return bookService.createBook(bookDto, authors, series, cycle).getId();
-    }
-
-    @Override
-    @Transactional
-    public UUID createBookInstance(BookInstanceCreateDto dto) {
-        Book book = bookService.getReference(dto.getBookId());
-
-        return bookInstanceService.createInstance(dto, book).getId();
-    }
-
-    @Override
-    @Transactional
-    public void updateBookInstance(UUID id, BookInstancePatchDto patchDto, LibraryPrincipal principal) {
-        permissionService.checkPatch(principal, patchDto);
-        BookInstanceViewDto dto = bookMapper.toDto(patchDto);
-
-        bookInstanceService.updateInstance(id, dto);
-    }
-
-    @Override
-    public BookInstanceViewDto getBookInstance(UUID id) {
-        BookInstance instance = bookInstanceService.getBookInstance(id);
-
-        return bookInstanceMapper.toDto(instance);
     }
 
     @Override
@@ -121,6 +102,41 @@ public class BookApplicationServiceImpl implements BookApplicationService {
     @Transactional
     public void deleteBookById(UUID id) {
         bookService.deleteBookById(id);
+    }
+
+    //**************************
+    // Book instance
+    //**************************
+
+    @Override
+    @Transactional
+    public UUID createBookInstance(BookInstanceCreateDto dto) {
+        Book book = bookService.getReference(dto.getBookId());
+
+        return bookInstanceService.createInstance(dto, book).getId();
+    }
+
+    @Override
+    public Page<BookInstanceListDto> getBookInstances(UUID bookId, Pageable pageable) {
+        Page<BookInstance> instances = bookInstanceService.findByBookId(bookId, pageable);
+
+        return instances.map(bookInstanceMapper::toListDto);
+    }
+
+    @Override
+    public BookInstanceViewDto getBookInstance(UUID id) {
+        BookInstance instance = bookInstanceService.getBookInstance(id);
+
+        return bookInstanceMapper.toDto(instance);
+    }
+
+    @Override
+    @Transactional
+    public BookInstanceViewDto updateBookInstance(UUID id, BookInstancePatchDto patchDto, LibraryPrincipal principal) {
+        permissionService.checkPatch(principal, patchDto);
+        BookInstanceCreateDto dto = bookMapper.toDto(patchDto);
+
+        return bookInstanceMapper.toDto(bookInstanceService.updateInstance(id, dto));
     }
 
     private Series getSeries(SeriesDto dto) {

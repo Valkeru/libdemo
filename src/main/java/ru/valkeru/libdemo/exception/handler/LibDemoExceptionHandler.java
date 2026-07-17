@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,7 +23,7 @@ import ru.valkeru.libdemo.component.message.MessageProvider;
 import ru.valkeru.libdemo.exception.BadRequestException;
 import ru.valkeru.libdemo.exception.IntegrityViolationException;
 import ru.valkeru.libdemo.exception.NotFoundException;
-import ru.valkeru.libdemo.exception.impl.LibraryCardRestrictedException;
+import ru.valkeru.libdemo.exception.impl.ReadersCardRestrictedException;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
 import ru.valkeru.libdemo.model.dto.error.FormFieldErrorDto;
 
@@ -38,32 +39,29 @@ public class LibDemoExceptionHandler {
 
     private final MessageProvider messageProvider;
 
-    @Hidden
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    @ExceptionHandler(NotFoundException.class)
-    public ErrorDto handleEntityNotFound(NotFoundException nfe) {
-        log.info("Entity not found: {}", nfe.getMessage(), nfe);
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public ErrorDto handleException(Exception e) {
+        log.error("Internal error: {}", e.getMessage(), e);
 
-        return buildErrorDto(nfe, HttpStatus.NOT_FOUND);
+        return buildErrorDto(messageProvider.getInternalErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Hidden
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    @ExceptionHandler(BadRequestException.class)
-    public ErrorDto handleBadRequest(BadRequestException bre) {
-        log.info("Invalid request (validation), reason: {}", bre.getMessage(), bre);
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ErrorDto> handleResponseStatusException(ResponseStatusException rse) {
+        ErrorDto errorDto = buildErrorDto(rse.getReason(), (HttpStatus) rse.getStatusCode());
 
-        return buildErrorDto(bre, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(errorDto.status()).body(errorDto);
     }
 
     @Hidden
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public List<FormFieldErrorDto> validationExceptionHandler(MethodArgumentNotValidException manve) {
-        log.info("Request validation failed: {}", getRootMessage(manve), manve);
+        log.warn("Request validation failed: {}", getRootMessage(manve), manve);
 
         Map<String, List<String>> fieldErrorsMap = manve.getFieldErrors().stream()
             .collect(Collectors.groupingBy(
@@ -86,8 +84,28 @@ public class LibDemoExceptionHandler {
     }
 
     @Hidden
-    @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public ErrorDto handleEntityNotFound(NotFoundException nfe) {
+        log.info("Entity not found: {}", nfe.getMessage(), nfe);
+
+        return buildErrorDto(nfe, HttpStatus.NOT_FOUND);
+    }
+
+    @Hidden
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestException.class)
+    public ErrorDto handleBadRequest(BadRequestException bre) {
+        log.info("Invalid request (validation), reason: {}", bre.getMessage(), bre);
+
+        return buildErrorDto(bre, HttpStatus.BAD_REQUEST);
+    }
+
+    @Hidden
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorDto handleIntegrityViolations(DataIntegrityViolationException dive) {
         log.info("Data violation: {}", getRootMessage(dive), dive);
@@ -96,30 +114,13 @@ public class LibDemoExceptionHandler {
     }
 
     @Hidden
-    @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(IntegrityViolationException.class)
     public ErrorDto handleIntegrityViolations(IntegrityViolationException ive) {
         log.info("Data integrity violation: {}", ive.getMessage(), ive);
 
         return buildErrorDto(ive, HttpStatus.CONFLICT);
-    }
-
-    @Hidden
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ErrorDto> handleResponseStatusException(ResponseStatusException rse) {
-        ErrorDto errorDto = buildErrorDto(rse.getReason(), (HttpStatus) rse.getStatusCode());
-
-        return ResponseEntity.status(errorDto.status()).body(errorDto);
-    }
-
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    @ExceptionHandler(Exception.class)
-    public ErrorDto handleException(Exception e) {
-        log.error("Internal error: {}", e.getMessage(), e);
-
-        return buildErrorDto(messageProvider.getInternalErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Hidden
@@ -132,8 +133,9 @@ public class LibDemoExceptionHandler {
         return buildErrorDto("Invalid sort field: %s".formatted(pre.getPropertyName()), HttpStatus.BAD_REQUEST);
     }
 
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @Hidden
     @ResponseBody
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AuthenticationException.class)
     public ErrorDto handleUserNotFound(AuthenticationException ae) {
         log.info("Authentication failed");
@@ -142,18 +144,34 @@ public class LibDemoExceptionHandler {
         return buildErrorDto("Invalid login or password", HttpStatus.UNAUTHORIZED);
     }
 
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @Hidden
     @ResponseBody
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ErrorDto handleAuthorizationDeniedException() {
         return buildErrorDto("Access denied", HttpStatus.FORBIDDEN);
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @Hidden
     @ResponseBody
-    @ExceptionHandler(LibraryCardRestrictedException.class)
-    public ErrorDto handle(LibraryCardRestrictedException lcre) {
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ReadersCardRestrictedException.class)
+    public ErrorDto handle(ReadersCardRestrictedException lcre) {
         return buildErrorDto(lcre, HttpStatus.CONFLICT);
+    }
+
+    @Hidden
+    @ResponseBody
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ErrorDto handle(HttpRequestMethodNotSupportedException mnse) {
+        String[] supportedMethods = mnse.getSupportedMethods();
+        String joinedMethods = StringUtils.join(supportedMethods, ", ");
+
+        String message = "Method %s is not supported here! Supported methods are: %s"
+            .formatted(mnse.getMethod(), joinedMethods);
+
+        return buildErrorDto(message, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     private ErrorDto buildErrorDto(Exception e, HttpStatus status) {

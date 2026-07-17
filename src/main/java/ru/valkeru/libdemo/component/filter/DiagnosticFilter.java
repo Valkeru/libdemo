@@ -10,7 +10,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
-import ru.valkeru.libdemo.constants.CustomHeaders;
+import ru.valkeru.libdemo.config.api.ApiConfig;
 import ru.valkeru.libdemo.util.RequestExecutionContext;
 import ru.valkeru.libdemo.util.RequestIdUtil;
 
@@ -41,6 +41,6 @@ public class DiagnosticFilter extends OncePerRequestFilter {
     }
 
     private void addDiagnosticHeaders(HttpServletResponse response) {
-        response.setHeader(CustomHeaders.REQUEST_ID, RequestIdUtil.getMDCRequestId().toString());
+        response.setHeader(ApiConfig.REQUEST_ID_HEADER_NAME, RequestIdUtil.getMDCRequestId().toString());
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import ru.valkeru.libdemo.config.security.RolePermissionProperties;
 import ru.valkeru.libdemo.config.system.SystemConfiguration;
 import ru.valkeru.libdemo.constants.AppEnvironment;
 
@@ -19,12 +18,14 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 @EnableAsync
 @SpringBootApplication
 @EnableJpaRepositories(
-    basePackages = {"ru.valkeru.libdemo.domain.repository.jpa"},
+    basePackages = {
+        "ru.valkeru.libdemo.domain.repository.jpa",
+        "ru.valkeru.libdemo.infrastructure.repository"
+    },
     repositoryBaseClass = BaseJpaRepositoryImpl.class
 )
 @EnableConfigurationProperties({
     SystemConfiguration.class,
-    RolePermissionProperties.class
 })
 @EnableScheduling
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)

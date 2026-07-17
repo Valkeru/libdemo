@@ -10,9 +10,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.valkeru.libdemo.config.OpenApiConfig;
 import ru.valkeru.libdemo.model.dto.security.LibraryPrincipal;
 import ru.valkeru.libdemo.application.SecurityApplicationService;
+import ru.valkeru.libdemo.util.AuthenticationUtil;
 
 import java.io.IOException;
 
@@ -26,7 +26,7 @@ public class TokenValidationFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        String token = request.getHeader(OpenApiConfig.ACCESS_TOKEN_HEADER_NAME);
+        String token = AuthenticationUtil.extractToken(request);
         LibraryPrincipal principal = securityService.authenticate(token);
 
         if (principal != null) {

@@ -20,11 +20,6 @@ public class DetailedMessageProvider implements MessageProvider {
     }
 
     @Override
-    public String getBadRequestMessage(Exception e) {
-        return getExceptionMessage(e);
-    }
-
-    @Override
     public String getInternalErrorMessage(Exception e) {
         return getExceptionMessage(e);
     }
