@@ -53,7 +53,7 @@ public interface BookBorrowingApi {
         }
     )
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> cancelReservation(@PathVariable UUID id);
+    ResponseEntity<Void> cancelReservation(@PathVariable UUID id, @AuthenticationPrincipal LibraryPrincipal principal);
 
     @Operation(
         summary = "Get borrowing info list for current user",

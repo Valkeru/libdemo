@@ -37,3 +37,4 @@ jmeter/
 !jmeter/.gitkeep
 
 .env
+.directory
