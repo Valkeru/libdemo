@@ -6,9 +6,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import ru.valkeru.libdemo.domain.entity.user.User;
-import ru.valkeru.libdemo.domain.exception.DomainNotFoundException;
-import ru.valkeru.libdemo.domain.repository.jpa.user.UserRepository;
+import ru.valkeru.libdemo.persistence.entity.user.User;
+import ru.valkeru.libdemo.persistence.exception.NotFoundPersistenceException;
+import ru.valkeru.libdemo.persistence.repository.jpa.user.UserRepository;
 import ru.valkeru.libdemo.infrastructure.security.UserService;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
 import ru.valkeru.libdemo.security.Role;
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getById(UUID id) {
         return repository.findById(id)
-            .orElseThrow(DomainNotFoundException::user);
+            .orElseThrow(NotFoundPersistenceException::user);
     }
 
     @NonNull

@@ -8,11 +8,11 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 
 @Configuration
 @RequiredArgsConstructor
-@EnableElasticsearchRepositories(basePackages = {"ru.valkeru.libdemo.domain.repository.elasticsearch"})
+@EnableElasticsearchRepositories(basePackages = {"ru.valkeru.libdemo.persistence.repository.elasticsearch"})
 public class ElasticsearchConfiguration {
 
-    @Bean
-    public String elasticsearchIndexPrefix() {
-        return "libdemo_";
+    @Bean("appElasticsearchProperties")
+    public ApplicationElasticsearchProperties appElasticsearchProperties() {
+        return new ApplicationElasticsearchProperties();
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -18,7 +19,13 @@ import ru.valkeru.libdemo.utility.RedisUtility;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Import(ApplicationTestConfiguration.class)
-@Sql(value = {"classpath:sql/delete/00.truncate.sql"})
+@ActiveProfiles(resolver = ProfileResolver.class)
+@Sql(
+    value = {
+        "classpath:sql/delete/00.truncate.sql"
+    },
+    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS
+)
 public abstract class AbstractIntegrationTest {
 
     @Autowired

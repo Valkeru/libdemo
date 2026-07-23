@@ -2,7 +2,7 @@ package ru.valkeru.libdemo.infrastructure.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import ru.valkeru.libdemo.domain.entity.user.User;
+import ru.valkeru.libdemo.persistence.entity.user.User;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
 import ru.valkeru.libdemo.security.Role;
 

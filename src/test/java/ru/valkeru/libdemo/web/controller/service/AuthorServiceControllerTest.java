@@ -15,8 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlMergeMode;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.valkeru.libdemo.AbstractIntegrationTest;
-import ru.valkeru.libdemo.domain.repository.jpa.author.AuthorRepository;
-import ru.valkeru.libdemo.web.controller.v1.AuthorController;
+import ru.valkeru.libdemo.persistence.repository.jpa.author.AuthorRepository;
 
 import java.util.UUID;
 import java.util.stream.Stream;

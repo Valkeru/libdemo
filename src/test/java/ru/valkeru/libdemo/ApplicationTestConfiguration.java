@@ -15,6 +15,9 @@ import java.time.format.DateTimeFormatter;
 @TestConfiguration(proxyBeanMethods = false)
 public class ApplicationTestConfiguration {
 
+    private static PostgreSQLContainer<?> postgreSQLContainer;
+    private static RedisContainer redisContainer;
+
     static {
         System.setProperty(
                 AppEnvironment.ENV_INSTANCE_ID,
@@ -30,13 +33,23 @@ public class ApplicationTestConfiguration {
     @ServiceConnection
     @Profile("!testcontainers-disabled")
     public PostgreSQLContainer<?> getPostgresContainer() {
-        return new PostgreSQLContainer<>(DockerImageName.parse("postgres:16.1"))
+        if (postgreSQLContainer == null) {
+            postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:16.1"))
+                .withUrlParam("reWriteBatchedInserts", "true")
                 .withCommand("-c", "max_connections=1000");
+        }
+
+        return postgreSQLContainer;
     }
 
     @Bean
     @ServiceConnection
+    @Profile("!testcontainers-disabled")
     public RedisContainer getRedisContainer() {
-        return new RedisContainer(DockerImageName.parse("redis:6.2.6"));
+        if (redisContainer == null) {
+            redisContainer = new RedisContainer(DockerImageName.parse("redis:6.2.6"));
+        }
+
+        return redisContainer;
     }
 }

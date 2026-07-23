@@ -59,8 +59,11 @@ public enum Permission {
     ),
 
     SERVICE_INDEXING,
-    SERVICE_LIBRARY_CARD_CREATE,
-    SERVICE_LIBRARY_CARD_VIEW;
+    SERVICE_READERS_CARD_CREATE,
+    SERVICE_READERS_CARD_VIEW,
+
+    SERVICE_BOOK_LENDING_CANCEL,
+    SERVICE_BOOK_LENDING_RETURN;
 
     private final Set<Permission> includedPermissions;
 

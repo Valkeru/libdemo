@@ -3,6 +3,7 @@
     <conversionRule conversionWord="clr" class="org.springframework.boot.logging.logback.ColorConverter" />
     <conversionRule conversionWord="wex" class="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
     <conversionRule conversionWord="wEx" class="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <springProperty name="fluentdEnabled" source="app.system.fluentd-enabled" defaultValue="false"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -12,22 +13,28 @@
         </encoder>
     </appender>
 
-    <springProfile name="log-fluentd">
-        <appender name="json" class="ch.qos.logback.more.appenders.FluencyLogbackAppender">
-            <remoteHost>${FLUENTD_HOST}</remoteHost>
-            <port>${FLUENTD_PORT}</port>
-            <tag>tag.libdemo</tag>
-            <additionalField>
-                <key>instanceId</key>
-                <value>${INSTANCE_ID}</value>
-            </additionalField>
-            <useEventTime>true</useEventTime>
-       </appender>
+    <condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
+        <key>fluentdEnabled</key>
+        <value>true</value>
+    </condition>
+    <if>
+        <then>
+            <appender name="json" class="ch.qos.logback.more.appenders.FluencyLogbackAppender">
+                <remoteHost>${FLUENTD_HOST}</remoteHost>
+                <port>${FLUENTD_PORT}</port>
+                <tag>tag.libdemo</tag>
+                <additionalField>
+                    <key>instanceId</key>
+                    <value>${INSTANCE_ID}</value>
+                </additionalField>
+                <useEventTime>true</useEventTime>
+            </appender>
 
-        <root level="INFO">
-            <appender-ref ref="json"/>
-        </root>
-    </springProfile>
+            <root level="INFO">
+                <appender-ref ref="json"/>
+            </root>
+        </then>
+    </if>
 
     <root level="INFO">
         <appender-ref ref="console"/>

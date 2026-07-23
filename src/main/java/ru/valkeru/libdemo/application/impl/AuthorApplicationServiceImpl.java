@@ -1,24 +1,20 @@
 package ru.valkeru.libdemo.application.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.exception.impl.AuthorNotFoundException;
 import ru.valkeru.libdemo.mapper.AuthorMapper;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
-import ru.valkeru.libdemo.domain.entity.Author;
+import ru.valkeru.libdemo.persistence.entity.Author;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 import ru.valkeru.libdemo.model.transport.AuthorListDto;
-import ru.valkeru.libdemo.domain.service.AuthorService;
+import ru.valkeru.libdemo.persistence.service.AuthorService;
 import ru.valkeru.libdemo.application.AuthorApplicationService;
-import ru.valkeru.libdemo.infrastructure.provider.search.AuthorSearchProvider;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,7 +23,6 @@ import java.util.UUID;
 public class AuthorApplicationServiceImpl implements AuthorApplicationService {
 
     private final AuthorService authorService;
-    private final AuthorSearchProvider authorSearchProvider;
     private final AuthorMapper authorMapper;
 
     @Override
@@ -50,11 +45,7 @@ public class AuthorApplicationServiceImpl implements AuthorApplicationService {
 
     @Override
     public Page<AuthorListDto> listAllAuthors(AuthorFilter filter, Pageable pageable) {
-        String name = filter.getName();
-        String[] tokens = Optional.ofNullable(StringUtils.split(name))
-            .orElseGet(() -> new String[0]);
-
-        Page<AuthorDto> authorDtos = authorSearchProvider.listAllAuthors(tokens, pageable);
+        Page<AuthorDto> authorDtos = authorService.listAllAuthors(filter, pageable);
 
         return authorDtos.map(dto -> new AuthorListDto(
             dto.getId(),
@@ -78,8 +69,7 @@ public class AuthorApplicationServiceImpl implements AuthorApplicationService {
     }
 
     @Override
-    @Async
     public void reindexAuthors() {
-        authorSearchProvider.reindex();
+        authorService.reindexAuthors();
     }
 }

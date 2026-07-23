@@ -26,6 +26,7 @@ import ru.valkeru.libdemo.exception.NotFoundException;
 import ru.valkeru.libdemo.exception.impl.ReadersCardRestrictedException;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
 import ru.valkeru.libdemo.model.dto.error.FormFieldErrorDto;
+import ru.valkeru.libdemo.persistence.exception.ConflictPersistenceException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -172,6 +173,14 @@ public class LibDemoExceptionHandler {
             .formatted(mnse.getMethod(), joinedMethods);
 
         return buildErrorDto(message, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @Hidden
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ConflictPersistenceException.class)
+    public ErrorDto handleConflict(ConflictPersistenceException cpe) {
+        return buildErrorDto(cpe, HttpStatus.CONFLICT);
     }
 
     private ErrorDto buildErrorDto(Exception e, HttpStatus status) {

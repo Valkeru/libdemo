@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import ru.valkeru.libdemo.model.dto.CycleDto;
-import ru.valkeru.libdemo.domain.entity.Cycle;
+import ru.valkeru.libdemo.persistence.entity.Cycle;
 
 import java.util.Collection;
 import java.util.List;

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import ru.valkeru.libdemo.constants.ValidationConstants;
+import ru.valkeru.libdemo.infrastructure.validation.annotation.ValidISBN13;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.dto.series.SeriesDto;
@@ -34,10 +35,7 @@ public class BookDto {
         description = "<u>ISBN-13</u> ISBN",
         example = "978-5-17-049678-5"
     )
-    @Pattern(
-        regexp = "\\d{3}-\\d-\\d{2}-\\d{6}-\\d",
-        message = "Invalid ISBN"
-    )
+    @ValidISBN13
     private String isbn;
 
     @Schema(description = "Authors")

@@ -8,7 +8,7 @@ import org.jspecify.annotations.NonNull;
 /**
  * Redis cache errors handler.
  * Exception would be logged and wrapped method will be executed.
- * Without this handler exception will be thrown up the stack, so app would be broken if cache is unavailable now
+ * Without this handler exception will be thrown up the stack, so app would be broken if cache is unavailable
  */
 @Slf4j
 public class RedisErrorHandler implements CacheErrorHandler {

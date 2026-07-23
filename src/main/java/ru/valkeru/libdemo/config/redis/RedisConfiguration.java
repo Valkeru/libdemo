@@ -29,7 +29,8 @@ public class RedisConfiguration implements CachingConfigurer {
     }
 
     @Bean("defaultRedisCacheConfiguration")
-    public RedisCacheConfiguration defaultRedisCacheConfiguration(ObjectMapper mapper) {
+    public RedisCacheConfiguration defaultRedisCacheConfiguration(@Value("${app.system.redis-prefix}") String prefix,
+                                                                  ObjectMapper mapper) {
         ObjectMapper objectMapper = mapper.rebuild()
                 .activateDefaultTyping(
                         mapper.serializationConfig().getPolymorphicTypeValidator(),
@@ -39,7 +40,7 @@ public class RedisConfiguration implements CachingConfigurer {
                 .build();
 
         return RedisCacheConfiguration.defaultCacheConfig()
-                .prefixCacheNameWith("libdemo::")
+                .prefixCacheNameWith("%s::".formatted(prefix))
                 .entryTtl(Duration.ofMinutes(5))
                 .disableCachingNullValues()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
@@ -48,9 +49,11 @@ public class RedisConfiguration implements CachingConfigurer {
     }
 
     @Bean("jwtRedisConfiguration")
-    public RedisCacheConfiguration jwtRedisConfiguration(@Value("${app.security.jwt.lifetime}") long ttl, ObjectMapper mapper) {
+    public RedisCacheConfiguration jwtRedisConfiguration(@Value("${app.system.redis-prefix}") String prefix,
+                                                         @Value("${app.security.jwt.lifetime}") long ttl,
+                                                         ObjectMapper mapper) {
         return RedisCacheConfiguration.defaultCacheConfig()
-                .prefixCacheNameWith("libdemo-jwt::")
+                .prefixCacheNameWith("%s::jwt::".formatted(prefix))
                 .entryTtl(Duration.ofSeconds(ttl))
                 .disableCachingNullValues()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(

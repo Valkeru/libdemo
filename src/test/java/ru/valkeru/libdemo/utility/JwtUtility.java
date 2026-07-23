@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.model.dto.security.LibraryUser;
-import ru.valkeru.libdemo.domain.entity.user.Token;
-import ru.valkeru.libdemo.domain.entity.user.User;
+import ru.valkeru.libdemo.persistence.entity.user.Token;
+import ru.valkeru.libdemo.persistence.entity.user.User;
 import ru.valkeru.libdemo.infrastructure.security.JWTService;
 import ru.valkeru.libdemo.infrastructure.security.UserService;
 

@@ -9,12 +9,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import ru.valkeru.libdemo.domain.entity.ReadersCard;
-import ru.valkeru.libdemo.domain.entity.user.Token;
-import ru.valkeru.libdemo.domain.entity.user.User;
-import ru.valkeru.libdemo.domain.enums.ReadersCardCreateRestriction;
-import ru.valkeru.libdemo.domain.enums.ReadersCardCreationContext;
-import ru.valkeru.libdemo.domain.service.ReadersCardService;
+import ru.valkeru.libdemo.persistence.entity.ReadersCard;
+import ru.valkeru.libdemo.persistence.entity.user.Token;
+import ru.valkeru.libdemo.persistence.entity.user.User;
+import ru.valkeru.libdemo.persistence.enums.ReadersCardCreateRestriction;
+import ru.valkeru.libdemo.persistence.enums.ReadersCardCreationContext;
+import ru.valkeru.libdemo.persistence.service.ReadersCardService;
 import ru.valkeru.libdemo.exception.impl.ReadersCardRestrictedException;
 import ru.valkeru.libdemo.infrastructure.security.JWTService;
 import ru.valkeru.libdemo.mapper.ReadersCardMapper;
@@ -72,7 +72,7 @@ public class ReadersCardApplicationServiceImpl implements ReadersCardApplication
     @Override
     public ReadersCardDto getCurrentCard(LibraryPrincipal principal) {
         User user = userService.getReference(principal.id());
-        ReadersCard readersCard = readersCardService.getCurrentReadersCard(user);
+        ReadersCard readersCard = readersCardService.findCurrentReadersCard(user);
 
         return readersCardMapper.toDto(readersCard);
     }

@@ -33,7 +33,7 @@ public interface ReadersCardServiceApi {
             @ApiResponse(responseCode = "409", ref = ApiConfig.REF_INTEGRITY_VIOLATION_RESPONSE)
         }
     )
-    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).SERVICE_LIBRARY_CARD_CREATE.name())")
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).SERVICE_READERS_CARD_CREATE.name())")
     @PostMapping
     ResponseEntity<Void> createReadersCardStaff(@RequestBody ReadersCardCreateDto dto);
 
@@ -47,7 +47,7 @@ public interface ReadersCardServiceApi {
             @ApiResponse(responseCode = "404", ref = ApiConfig.REF_NOT_FOUND_RESPONSE)
         }
     )
-    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).SERVICE_LIBRARY_CARD_VIEW.name())")
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).SERVICE_READERS_CARD_VIEW.name())")
     @GetMapping("/{id}")
     ResponseEntity<Object> getReadersCard(@PathVariable UUID id);
 }

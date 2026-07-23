@@ -3,7 +3,7 @@ package ru.valkeru.libdemo.model.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-import ru.valkeru.libdemo.domain.enums.ReadersCardInactivityReason;
+import ru.valkeru.libdemo.persistence.enums.ReadersCardInactivityReason;
 
 import java.time.Instant;
 import java.util.UUID;

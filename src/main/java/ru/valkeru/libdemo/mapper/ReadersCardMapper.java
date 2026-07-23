@@ -2,7 +2,7 @@ package ru.valkeru.libdemo.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
-import ru.valkeru.libdemo.domain.entity.ReadersCard;
+import ru.valkeru.libdemo.persistence.entity.ReadersCard;
 import ru.valkeru.libdemo.model.dto.ReadersCardDto;
 import ru.valkeru.libdemo.model.dto.ReadersCardListDto;
 

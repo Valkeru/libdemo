@@ -2,8 +2,8 @@ package ru.valkeru.libdemo.infrastructure.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.valkeru.libdemo.model.dto.security.TokenPayload;
-import ru.valkeru.libdemo.domain.entity.user.Token;
-import ru.valkeru.libdemo.domain.entity.user.User;
+import ru.valkeru.libdemo.persistence.entity.user.Token;
+import ru.valkeru.libdemo.persistence.entity.user.User;
 
 import java.util.UUID;
 

@@ -6,8 +6,8 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import ru.valkeru.libdemo.model.dto.series.SeriesDto;
 import ru.valkeru.libdemo.model.dto.series.SeriesEditDto;
-import ru.valkeru.libdemo.domain.entity.Cycle;
-import ru.valkeru.libdemo.domain.entity.Series;
+import ru.valkeru.libdemo.persistence.entity.Cycle;
+import ru.valkeru.libdemo.persistence.entity.Series;
 
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,
