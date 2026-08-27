@@ -13,13 +13,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import ru.valkeru.libdemo.model.dto.security.LibraryUser;
 import ru.valkeru.libdemo.model.dto.security.TokenPayload;
-import ru.valkeru.libdemo.persistence.entity.user.Token;
-import ru.valkeru.libdemo.persistence.entity.user.User;
-import ru.valkeru.libdemo.persistence.repository.jpa.user.TokenRepository;
+import ru.valkeru.libdemo.domain.entity.user.Token;
+import ru.valkeru.libdemo.domain.entity.user.User;
+import ru.valkeru.libdemo.domain.repository.jpa.user.TokenRepository;
 import ru.valkeru.libdemo.security.Role;
 import ru.valkeru.libdemo.infrastructure.security.JWTService;
 
@@ -65,10 +63,8 @@ public class JWTServiceImpl implements JWTService {
         this.refreshLifetime = refreshLifetime;
     }
 
-    // Reference is typically expected for User object. It should be only used to create a relation in Token entity,
-    // UserDetails should be used as data source
     @Override
-    public Token generateToken(UserDetails userDetails, User user) {
+    public Token generateToken(User user) {
         Instant now = Instant.now();
 
         Date iat = Date.from(now);
@@ -76,14 +72,13 @@ public class JWTServiceImpl implements JWTService {
 
         UUID tokenId = UUID.randomUUID();
 
-        LibraryUser libraryUser = (LibraryUser) userDetails;
         String jwt = Jwts.builder()
             .id(tokenId.toString())
-            .subject(userDetails.getUsername())
+            .subject(user.getUsername())
             .issuedAt(iat)
             .expiration(exp)
-            .claim(CLAIM_USER_ID, libraryUser.id())
-            .claim(CLAIM_ROLE, libraryUser.role())
+            .claim(CLAIM_USER_ID, user.getId())
+            .claim(CLAIM_ROLE, user.getRole())
             .signWith(getJwtSigningKey())
             .compact();
 

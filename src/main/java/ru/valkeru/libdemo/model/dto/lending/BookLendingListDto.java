@@ -3,7 +3,7 @@ package ru.valkeru.libdemo.model.dto.lending;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-import ru.valkeru.libdemo.persistence.enums.LendingStatus;
+import ru.valkeru.libdemo.domain.enums.LendingStatus;
 
 import java.util.UUID;
 

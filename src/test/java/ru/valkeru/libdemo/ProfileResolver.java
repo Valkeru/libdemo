@@ -2,7 +2,7 @@ package ru.valkeru.libdemo;
 
 import org.jspecify.annotations.NonNull;
 import org.springframework.test.context.ActiveProfilesResolver;
-import ru.valkeru.libdemo.constants.Profiles;
+import ru.valkeru.libdemo.constants.ApplicationProfiles;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,7 +18,7 @@ public class ProfileResolver implements ActiveProfilesResolver {
             .orElse(new String[0]);
 
         Set<String> effectiveProfiles = new HashSet<>(Arrays.asList(profiles));
-        effectiveProfiles.add(Profiles.PROFILE_TEST);
+        effectiveProfiles.add(ApplicationProfiles.PROFILE_TEST);
 
         return effectiveProfiles.toArray(String[]::new);
     }

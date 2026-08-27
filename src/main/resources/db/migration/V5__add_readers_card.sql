@@ -1,13 +1,13 @@
 CREATE SCHEMA IF NOT EXISTS counter;
-CREATE TABLE IF NOT EXISTS counter.readers_card_number
+CREATE TABLE IF NOT EXISTS counter.library_card_number
 (
     year  BIGINT PRIMARY KEY NOT NULL,
     value BIGINT NOT NULL DEFAULT 0
 );
 
-CREATE TABLE library.readers_card
+CREATE TABLE library.library_card
 (
-    id                UUID                        NOT NULL DEFAULT public.uuid_generate_v4(),
+    id                UUID                        NOT NULL DEFAULT uuidv7(),
     user_id           UUID                        NOT NULL REFERENCES library.user (id),
     number            BIGINT                      NOT NULL UNIQUE,
     is_active         BOOLEAN                     NOT NULL DEFAULT TRUE,
@@ -17,9 +17,9 @@ CREATE TABLE library.readers_card
     version           BIGINT                      NOT NULL DEFAULT 0,
     created_at        TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now(),
     updated_at        TIMESTAMP WITH TIME ZONE,
-    CONSTRAINT pk_readers_card PRIMARY KEY (id)
+    CONSTRAINT pk_library_card PRIMARY KEY (id)
 );
 
-CREATE INDEX readers_card_user_id ON library.readers_card (user_id);
+CREATE INDEX library_card_user_id ON library.library_card (user_id);
 
-CREATE UNIQUE INDEX readers_card_active_per_user_ui ON library.readers_card (user_id, is_active) WHERE is_active;
+CREATE UNIQUE INDEX library_card_active_per_user_ui ON library.library_card (user_id, is_active) WHERE is_active;

@@ -23,10 +23,10 @@ import ru.valkeru.libdemo.component.message.MessageProvider;
 import ru.valkeru.libdemo.exception.BadRequestException;
 import ru.valkeru.libdemo.exception.IntegrityViolationException;
 import ru.valkeru.libdemo.exception.NotFoundException;
-import ru.valkeru.libdemo.exception.impl.ReadersCardRestrictedException;
+import ru.valkeru.libdemo.exception.impl.LibraryCardRestrictedException;
 import ru.valkeru.libdemo.model.dto.error.ErrorDto;
 import ru.valkeru.libdemo.model.dto.error.FormFieldErrorDto;
-import ru.valkeru.libdemo.persistence.exception.ConflictPersistenceException;
+import ru.valkeru.libdemo.domain.exception.ConflictDomainException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,8 +156,8 @@ public class LibDemoExceptionHandler {
     @Hidden
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(ReadersCardRestrictedException.class)
-    public ErrorDto handle(ReadersCardRestrictedException lcre) {
+    @ExceptionHandler(LibraryCardRestrictedException.class)
+    public ErrorDto handle(LibraryCardRestrictedException lcre) {
         return buildErrorDto(lcre, HttpStatus.CONFLICT);
     }
 
@@ -178,8 +178,8 @@ public class LibDemoExceptionHandler {
     @Hidden
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(ConflictPersistenceException.class)
-    public ErrorDto handleConflict(ConflictPersistenceException cpe) {
+    @ExceptionHandler(ConflictDomainException.class)
+    public ErrorDto handleConflict(ConflictDomainException cpe) {
         return buildErrorDto(cpe, HttpStatus.CONFLICT);
     }
 

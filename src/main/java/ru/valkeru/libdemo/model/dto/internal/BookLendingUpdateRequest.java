@@ -2,7 +2,7 @@ package ru.valkeru.libdemo.model.dto.internal;
 
 import lombok.Builder;
 import lombok.Getter;
-import ru.valkeru.libdemo.persistence.enums.LendingStatus;
+import ru.valkeru.libdemo.domain.enums.LendingStatus;
 
 import java.time.Instant;
 import java.time.LocalDate;

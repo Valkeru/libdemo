@@ -1,18 +1,23 @@
 package ru.valkeru.libdemo.model.dto.book;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import ru.valkeru.libdemo.component.jackson.ISBNDeserializer;
 import ru.valkeru.libdemo.constants.ValidationConstants;
 import ru.valkeru.libdemo.infrastructure.validation.annotation.ValidISBN13;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
 import ru.valkeru.libdemo.model.dto.CycleDto;
 import ru.valkeru.libdemo.model.dto.series.SeriesDto;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -36,10 +41,13 @@ public class BookDto {
         example = "978-5-17-049678-5"
     )
     @ValidISBN13
+    @JsonDeserialize(using = ISBNDeserializer.class)
     private String isbn;
 
+    @JsonSetter(nulls = Nulls.SKIP)
+    @Size(min = 1, message = "At least 1 author is required")
     @Schema(description = "Authors")
-    private Collection<AuthorDto> authors;
+    private Collection<AuthorDto> authors = new ArrayList<>();
 
     @Schema(description = "Series")
     private SeriesDto series;

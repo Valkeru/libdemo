@@ -9,10 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.exception.impl.AuthorNotFoundException;
 import ru.valkeru.libdemo.mapper.AuthorMapper;
 import ru.valkeru.libdemo.model.dto.AuthorDto;
-import ru.valkeru.libdemo.persistence.entity.Author;
+import ru.valkeru.libdemo.domain.entity.Author;
 import ru.valkeru.libdemo.model.request.author.AuthorFilter;
 import ru.valkeru.libdemo.model.transport.AuthorListDto;
-import ru.valkeru.libdemo.persistence.service.AuthorService;
+import ru.valkeru.libdemo.domain.service.AuthorService;
 import ru.valkeru.libdemo.application.AuthorApplicationService;
 
 import java.util.UUID;
@@ -23,7 +23,7 @@ import java.util.UUID;
 public class AuthorApplicationServiceImpl implements AuthorApplicationService {
 
     private final AuthorService authorService;
-    private final AuthorMapper authorMapper;
+    private final AuthorMapper mapper;
 
     @Override
     @Transactional
@@ -47,10 +47,7 @@ public class AuthorApplicationServiceImpl implements AuthorApplicationService {
     public Page<AuthorListDto> listAllAuthors(AuthorFilter filter, Pageable pageable) {
         Page<AuthorDto> authorDtos = authorService.listAllAuthors(filter, pageable);
 
-        return authorDtos.map(dto -> new AuthorListDto(
-            dto.getId(),
-            "%s %s %s".formatted(dto.getFirstName(), dto.getMiddleName(), dto.getLastName())
-        ));
+        return authorDtos.map(mapper::toListDto);
     }
 
     @Override
@@ -59,7 +56,7 @@ public class AuthorApplicationServiceImpl implements AuthorApplicationService {
         Author author = authorService.findById(id)
             .orElseThrow(() -> AuthorNotFoundException.authorNotFound(id));
 
-        return authorMapper.toDto(author);
+        return mapper.toDto(author);
     }
 
     @Transactional

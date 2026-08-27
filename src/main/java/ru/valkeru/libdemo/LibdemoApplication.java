@@ -18,7 +18,7 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 @SpringBootApplication
 @EnableJpaRepositories(
     basePackages = {
-        "ru.valkeru.libdemo.persistence.repository.jpa",
+        "ru.valkeru.libdemo.domain.repository.jpa",
         "ru.valkeru.libdemo.infrastructure.repository"
     },
     repositoryBaseClass = BaseJpaRepositoryImpl.class

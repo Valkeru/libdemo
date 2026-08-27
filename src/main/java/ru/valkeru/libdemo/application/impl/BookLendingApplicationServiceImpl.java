@@ -8,18 +8,18 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.valkeru.libdemo.application.BookLendingApplicationService;
 import ru.valkeru.libdemo.model.dto.internal.BookLendingCreateRequest;
 import ru.valkeru.libdemo.model.dto.internal.BookLendingUpdateRequest;
-import ru.valkeru.libdemo.persistence.entity.Book;
-import ru.valkeru.libdemo.persistence.entity.BookLending;
-import ru.valkeru.libdemo.persistence.entity.BookInstance;
-import ru.valkeru.libdemo.persistence.entity.ReadersCard;
-import ru.valkeru.libdemo.persistence.entity.user.User;
-import ru.valkeru.libdemo.persistence.enums.LendingStatus;
-import ru.valkeru.libdemo.persistence.projection.BookLendingListProjection;
-import ru.valkeru.libdemo.persistence.projection.BookLendingProjection;
-import ru.valkeru.libdemo.persistence.service.BookLendingService;
-import ru.valkeru.libdemo.persistence.service.BookInstanceService;
-import ru.valkeru.libdemo.persistence.service.BookService;
-import ru.valkeru.libdemo.persistence.service.ReadersCardService;
+import ru.valkeru.libdemo.domain.entity.Book;
+import ru.valkeru.libdemo.domain.entity.BookLending;
+import ru.valkeru.libdemo.domain.entity.BookInstance;
+import ru.valkeru.libdemo.domain.entity.LibraryCard;
+import ru.valkeru.libdemo.domain.entity.user.User;
+import ru.valkeru.libdemo.domain.enums.LendingStatus;
+import ru.valkeru.libdemo.domain.projection.BookLendingListProjection;
+import ru.valkeru.libdemo.domain.projection.BookLendingProjection;
+import ru.valkeru.libdemo.domain.service.BookLendingService;
+import ru.valkeru.libdemo.domain.service.BookInstanceService;
+import ru.valkeru.libdemo.domain.service.BookService;
+import ru.valkeru.libdemo.domain.service.LibraryCardService;
 import ru.valkeru.libdemo.infrastructure.security.UserService;
 import ru.valkeru.libdemo.mapper.BookLendingMapper;
 import ru.valkeru.libdemo.model.dto.lending.BookLendingDto;
@@ -39,7 +39,7 @@ public class BookLendingApplicationServiceImpl implements BookLendingApplication
     private final UserService userService;
     private final BookService bookService;
     private final BookInstanceService bookInstanceService;
-    private final ReadersCardService readersCardService;
+    private final LibraryCardService libraryCardService;
     private final BookLendingService service;
     private final BookLendingMapper mapper;
     private final Period reservationPeriod;
@@ -47,14 +47,14 @@ public class BookLendingApplicationServiceImpl implements BookLendingApplication
 
     public BookLendingApplicationServiceImpl(UserService userService, BookService bookService,
                                              BookInstanceService bookInstanceService,
-                                             ReadersCardService readersCardService, BookLendingService service,
+                                             LibraryCardService libraryCardService, BookLendingService service,
                                              BookLendingMapper mapper,
                                              @Value("P${app.policy.reservation-period-days}D") Period reservationPeriod,
                                              @Value("P${app.policy.lending-period-days}D") Period lendingPeriod) {
         this.userService = userService;
         this.bookService = bookService;
         this.bookInstanceService = bookInstanceService;
-        this.readersCardService = readersCardService;
+        this.libraryCardService = libraryCardService;
         this.service = service;
         this.mapper = mapper;
         this.reservationPeriod = reservationPeriod;
@@ -62,9 +62,9 @@ public class BookLendingApplicationServiceImpl implements BookLendingApplication
     }
 
     @Override
-    public UUID createLending(UUID bookId, UUID readersCardId) {
-        ReadersCard readersCard = readersCardService.getActiveReadersCard(readersCardId);
-        BookLending lending = createReservedLending(bookId, readersCard);
+    public UUID createLending(UUID bookId, UUID libraryCardId) {
+        LibraryCard libraryCard = libraryCardService.getActiveLibraryCard(libraryCardId);
+        BookLending lending = createReservedLending(bookId, libraryCard);
 
         return lending.getId();
     }
@@ -74,8 +74,8 @@ public class BookLendingApplicationServiceImpl implements BookLendingApplication
     public UUID createLending(UUID bookId, LibraryPrincipal principal) {
         User user = userService.getReference(principal.id());
 
-        ReadersCard readersCard = readersCardService.requireCurrentReadersCard(user);
-        BookLending lending = createReservedLending(bookId, readersCard);
+        LibraryCard libraryCard = libraryCardService.requireCurrentLibraryCard(user);
+        BookLending lending = createReservedLending(bookId, libraryCard);
 
         return lending.getId();
     }
@@ -141,7 +141,7 @@ public class BookLendingApplicationServiceImpl implements BookLendingApplication
         service.returnBook(lending);
     }
 
-    private BookLending createReservedLending(UUID bookId, ReadersCard readersCard) {
+    private BookLending createReservedLending(UUID bookId, LibraryCard libraryCard) {
         Book book = bookService.getBookById(bookId);
         BookInstance bookInstance = bookInstanceService.getAvailableInstance(book);
 
@@ -152,7 +152,7 @@ public class BookLendingApplicationServiceImpl implements BookLendingApplication
 
         BookLendingCreateRequest lendingCreateRequest = BookLendingCreateRequest.builder()
             .bookInstance(bookInstance)
-            .readersCard(readersCard)
+            .libraryCard(libraryCard)
             .reservedAt(reservedAt)
             .reservationDueDate(reserveDueDate)
             .status(LendingStatus.RESERVED)

@@ -23,7 +23,7 @@ import ru.valkeru.libdemo.model.dto.security.LibraryPrincipal;
 import java.util.UUID;
 
 @SecurityRequirement(name = ApiConfig.ACCESS_TOKEN_SCHEME)
-@PreAuthorize("hasRole(T(ru.valkeru.libdemo.security.Role).ROLE_READER.roleName)")
+@PreAuthorize("hasRole(T(ru.valkeru.libdemo.security.Role).READER)")
 public interface BookLendingApi {
 
     @Operation(

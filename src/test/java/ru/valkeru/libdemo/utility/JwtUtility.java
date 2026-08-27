@@ -3,14 +3,13 @@ package ru.valkeru.libdemo.utility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import ru.valkeru.libdemo.model.dto.security.LibraryUser;
-import ru.valkeru.libdemo.persistence.entity.user.Token;
-import ru.valkeru.libdemo.persistence.entity.user.User;
+import ru.valkeru.libdemo.domain.entity.user.Token;
+import ru.valkeru.libdemo.domain.entity.user.User;
 import ru.valkeru.libdemo.infrastructure.security.JWTService;
 import ru.valkeru.libdemo.infrastructure.security.UserService;
 
 /**
- * Генератор токенов пользователей в тестах
+ * Users tokens generator for tests
  */
 @Component
 @RequiredArgsConstructor
@@ -28,6 +27,14 @@ public class JwtUtility {
     public String librarianToken() {
         if (isInvalidToken(librarianToken)) {
             librarianToken = getToken("default_librarian");
+        }
+
+        return tokenWithScheme(librarianToken);
+    }
+
+    public String managerToken() {
+        if (isInvalidToken(librarianToken)) {
+            librarianToken = getToken("manager");
         }
 
         return tokenWithScheme(librarianToken);
@@ -51,9 +58,8 @@ public class JwtUtility {
 
     private Token getToken(String userName) {
         UserDetails userDetails = userService.loadUserByUsername(userName);
-        User user = userService.getReference(((LibraryUser) userDetails).id());
 
-        return jwtService.generateToken(userDetails, user);
+        return jwtService.generateToken((User) userDetails);
     }
 
     private boolean isInvalidToken(Token token) {

@@ -3,7 +3,10 @@
     <conversionRule conversionWord="clr" class="org.springframework.boot.logging.logback.ColorConverter" />
     <conversionRule conversionWord="wex" class="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
     <conversionRule conversionWord="wEx" class="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
-    <springProperty name="fluentdEnabled" source="app.system.fluentd-enabled" defaultValue="false"/>
+    <springProperty name="logstashEnabled" source="app.system.logstash-enabled" defaultValue="false"/>
+<!--    Default logstash connection parameters are configured for interacting to logstash docker compose service -->
+    <springProperty name="logstashHost" source="LOGSTASH_HOST" defaultValue="logstash"/>
+    <springProperty name="logstashPort" source="LOGSTASH_PORT" defaultValue="24224"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -14,20 +17,19 @@
     </appender>
 
     <condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
-        <key>fluentdEnabled</key>
+        <key>logstashEnabled</key>
         <value>true</value>
     </condition>
     <if>
         <then>
-            <appender name="json" class="ch.qos.logback.more.appenders.FluencyLogbackAppender">
-                <remoteHost>${FLUENTD_HOST}</remoteHost>
-                <port>${FLUENTD_PORT}</port>
-                <tag>tag.libdemo</tag>
-                <additionalField>
-                    <key>instanceId</key>
-                    <value>${INSTANCE_ID}</value>
-                </additionalField>
-                <useEventTime>true</useEventTime>
+            <appender name="json" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+                <timeZone>UTC</timeZone>
+                <destination>${logstashHost}:${logstashPort}</destination>
+                <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                    <customFields>
+                        {"instanceId": "${INSTANCE_ID}", "app": "libdemo"}
+                    </customFields>
+                </encoder>
             </appender>
 
             <root level="INFO">

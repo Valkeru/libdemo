@@ -9,21 +9,23 @@ import java.util.stream.Stream;
 @Getter
 public enum Role {
 
-    ROLE_ADMIN("ADMIN"),
-    ROLE_LIBRARIAN("LIBRARIAN"),
-    ROLE_MANAGER("MANAGER"),
-    ROLE_READER("READER"),
-    ROLE_USER("USER");
-
-    private final String roleName;
+    ADMIN,
+    LIBRARIAN,
+    MANAGER,
+    READER,
+    USER;
 
     public static String[] getServiceRoleNames() {
         return Stream.of(
-            ROLE_ADMIN,
-            ROLE_MANAGER,
-            ROLE_LIBRARIAN
+            ADMIN,
+            MANAGER,
+            LIBRARIAN
         )
-            .map(Role::getRoleName)
+            .map(Role::name)
             .toArray(String[]::new);
+    }
+
+    public String authorityName() {
+        return "ROLE_" + name();
     }
 }

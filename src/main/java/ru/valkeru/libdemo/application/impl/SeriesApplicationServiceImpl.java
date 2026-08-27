@@ -10,10 +10,10 @@ import ru.valkeru.libdemo.exception.impl.SeriesNotFoundException;
 import ru.valkeru.libdemo.mapper.SeriesMapper;
 import ru.valkeru.libdemo.model.dto.series.SeriesDto;
 import ru.valkeru.libdemo.model.dto.series.SeriesEditDto;
-import ru.valkeru.libdemo.persistence.entity.Cycle;
-import ru.valkeru.libdemo.persistence.entity.Series;
-import ru.valkeru.libdemo.persistence.service.CycleService;
-import ru.valkeru.libdemo.persistence.service.SeriesService;
+import ru.valkeru.libdemo.domain.entity.Cycle;
+import ru.valkeru.libdemo.domain.entity.Series;
+import ru.valkeru.libdemo.domain.service.CycleService;
+import ru.valkeru.libdemo.domain.service.SeriesService;
 import ru.valkeru.libdemo.application.SeriesApplicationService;
 
 import java.util.UUID;

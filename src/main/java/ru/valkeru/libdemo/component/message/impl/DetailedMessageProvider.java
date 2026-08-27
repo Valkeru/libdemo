@@ -7,11 +7,11 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.valkeru.libdemo.component.message.MessageProvider;
-import ru.valkeru.libdemo.constants.Profiles;
+import ru.valkeru.libdemo.constants.ApplicationProfiles;
 
 @Slf4j
 @Component
-@Profile({Profiles.PROFILE_DEV})
+@Profile({ApplicationProfiles.PROFILE_DEVELOP})
 public class DetailedMessageProvider implements MessageProvider {
 
     @PostConstruct

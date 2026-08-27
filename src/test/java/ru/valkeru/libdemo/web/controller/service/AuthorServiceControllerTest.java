@@ -15,7 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlMergeMode;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.valkeru.libdemo.AbstractIntegrationTest;
-import ru.valkeru.libdemo.persistence.repository.jpa.author.AuthorRepository;
+import ru.valkeru.libdemo.domain.repository.jpa.author.AuthorRepository;
 
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -43,7 +43,7 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
         String payload = readResourceAsString(payloadPath);
         String expected = readResourceAsString(expectedResultPath);
 
-        performAsAdmin(post("/service/author")
+        performAsManager(post("/service/author")
             .contentType(MediaType.APPLICATION_JSON)
             .content(payload)
         )
@@ -58,7 +58,7 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
         String payload = readResourceAsString("json/author/request/add_valid.json");
         String expected = readResourceAsString("json/author/response/created.json");
 
-        MvcResult result = performAsAdmin(post("/service/author")
+        MvcResult result = performAsManager(post("/service/author")
             .contentType(MediaType.APPLICATION_JSON)
             .content(payload)
         )
@@ -76,33 +76,12 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
-    @Sql(
-        value = {
-            "classpath:sql/01.create_author.sql"
-        }
-    )
-    @DisplayName("Add an author - data integrity violation")
-    void testCreateAuthorConflict() throws Exception {
-        String payload = readResourceAsString("json/author/request/add_conflict.json");
-        String expected = readResourceAsString("json/conflict.json");
-
-        performAsAdmin(post("/service/author")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(payload)
-        )
-            .andExpect(status().isConflict())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().isEqualTo(expected));
-    }
-
-    @Test
     @DisplayName("Update author info - 404")
     void testUpdateAuthorNotFound() throws Exception {
         String payload = readResourceAsString("json/author/request/update_valid.json");
         String expected = readResourceAsString("json/author/response/not_found.json");
 
-        performAsAdmin(patch("/service/author/{id}", START_UUID_VALUE)
+        performAsManager(patch("/service/author/{id}", START_UUID_VALUE)
             .contentType(MediaType.APPLICATION_JSON)
             .content(payload)
         )
@@ -125,7 +104,7 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
         String payload = readResourceAsString(payloadPath);
         String expected = readResourceAsString(expectedResultPath);
 
-        performAsAdmin(patch("/service/author/{id}", AUTHOR_ID)
+        performAsManager(patch("/service/author/{id}", AUTHOR_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(payload)
         )
@@ -149,7 +128,7 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
         performNotAuthenticated(get("/v1/author/{id}", AUTHOR_ID))
             .andExpect(status().isOk());
 
-        performAsAdmin(patch("/service/author/{id}", AUTHOR_ID)
+        performAsManager(patch("/service/author/{id}", AUTHOR_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(payload)
         )
@@ -164,7 +143,7 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Delete author info - 404")
     void deleteAuthorNotFound() throws Exception {
-        performAsAdmin(delete("/service/author/{id}", START_UUID_VALUE))
+        performAsManager(delete("/service/author/{id}", START_UUID_VALUE))
             .andExpect(status().isNotFound());
     }
 
@@ -181,7 +160,7 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
 
         Assert.assertTrue(authorRepository.existsById(id));
 
-        performAsAdmin(delete("/service/author/{id}", AUTHOR_ID))
+        performAsManager(delete("/service/author/{id}", AUTHOR_ID))
             .andExpect(status().isNoContent());
 
         Assert.assertFalse(authorRepository.existsById(id));

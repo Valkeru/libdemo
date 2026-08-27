@@ -36,7 +36,7 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
         String content = readResourceAsString(contentPath);
         String expected = readResourceAsString(expectedResultPath);
 
-        performAsAdmin(post(SeriesServiceApi.SERIES_SERVICE_PATH)
+        performAsManager(post(SeriesServiceApi.SERIES_SERVICE_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(content)
         )
@@ -50,7 +50,7 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
         String content = readResourceAsString("json/series/request/add_cycle_not_found.json");
         String expected = readResourceAsString("json/series/response/cycle_not_found.json");
 
-        performAsAdmin(post(SeriesServiceApi.SERIES_SERVICE_PATH)
+        performAsManager(post(SeriesServiceApi.SERIES_SERVICE_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(content)
         )
@@ -71,7 +71,7 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
         String content = readResourceAsString(contentPath);
         String expected = readResourceAsString(expectedPath);
 
-        MvcResult result = performAsAdmin(
+        MvcResult result = performAsManager(
             post(SeriesServiceApi.SERIES_SERVICE_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content)
@@ -102,7 +102,7 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
         String content = readResourceAsString(contentPath);
         String expected = readResourceAsString(expectedResultPath);
 
-        performAsAdmin(
+        performAsManager(
             patch("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content)
@@ -124,7 +124,7 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
         String content = readResourceAsString("json/series/request/add_cycle_not_found.json");
         String expected = readResourceAsString("json/series/response/cycle_not_found.json");
 
-        performAsAdmin(patch("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
+        performAsManager(patch("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
             .contentType(MediaType.APPLICATION_JSON)
             .content(content)
         )
@@ -154,7 +154,7 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(json().isEqualTo(initial));
 
-        performAsAdmin(
+        performAsManager(
             patch("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content)
@@ -171,7 +171,7 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
     void testDeleteSeriesNotFound() throws Exception {
         String expected = readResourceAsString("json/series/response/not_found.json");
 
-        performAsAdmin(
+        performAsManager(
             delete("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), TestConstants.START_UUID_VALUE)
                 .accept(MediaType.APPLICATION_JSON)
         )
@@ -194,7 +194,7 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
     void testDeleteSeriesConflict() throws Exception {
         String expected = readResourceAsString("json/conflict.json");
 
-        performAsAdmin(delete("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
+        performAsManager(delete("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
             .accept(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isConflict())
@@ -210,7 +210,7 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
         }
     )
     void testDeleteSeriesOk() throws Exception {
-        performAsAdmin(
+        performAsManager(
             delete("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
                 .accept(MediaType.APPLICATION_JSON)
         )

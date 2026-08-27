@@ -9,10 +9,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import ru.valkeru.libdemo.model.dto.internal.BookLendingCreateRequest;
 import ru.valkeru.libdemo.model.dto.internal.BookLendingUpdateRequest;
 import ru.valkeru.libdemo.model.dto.lending.BookLendingDto;
-import ru.valkeru.libdemo.persistence.entity.BookLending;
-import ru.valkeru.libdemo.persistence.projection.BookLendingListProjection;
+import ru.valkeru.libdemo.domain.entity.BookLending;
+import ru.valkeru.libdemo.domain.projection.BookLendingListProjection;
 import ru.valkeru.libdemo.model.dto.lending.BookLendingListDto;
-import ru.valkeru.libdemo.persistence.projection.BookLendingProjection;
+import ru.valkeru.libdemo.domain.projection.BookLendingProjection;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface BookLendingMapper {

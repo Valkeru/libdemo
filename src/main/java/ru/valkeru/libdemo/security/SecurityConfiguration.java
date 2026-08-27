@@ -38,7 +38,7 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/service/**").hasAnyRole(Role.getServiceRoleNames())
                 .requestMatchers("/security/revoke-sessions").authenticated()
-                .requestMatchers("/admin/**").hasRole(Role.ROLE_ADMIN.getRoleName())
+                .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                 .anyRequest().permitAll())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .userDetailsService(userService)

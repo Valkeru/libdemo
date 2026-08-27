@@ -9,7 +9,6 @@ import org.springframework.test.context.jdbc.SqlMergeMode;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.valkeru.libdemo.AbstractIntegrationTest;
 import ru.valkeru.libdemo.web.api.service.CycleServiceApi;
-import ru.valkeru.libdemo.web.api.v1.CycleApi;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -19,13 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.valkeru.libdemo.constants.TestConstants.CYCLE_ID;
-import static ru.valkeru.libdemo.web.api.v1.CycleApi.CYCLE_V1_PATH;
 
-@Sql(
-    value = {
-        "classpath:sql/delete/00.truncate.sql"
-    }
-)
 @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 class CycleControllerTest extends AbstractIntegrationTest {
 

@@ -13,11 +13,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Sql(
-    value = {
-        "classpath:sql/delete/00.truncate.sql"
-    }
-)
 @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 class AuthorControllerTest extends AbstractIntegrationTest {
 

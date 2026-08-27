@@ -1,6 +1,6 @@
 CREATE TABLE library.book_instance
 (
-    id               uuid        NOT NULL DEFAULT public.uuid_generate_v4(),
+    id               uuid        NOT NULL DEFAULT uuidv7(),
     book_id          uuid        NOT NULL,
     inventory_number VARCHAR(25) NOT NULL,
     notes            jsonb       NOT NULL DEFAULT '[]',
@@ -12,4 +12,4 @@ CREATE TABLE library.book_instance
     CONSTRAINT book_instance_inventory_number_uc UNIQUE (inventory_number)
 );
 
-CREATE INDEX book_instance_book_id_ix ON library.book_instance (book_id);
+CREATE INDEX IF NOT EXISTS book_instance_book_id_ix ON library.book_instance (book_id);

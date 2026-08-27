@@ -23,8 +23,7 @@ import ru.valkeru.libdemo.utility.RedisUtility;
 @Sql(
     value = {
         "classpath:sql/delete/00.truncate.sql"
-    },
-    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS
+    }
 )
 public abstract class AbstractIntegrationTest {
 
@@ -49,6 +48,13 @@ public abstract class AbstractIntegrationTest {
     protected final ResultActions performNotAuthenticated(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder
             .accept(MediaType.APPLICATION_JSON));
+    }
+
+    protected final ResultActions performAsManager(MockHttpServletRequestBuilder builder) throws Exception {
+        return mockMvc.perform(
+            builder.header(HttpHeaders.AUTHORIZATION, jwtUtility.managerToken())
+                .accept(MediaType.APPLICATION_JSON)
+        );
     }
 
     protected final ResultActions performAsLibrarian(MockHttpServletRequestBuilder builder) throws Exception {

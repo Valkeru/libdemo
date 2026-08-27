@@ -61,7 +61,7 @@ public interface BookServiceApi {
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).BOOK_UPDATE.name())")
     ResponseEntity<Void> updateBook(@PathVariable @Schema(description = "Book ID") UUID id,
-                                    @RequestBody BookDto book);
+                                    @Valid @RequestBody BookDto book);
 
     @Operation(
         summary = "Add a book copy",

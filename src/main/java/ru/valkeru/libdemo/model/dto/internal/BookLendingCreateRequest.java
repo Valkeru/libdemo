@@ -2,9 +2,9 @@ package ru.valkeru.libdemo.model.dto.internal;
 
 import lombok.Builder;
 import lombok.Getter;
-import ru.valkeru.libdemo.persistence.entity.BookInstance;
-import ru.valkeru.libdemo.persistence.entity.ReadersCard;
-import ru.valkeru.libdemo.persistence.enums.LendingStatus;
+import ru.valkeru.libdemo.domain.entity.BookInstance;
+import ru.valkeru.libdemo.domain.entity.LibraryCard;
+import ru.valkeru.libdemo.domain.enums.LendingStatus;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -15,7 +15,7 @@ public class BookLendingCreateRequest {
 
     private BookInstance bookInstance;
 
-    private ReadersCard readersCard;
+    private LibraryCard libraryCard;
 
     private Instant reservedAt;
 

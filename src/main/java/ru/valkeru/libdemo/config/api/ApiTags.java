@@ -6,7 +6,7 @@ public final class ApiTags {
     public static final String CYCLE = "cycle";
     public static final String SERIES = "series";
     public static final String BOOK = "book";
-    public static final String READERS_CARD = "readers-card";
+    public static final String LIBRARY_CARD = "library-card";
     public static final String SERVICE = "service";
     public static final String SECURITY = "security";
 

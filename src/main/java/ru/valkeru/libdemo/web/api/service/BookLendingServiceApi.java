@@ -32,10 +32,10 @@ public interface BookLendingServiceApi {
             @ApiResponse(responseCode = "409", ref = ApiConfig.REF_INTEGRITY_VIOLATION_RESPONSE)
         }
     )
-    @PreAuthorize("hasRole(T(ru.valkeru.libdemo.security.Role).ROLE_LIBRARIAN.roleName)")
+    @PreAuthorize("hasRole(T(ru.valkeru.libdemo.security.Role).LIBRARIAN)")
     @PostMapping("/{bookId}/reserve")
     ResponseEntity<Void> reserveBook(@PathVariable UUID bookId,
-                                     @Parameter(in = ParameterIn.QUERY, allowReserved = true) UUID readersCardId);
+                                     @Parameter(in = ParameterIn.QUERY, allowReserved = true) UUID libraryCardId);
 
     @Operation(
         summary = "Create a book lending data",
@@ -48,7 +48,7 @@ public interface BookLendingServiceApi {
         }
     )
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole(T(ru.valkeru.libdemo.security.Role).ROLE_LIBRARIAN.roleName)")
+    @PreAuthorize("hasRole(T(ru.valkeru.libdemo.security.Role).LIBRARIAN)")
     ResponseEntity<BookLendingDto> getLending(@PathVariable UUID id);
 
     @Operation(
@@ -62,7 +62,7 @@ public interface BookLendingServiceApi {
             @ApiResponse(responseCode = "409", ref = ApiConfig.REF_INTEGRITY_VIOLATION_RESPONSE)
         }
     )
-    @PreAuthorize("hasRole(T(ru.valkeru.libdemo.security.Role).ROLE_LIBRARIAN.roleName)")
+    @PreAuthorize("hasRole(T(ru.valkeru.libdemo.security.Role).LIBRARIAN)")
     @PostMapping("/{id}/issue")
     ResponseEntity<Void> issueReservedBook(@PathVariable
                                            @Parameter(
@@ -101,7 +101,7 @@ public interface BookLendingServiceApi {
             @ApiResponse(responseCode = "409", ref = ApiConfig.REF_INTEGRITY_VIOLATION_RESPONSE)
         }
     )
-    @PreAuthorize("hasRole(T(ru.valkeru.libdemo.security.Role).ROLE_LIBRARIAN.roleName)")
+    @PreAuthorize("hasRole(T(ru.valkeru.libdemo.security.Role).LIBRARIAN)")
     @PostMapping("/{lendingId}/return")
     ResponseEntity<Void> returnBook(@PathVariable
                                     @Parameter(

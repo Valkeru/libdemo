@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 /**
  * Role permissions<br/>
  * Permission may be composite and serve as alias for a set of effective permissions<br/>
- * Use {@link #resolvePermissions()} to get the effective permission set
+ * Use {@link #resolvePermissions()} to get the effective permission set<br/>
  */
 public enum Permission {
 
@@ -59,8 +59,8 @@ public enum Permission {
     ),
 
     SERVICE_INDEXING,
-    SERVICE_READERS_CARD_CREATE,
-    SERVICE_READERS_CARD_VIEW,
+    SERVICE_LIBRARY_CARD_CREATE,
+    SERVICE_LIBRARY_CARD_VIEW,
 
     SERVICE_BOOK_LENDING_CANCEL,
     SERVICE_BOOK_LENDING_RETURN;

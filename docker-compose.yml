@@ -1,17 +1,13 @@
 services:
-  libdemo:
-    container_name: app_libdemo
+  app:
+    container_name: libdemo_app
     ports:
-      - "58080:${SERVER_PORT:-8080}"
-      - "59010:9010"
+      - "8080:8080"
+      - "9010:9010"
     image: eclipse-temurin:21-jdk
     user: "1000"
     volumes:
-#      - ./target/lib:/app/lib
-#      - ./api/target/api-1.0.jar:/app/api.jar
-#      - ./core/target/core-1.0.jar:/app/core.jar
       - ./target/libdemo-1.0.jar:/app/app.jar:ro
-      - /usr/share/fonts:/app/fonts:ro
     working_dir: /app
     entrypoint: [
       "java",
@@ -19,20 +15,85 @@ services:
       "-Djava.security.egd=file:/dev/urandom",
       "-Djava.awt.headless=true",
       "-Xmx1G",
-#      "-cp",
-#      "/app/*.jar",
       "-jar",
       "/app/app.jar"
-#      "-Dloader.path=/app/lib",
-#      "org.springframework.boot.loader.launch.PropertiesLauncher"
     ]
-#    environment:
-#      - APPLICATION_UID=$(uuid)
     env_file:
       - .env
-#    logging:
-#      driver: fluentd
-#      options:
-#        fluentd-address: fluentd.local
-#        tag: tag.libdemo
+    depends_on:
+      - postgres
+      - logstash
 
+  postgres:
+    container_name: libdemo_postgres
+    image: postgres:18.4
+    shm_size: 1g
+    command:
+      - --max_connections=100
+      - --max_parallel_workers=6
+      - --max_worker_processes=12
+#      - -c
+#      - log_statement=all
+    volumes:
+      - libdemo_pg_data:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=libdemo
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "15432:5432"
+
+  elasticsearch:
+    container_name: libdemo_elasticsearch
+    image: elasticsearch:9.3.1
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - libdemo_es_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+  kibana:
+    container_name: libdemo_kibana
+    image: kibana:9.3.1
+    environment:
+      ELASTICSEARCH_HOSTS: '["http://libdemo_elasticsearch:9200"]'
+      ES_JAVA_OPTS: '-Xms512m -Xmx512m'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5601:5601"
+
+  logstash:
+    container_name: libdemo_logstash
+    image: logstash:9.3.1
+    environment:
+      LS_JAVA_OPTS: "-Xms512m -Xmx512m"
+    volumes:
+      - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    depends_on:
+      - elasticsearch
+
+  redis:
+    container_name: libdemo_redis
+    image: redis:8.10.0
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "6379:6379"
+
+volumes:
+  libdemo_pg_data:
+    name: libdemo_pg_data
+  libdemo_es_data:
+    name: libdemo_es_data

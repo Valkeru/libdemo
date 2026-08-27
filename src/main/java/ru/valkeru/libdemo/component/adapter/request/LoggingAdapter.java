@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import ru.valkeru.libdemo.component.logger.HttpDebugLogger;
-import ru.valkeru.libdemo.constants.Profiles;
+import ru.valkeru.libdemo.constants.ApplicationProfiles;
 import ru.valkeru.libdemo.util.RequestExecutionContext;
 
 import java.lang.reflect.Method;
@@ -26,7 +26,7 @@ import java.util.Optional;
 
 @ControllerAdvice
 @RequiredArgsConstructor
-@Profile({Profiles.PROFILE_DEV, Profiles.PROFILE_PRE_PRODUCTION, Profiles.PROFILE_TEST})
+@Profile({ApplicationProfiles.PROFILE_DEVELOP, ApplicationProfiles.PROFILE_PRE_PRODUCTION, ApplicationProfiles.PROFILE_TEST})
 public class LoggingAdapter extends RequestBodyAdviceAdapter implements ResponseBodyAdvice<Object> {
 
     private final HttpDebugLogger debugLogger;

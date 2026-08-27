@@ -8,17 +8,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import ru.valkeru.libdemo.infrastructure.security.PermissionService;
 import ru.valkeru.libdemo.model.dto.security.LibraryPrincipal;
-import ru.valkeru.libdemo.model.dto.security.LibraryUser;
 import ru.valkeru.libdemo.model.dto.internal.TokenDto;
 import ru.valkeru.libdemo.model.dto.security.TokenPayload;
-import ru.valkeru.libdemo.persistence.entity.user.Token;
-import ru.valkeru.libdemo.persistence.entity.user.User;
+import ru.valkeru.libdemo.domain.entity.user.Token;
+import ru.valkeru.libdemo.domain.entity.user.User;
 import ru.valkeru.libdemo.model.request.security.SignUpRequest;
 import ru.valkeru.libdemo.infrastructure.security.JWTService;
 import ru.valkeru.libdemo.infrastructure.security.UserService;
@@ -46,22 +44,21 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
 
     @Transactional
     public TokenDto performSignUp(SignUpRequest signUpRequest) {
-        userService.createUser(signUpRequest, Role.ROLE_USER);
+        userService.createUser(signUpRequest, Role.USER);
 
         return performSignIn(signUpRequest);
     }
 
     @Override
     public TokenDto performSignIn(SignUpRequest request) {
-        UserDetails user = userService.loadUserByUsername(request.getUsername());
+        UserDetails userDetails = userService.loadUserByUsername(request.getUsername());
 
-        String username = user.getUsername();
-        if (!userService.isValidPassword(user, request.getPassword())) {
+        String username = userDetails.getUsername();
+        if (!userService.isValidPassword(userDetails, request.getPassword())) {
             throw new BadCredentialsException("Invalid password for user %s".formatted(username));
         }
 
-        User referenceByUsername = userService.getReference(((LibraryUser) user).id());
-        Token token = jwtService.generateToken(user, referenceByUsername);
+        Token token = jwtService.generateToken((User) userDetails);
 
         return buildTokenDto(token);
     }
@@ -140,7 +137,7 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
     @Override
     @Transactional
     public void updatePermissions(Role role, Set<Permission> permissions) {
-        if (Role.ROLE_ADMIN.equals(role)) {
+        if (Role.ADMIN.equals(role)) {
             // Admin has all permissions. They are managed by application and not stored in database
             return;
         }
@@ -150,7 +147,7 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
 
     @Override
     public Set<Permission> getPermissions(Role role) {
-        if (Role.ROLE_ADMIN.equals(role)) {
+        if (Role.ADMIN.equals(role)) {
             return EnumSet.allOf(Permission.class).stream()
                 .filter(Permission::isAtomic)
                 .collect(Collectors.toSet());
@@ -160,7 +157,7 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
     }
 
     private List<SimpleGrantedAuthority> getAuthoritiesForRole(Role role) {
-        Collection<Permission> permissions = Role.ROLE_ADMIN == role
+        Collection<Permission> permissions = Role.ADMIN == role
             ? EnumSet.allOf(Permission.class).stream()
               .filter(Permission::isAtomic)
               .toList()
@@ -171,7 +168,7 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
             .collect(Collectors.toSet());
 
         List<String> result = new ArrayList<>();
-        result.add(role.name());
+        result.add(role.authorityName());
         result.addAll(permissionsNames);
 
         return result.stream()
@@ -184,9 +181,5 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
             .accessToken(refreshed.getJwt())
             .refreshToken(refreshed.getRefreshToken())
             .build();
-    }
-
-    private String hashPassword(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 }

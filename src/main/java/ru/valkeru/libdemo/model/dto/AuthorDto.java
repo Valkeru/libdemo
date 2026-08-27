@@ -26,7 +26,7 @@ public class AuthorDto {
     @Schema(description = "First name", example = "Mikhail")
     private String firstName;
 
-    @Schema(description = "Middle name (names) or patronymic", example = "Afanasievich")
+    @Schema(description = "Middle name (names) or patronymic", example = "Afanas'evich")
     private String middleName;
 
     @NotBlank(message = ValidationConstants.MSG_MANDATORY_FIELD)

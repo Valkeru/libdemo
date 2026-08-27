@@ -15,7 +15,7 @@ public interface BookLendingApplicationService {
     /**
      * Create a lending at place (create, get a reserve info, next issue a book instance was reserved)
      */
-    UUID createLending(UUID bookId, UUID readersCardId);
+    UUID createLending(UUID bookId, UUID libraryCardId);
 
     BookLendingDto getLending(UUID id);
 

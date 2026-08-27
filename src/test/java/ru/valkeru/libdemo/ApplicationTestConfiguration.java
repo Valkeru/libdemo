@@ -34,7 +34,7 @@ public class ApplicationTestConfiguration {
     @Profile("!testcontainers-disabled")
     public PostgreSQLContainer<?> getPostgresContainer() {
         if (postgreSQLContainer == null) {
-            postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:16.1"))
+            postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:18.6"))
                 .withUrlParam("reWriteBatchedInserts", "true")
                 .withCommand("-c", "max_connections=1000");
         }

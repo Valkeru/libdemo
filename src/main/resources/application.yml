@@ -17,7 +17,6 @@ spring:
     hikari:
       maximum-pool-size: 30
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL}?reWriteBatchedInserts=true
   flyway:
     create-schemas: true
     table: flyway_library_schema_history
@@ -29,11 +28,12 @@ spring:
     properties:
       hibernate:
         jdbc:
-          batch_size: 100
+          batch_size: 200
         query:
           in_clause_parameter_padding: true
         order_updates: true
         order_inserts: true
+        generate_statistics: true
   data:
     redis:
       connect-timeout: 1500ms
@@ -82,7 +82,7 @@ app:
   system:
     elasticsearch-enabled: true
     redis-prefix: libdemo
-    fluentd-enabled: true
+    logstash-enabled: true
   elasticsearch:
     index-prefix: libdemo_
     author-index-name: ${app.elasticsearch.index-prefix}_author
@@ -98,7 +98,7 @@ management:
 spring:
   config:
     activate:
-      on-profile: dev,pre-production,test
+      on-profile: develop,pre-production,test
 logging:
   level:
     net:

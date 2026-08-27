@@ -19,8 +19,8 @@ public class BookLendingServiceController implements BookLendingServiceApi {
     private final BookLendingApplicationService service;
 
     @Override
-    public ResponseEntity<Void> reserveBook(UUID bookId, UUID readersCardId) {
-        UUID reserveId = service.createLending(bookId, readersCardId);
+    public ResponseEntity<Void> reserveBook(UUID bookId, UUID libraryCardId) {
+        UUID reserveId = service.createLending(bookId, libraryCardId);
 
         return ResponseEntity.created(
             MvcUriComponentsBuilder.fromMethodCall(
