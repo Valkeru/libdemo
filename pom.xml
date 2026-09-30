@@ -31,6 +31,7 @@
         <springdoc.version>3.0.1</springdoc.version>
         <json-unit.version>5.1.0</json-unit.version>
         <apache-commons-collections.version>4.5.0</apache-commons-collections.version>
+        <rest-assured.version>6.0.1</rest-assured.version>
         <kotlin.version>2.4.20</kotlin.version>
 
 <!--        Путь по умолчанию к документации OpenAPI для генерации плана тестирования JMeter-->
@@ -324,11 +325,18 @@
             <scope>compile</scope>
         </dependency>
 
-<!--        Для клиента elasticsearch требуется более старая версия httpclient-->
+<!--        Earlier httpclient version is required for Elasticsearch client  -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${apache-http-client.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
