@@ -40,9 +40,9 @@ import ru.valkeru.libdemo.model.dto.error.FormFieldErrorDto;
         @Tag(name = ApiTags.CYCLE, description = "Cycles"),
         @Tag(name = ApiTags.SERIES, description = "Series"),
         @Tag(name = ApiTags.BOOK, description = "Books"),
+        @Tag(name = ApiTags.LIBRARY_CARD, description = "Library card"),
         @Tag(name = ApiTags.SERVICE, description = "Service"),
         @Tag(name = ApiTags.SECURITY, description = "Security"),
-        @Tag(name = ApiTags.LIBRARY_CARD, description = "Library card"),
     }
 )
 public class ApiConfig {

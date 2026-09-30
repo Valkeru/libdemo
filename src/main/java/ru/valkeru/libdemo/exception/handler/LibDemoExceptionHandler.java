@@ -52,6 +52,8 @@ public class LibDemoExceptionHandler {
     @Hidden
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ErrorDto> handleResponseStatusException(ResponseStatusException rse) {
+        log.error("Response status exception", rse);
+
         ErrorDto errorDto = buildErrorDto(rse.getReason(), (HttpStatus) rse.getStatusCode());
 
         return ResponseEntity.status(errorDto.status()).body(errorDto);

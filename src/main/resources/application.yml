@@ -87,6 +87,10 @@ app:
     index-prefix: libdemo_
     author-index-name: ${app.elasticsearch.index-prefix}_author
   policy:
+    # Unique code in a library network, consisting of 4 digits
+    library-code: "0106"
+    library-card-number-prefix: "2"
+    library-card-number-batch-size: 50
     reservation-period-days: 3
     lending-period-days: 21
 management:

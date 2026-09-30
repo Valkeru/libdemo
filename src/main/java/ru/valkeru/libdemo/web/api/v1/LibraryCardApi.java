@@ -36,7 +36,7 @@ public interface LibraryCardApi {
     @Operation(
         summary = "Create a library card — user operation",
         description = """
-            Create own library card. Response may include replacement for authentication tokens.
+            Create an own library card. Response may include replacement for authentication tokens.
             If present, the client MUST replace the stored tokens
             """,
         tags = {ApiTags.LIBRARY_CARD},

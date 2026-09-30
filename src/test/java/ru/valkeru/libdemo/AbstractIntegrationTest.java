@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import ru.valkeru.libdemo.utility.FileUtil;
 import ru.valkeru.libdemo.utility.JwtUtility;
@@ -69,5 +70,22 @@ public abstract class AbstractIntegrationTest {
             builder.header(HttpHeaders.AUTHORIZATION, jwtUtility.adminToken())
                 .accept(MediaType.APPLICATION_JSON)
         );
+    }
+
+    protected final ResultActions performAsUser(MockHttpServletRequestBuilder builder) throws Exception {
+        return mockMvc.perform(
+            builder.header(HttpHeaders.AUTHORIZATION, jwtUtility.userToken())
+                .accept(MediaType.APPLICATION_JSON)
+        );
+    }
+
+    protected final ResultActions matchExpectations(ResultActions result, ResultMatcher... expectations) throws Exception {
+        if (expectations != null) {
+            for (ResultMatcher matcher : expectations) {
+                result.andExpect(matcher);
+            }
+        }
+
+        return result;
     }
 }

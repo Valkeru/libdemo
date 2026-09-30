@@ -1,11 +1,15 @@
 package ru.valkeru.libdemo.web.controller.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import ru.valkeru.libdemo.application.BookLendingApplicationService;
 import ru.valkeru.libdemo.model.dto.lending.BookLendingDto;
+import ru.valkeru.libdemo.model.dto.lending.BookLendingListDto;
+import ru.valkeru.libdemo.model.request.lending.ServiceLendingFilter;
 import ru.valkeru.libdemo.web.api.service.BookLendingServiceApi;
 
 import java.util.UUID;
@@ -17,6 +21,11 @@ import static org.springframework.web.servlet.mvc.method.annotation.MvcUriCompon
 public class BookLendingServiceController implements BookLendingServiceApi {
 
     private final BookLendingApplicationService service;
+
+    @Override
+    public ResponseEntity<Page<BookLendingListDto>> listLendings(ServiceLendingFilter filter, Pageable pageable) {
+        return ResponseEntity.ok(service.listLendings(filter, pageable));
+    }
 
     @Override
     public ResponseEntity<Void> reserveBook(UUID bookId, UUID libraryCardId) {

@@ -26,12 +26,14 @@ class AuthorControllerTest extends AbstractIntegrationTest {
     void testGetAuthorOk() throws Exception {
         String expected = readResourceAsString("json/author/response/author.json");
 
-        performNotAuthenticated(
-            get("/v1/author/{id}", "84c1599c-21e6-47f3-a03b-12f6071da20b")
-        )
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().isEqualTo(expected));
+        matchExpectations(
+            performNotAuthenticated(
+                get("/v1/author/{id}", "84c1599c-21e6-47f3-a03b-12f6071da20b")
+            ),
+            status().isOk(),
+            content().contentType(MediaType.APPLICATION_JSON),
+            json().isEqualTo(expected)
+        );
     }
 
     @Test

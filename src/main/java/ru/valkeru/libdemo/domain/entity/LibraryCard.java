@@ -21,6 +21,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.validator.constraints.LuhnCheck;
 import ru.valkeru.libdemo.constants.Database;
 import ru.valkeru.libdemo.domain.entity.user.User;
 import ru.valkeru.libdemo.domain.enums.LibraryCardInactivityReason;
@@ -48,10 +49,10 @@ public class LibraryCard {
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
 
-    @Positive
+    @LuhnCheck
     @Setter(AccessLevel.NONE)
     @Column(name = "number", nullable = false, updatable = false, unique = true)
-    private long number;
+    private String number;
 
     @Builder.Default
     @Column(name = "is_active", nullable = false)

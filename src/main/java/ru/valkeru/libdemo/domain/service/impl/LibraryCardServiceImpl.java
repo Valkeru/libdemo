@@ -3,7 +3,6 @@ package ru.valkeru.libdemo.domain.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +14,10 @@ import ru.valkeru.libdemo.domain.exception.ConflictDomainException;
 import ru.valkeru.libdemo.domain.exception.NotFoundDomainException;
 import ru.valkeru.libdemo.domain.repository.jpa.library_card.LibraryCardRepository;
 import ru.valkeru.libdemo.domain.service.LibraryCardService;
+import ru.valkeru.libdemo.domain.utility.LibraryCardNumberGenerator;
 import ru.valkeru.libdemo.model.dto.LibraryCardCreateDto;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.UUID;
 
 @Service
@@ -27,7 +25,7 @@ import java.util.UUID;
 public class LibraryCardServiceImpl implements LibraryCardService {
 
     private final LibraryCardRepository repository;
-    private final JdbcClient jdbcClient;
+    private final LibraryCardNumberGenerator libraryCardNumberGenerator;
 
     @Override
     @Transactional(propagation = Propagation.MANDATORY)
@@ -36,7 +34,7 @@ public class LibraryCardServiceImpl implements LibraryCardService {
             .user(user)
             .validFrom(dto.getValidFrom())
             .validTo(dto.getValidTo())
-            .number(getNextCardNumber())
+            .number(libraryCardNumberGenerator.generateLibraryCardNumber())
             .build();
 
         return repository.persist(card);
@@ -108,28 +106,5 @@ public class LibraryCardServiceImpl implements LibraryCardService {
         }
 
         return LibraryCardCreateRestriction.NONE;
-    }
-
-    /**
-     * Returns a library card number as "year + in_year_sequental_number"<br/>
-     * in_year_sequental_number is padded to 5 symbols. Samples:<br/>
-     * <li>202600001</li>
-     * <li>202600123</li>
-     * <li>202612345</li>
-     */
-    private synchronized long getNextCardNumber() {
-        long year = LocalDate.now(ZoneOffset.UTC).getYear();
-
-        long value = jdbcClient.sql("""
-            INSERT INTO counter.library_card_number (year, value) VALUES (:year, 1)
-                ON CONFLICT (year) DO UPDATE SET value = counter.library_card_number.value + 1
-            RETURNING value
-            """
-        )
-            .param("year", year)
-            .query(Long.class)
-            .single();
-
-        return year * 100_000L + value;
     }
 }

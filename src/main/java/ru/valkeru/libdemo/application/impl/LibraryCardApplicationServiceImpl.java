@@ -39,6 +39,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class LibraryCardApplicationServiceImpl implements LibraryCardApplicationService {
 
     private static final Set<Role> ALLOWED_USER_ROLES = EnumSet.of(Role.USER, Role.READER);

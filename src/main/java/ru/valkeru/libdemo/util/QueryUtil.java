@@ -3,8 +3,6 @@ package ru.valkeru.libdemo.util;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.WildcardQuery;
-import com.querydsl.core.types.dsl.StringPath;
-import com.querydsl.jpa.impl.JPAQuery;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.StringUtils;
 
@@ -13,14 +11,6 @@ import java.util.List;
 
 @UtilityClass
 public class QueryUtil {
-
-    public <T> void applyLikeCondition(String condition, JPAQuery<T> query, StringPath path) {
-        if (!StringUtils.hasLength(condition)) {
-            return;
-        }
-
-        query.where(path.containsIgnoreCase(condition));
-    }
 
     public void applyWildcardCondition(String condition, List<Query> queries, String ...paths) {
         if (!StringUtils.hasLength(condition)) {

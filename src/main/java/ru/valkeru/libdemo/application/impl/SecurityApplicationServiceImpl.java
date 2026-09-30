@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class SecurityApplicationServiceImpl implements SecurityApplicationService {
 
     private final UserService userService;
@@ -50,6 +51,7 @@ public class SecurityApplicationServiceImpl implements SecurityApplicationServic
     }
 
     @Override
+    @Transactional
     public TokenDto performSignIn(SignUpRequest request) {
         UserDetails userDetails = userService.loadUserByUsername(request.getUsername());
 
