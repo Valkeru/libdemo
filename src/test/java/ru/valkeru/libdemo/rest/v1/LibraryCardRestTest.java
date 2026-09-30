@@ -1,11 +1,14 @@
 package ru.valkeru.libdemo.rest.v1;
 
+import io.restassured.RestAssured;
+import io.restassured.http.Method;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlMergeMode;
 import ru.valkeru.libdemo.config.api.ApiConfig;
@@ -41,17 +44,17 @@ class LibraryCardRestTest extends AbstractRestAssuredTest {
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
     void testCreateLibraryCard() {
-        ExtractableResponse<Response> extractable = postAsUser(uri + "/v1/library-card")
+        ExtractableResponse<Response> extractable = userRequest(
+            RestAssured.given().contentType(MediaType.APPLICATION_JSON_VALUE),
+            Method.POST,
+            "/v1/library-card"
+        )
             .statusCode(HttpStatus.CREATED.value())
             .header(ApiConfig.ACCESS_TOKEN_HEADER_NAME, notNullValue())
             .header(ApiConfig.REFRESH_TOKEN_HEADER_NAME, notNullValue())
             .extract();
 
         String accessToken = extractable.header(ApiConfig.ACCESS_TOKEN_HEADER_NAME);
-        String refreshToken = extractable.header(ApiConfig.REFRESH_TOKEN_HEADER_NAME);
-
-        Assertions.assertNotNull(accessToken);
-        Assertions.assertNotNull(refreshToken);
 
         TokenPayload jwtPayload = jwtService.getPayload(accessToken);
 

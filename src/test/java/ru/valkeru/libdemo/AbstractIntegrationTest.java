@@ -47,36 +47,26 @@ public abstract class AbstractIntegrationTest {
     }
 
     protected final ResultActions performNotAuthenticated(MockHttpServletRequestBuilder builder) throws Exception {
-        return mockMvc.perform(builder
-            .accept(MediaType.APPLICATION_JSON));
+        return mockMvc.perform(
+            builder
+                .accept(MediaType.APPLICATION_JSON)
+        );
     }
 
     protected final ResultActions performAsManager(MockHttpServletRequestBuilder builder) throws Exception {
-        return mockMvc.perform(
-            builder.header(HttpHeaders.AUTHORIZATION, jwtUtility.managerToken())
-                .accept(MediaType.APPLICATION_JSON)
-        );
+        return performAuthenticated(builder, jwtUtility.managerToken());
     }
 
     protected final ResultActions performAsLibrarian(MockHttpServletRequestBuilder builder) throws Exception {
-        return mockMvc.perform(
-            builder.header(HttpHeaders.AUTHORIZATION, jwtUtility.librarianToken())
-                .accept(MediaType.APPLICATION_JSON)
-        );
+        return performAuthenticated(builder, jwtUtility.librarianToken());
     }
 
     protected final ResultActions performAsAdmin(MockHttpServletRequestBuilder builder) throws Exception {
-        return mockMvc.perform(
-            builder.header(HttpHeaders.AUTHORIZATION, jwtUtility.adminToken())
-                .accept(MediaType.APPLICATION_JSON)
-        );
+        return performAuthenticated(builder, jwtUtility.adminToken());
     }
 
     protected final ResultActions performAsUser(MockHttpServletRequestBuilder builder) throws Exception {
-        return mockMvc.perform(
-            builder.header(HttpHeaders.AUTHORIZATION, jwtUtility.userToken())
-                .accept(MediaType.APPLICATION_JSON)
-        );
+        return performAuthenticated(builder, jwtUtility.userToken());
     }
 
     protected final ResultActions matchExpectations(ResultActions result, ResultMatcher... expectations) throws Exception {
@@ -87,5 +77,13 @@ public abstract class AbstractIntegrationTest {
         }
 
         return result;
+    }
+
+    private ResultActions performAuthenticated(MockHttpServletRequestBuilder builder, String token) throws Exception {
+        return mockMvc.perform(
+            builder
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .accept(MediaType.APPLICATION_JSON)
+        );
     }
 }

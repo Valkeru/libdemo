@@ -2,25 +2,25 @@ package ru.valkeru.libdemo.rest;
 
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
+import io.restassured.http.Method;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import jakarta.annotation.PostConstruct;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import ru.valkeru.libdemo.ApplicationTestConfiguration;
 import ru.valkeru.libdemo.ProfileResolver;
 import ru.valkeru.libdemo.utility.JwtUtility;
 import ru.valkeru.libdemo.utility.RedisUtility;
-
-import static io.restassured.RestAssured.get;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(ApplicationTestConfiguration.class)
@@ -56,20 +56,18 @@ public abstract class AbstractRestAssuredTest {
         redisUtility.clearCaches();
     }
 
-    protected final ValidatableResponse postAsUser(String url) {
-        return postAsUser(url, null);
+    protected final ValidatableResponse userRequest(RequestSpecification specification, Method method, String path) {
+        return request(specification, method, path, jwtUtility.userToken());
     }
 
-    protected final ValidatableResponse postAsUser(String url, String body) {
-        RequestSpecification specification = RestAssured.given()
-            .header(new Header(HttpHeaders.AUTHORIZATION, jwtUtility.userToken()));
-
-        if (StringUtils.isNotBlank(body)) {
-            specification.body(body);
-        }
-
-        return specification
-            .post(url)
+    private ValidatableResponse request(RequestSpecification specification, Method method, String path, String token) {
+        return RestAssured.given()
+            .spec(specification)
+            .header(new Header(HttpHeaders.AUTHORIZATION, token))
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .log()
+            .ifValidationFails()
+            .request(method, uri + path)
             .then()
             .assertThat();
     }
