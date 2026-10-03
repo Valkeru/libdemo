@@ -1,5 +1,6 @@
 package ru.valkeru.libdemo;
 
+import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -7,15 +8,27 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import ru.valkeru.libdemo.config.api.ApiConfig;
 import ru.valkeru.libdemo.utility.FileUtil;
 import ru.valkeru.libdemo.utility.JwtUtility;
 import ru.valkeru.libdemo.utility.RedisUtility;
+
+import java.util.Arrays;
+
+import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -69,14 +82,47 @@ public abstract class AbstractIntegrationTest {
         return performAuthenticated(builder, jwtUtility.userToken());
     }
 
-    protected final ResultActions matchExpectations(ResultActions result, ResultMatcher... expectations) throws Exception {
-        if (expectations != null) {
-            for (ResultMatcher matcher : expectations) {
-                result.andExpect(matcher);
-            }
-        }
+    protected final ResultActions assertOk(ResultActions actions, String expectedBody) throws Exception {
+        return assertJson(actions, status().isOk(), expectedBody);
+    }
 
-        return result;
+    protected final ResultActions assertCreated(ResultActions actions) throws Exception {
+        return actions
+            .andExpectAll(
+                status().isCreated(),
+                header().exists(HttpHeaders.LOCATION),
+                header().exists(ApiConfig.REQUEST_ID_HEADER_NAME)
+            );
+    }
+
+    protected final ResultActions assertNoContent(ResultActions actions) throws Exception {
+        return actions
+            .andExpectAll(
+                status().isNoContent(),
+                header().exists(ApiConfig.REQUEST_ID_HEADER_NAME)
+            );
+    }
+
+    protected final ResultActions assertNotAuthorized(ResultActions actions) throws Exception {
+        return assertResult(actions, status().isUnauthorized());
+    }
+
+    protected final ResultActions assertForbidden(ResultActions actions) throws Exception {
+        return assertJson(actions, status().isForbidden(), readResourceAsString("json/access_denied.json"))
+            .andExpect(result -> assertInstanceOf(AccessDeniedException.class, result.getResolvedException()));
+    }
+
+    protected final ResultActions assertValidationFailed(ResultActions actions, String expectedBody,
+                                                         Option... bodyComparisonOptions) throws Exception {
+        return assertJson(actions, status().isBadRequest(), expectedBody, bodyComparisonOptions);
+    }
+
+    protected final ResultActions assertNotFound(ResultActions actions, String expectedBody) throws Exception {
+        return assertJson(actions, status().isNotFound(), expectedBody);
+    }
+
+    protected final ResultActions assertConflict(ResultActions actions, String expectedBody) throws Exception {
+        return assertResult(actions, status().isConflict());
     }
 
     private ResultActions performAuthenticated(MockHttpServletRequestBuilder builder, String token) throws Exception {
@@ -84,6 +130,31 @@ public abstract class AbstractIntegrationTest {
             builder
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .accept(MediaType.APPLICATION_JSON)
+        );
+    }
+
+    private ResultActions assertJson(ResultActions actions, ResultMatcher statusMatcher,
+                                     String expectedBody, Option... options) throws Exception {
+        int optionsCount = options.length;
+
+        return assertResult(actions, statusMatcher)
+            .andExpectAll(
+                content().contentType(MediaType.APPLICATION_JSON),
+                (optionsCount == 0
+                    ? json()
+                    : ( // at least one option passed
+                    optionsCount == 1
+                        ? json().when(options[0]) // single option
+                        : json().when(options[0], Arrays.copyOfRange(options, 1, optionsCount)) // multiple options
+                )
+                ).isEqualTo(expectedBody)
+            );
+    }
+
+    private ResultActions assertResult(ResultActions actions, ResultMatcher statusMatcher) throws Exception {
+        return actions.andExpectAll(
+            statusMatcher,
+            header().exists(ApiConfig.REQUEST_ID_HEADER_NAME)
         );
     }
 }

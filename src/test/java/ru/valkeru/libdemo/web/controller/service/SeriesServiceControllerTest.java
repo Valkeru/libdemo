@@ -1,6 +1,7 @@
 package ru.valkeru.libdemo.web.controller.service;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -17,14 +18,10 @@ import ru.valkeru.libdemo.web.controller.v1.SeriesController;
 
 import java.util.stream.Stream;
 
-import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.valkeru.libdemo.constants.TestConstants.SERIES_ID;
 
 @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
@@ -32,31 +29,33 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
 
     @ParameterizedTest
     @MethodSource("validationFailedArguments")
+    @DisplayName("Create a series - 400")
     void testCreateSeriesBadRequest(String contentPath, String expectedResultPath) throws Exception {
         String content = readResourceAsString(contentPath);
         String expected = readResourceAsString(expectedResultPath);
 
-        performAsManager(post(SeriesServiceApi.SERIES_SERVICE_PATH)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(content)
-        )
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().isEqualTo(expected));
+        assertValidationFailed(
+            performAsManager(post(SeriesServiceApi.SERIES_SERVICE_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content)
+            ),
+            expected
+        );
     }
 
     @Test
+    @DisplayName("Create a series - 404")
     void testCreateSeriesCycleNotFound() throws Exception {
         String content = readResourceAsString("json/series/request/add_cycle_not_found.json");
         String expected = readResourceAsString("json/series/response/cycle_not_found.json");
 
-        performAsManager(post(SeriesServiceApi.SERIES_SERVICE_PATH)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(content)
-        )
-            .andExpect(status().isNotFound())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().isEqualTo(expected));
+        assertNotFound(
+            performAsManager(post(SeriesServiceApi.SERIES_SERVICE_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content)
+            ),
+            expected
+        );
     }
 
     @Sql(
@@ -67,26 +66,27 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
     )
     @ParameterizedTest
     @MethodSource("validArguments")
+    @DisplayName("Create a series - 201")
     void testCreateSeriesOk(String contentPath, String expectedPath) throws Exception {
         String content = readResourceAsString(contentPath);
         String expected = readResourceAsString(expectedPath);
 
-        MvcResult result = performAsManager(
-            post(SeriesServiceApi.SERIES_SERVICE_PATH)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content)
+        MvcResult result = assertCreated(
+            performAsManager(
+                post(SeriesServiceApi.SERIES_SERVICE_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(content)
+            )
         )
-            .andExpect(status().isCreated())
-            .andExpect(header().exists(HttpHeaders.LOCATION))
             .andReturn();
 
         String location = result.getResponse().getHeader(HttpHeaders.LOCATION);
         Assertions.assertNotNull(location);
 
-        performNotAuthenticated(get(location))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().isEqualTo(expected));
+        assertOk(
+            performNotAuthenticated(get(location)),
+            expected
+        );
     }
 
     @ParameterizedTest
@@ -98,18 +98,19 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
             "classpath:sql/series/insert.sql",
         }
     )
+    @DisplayName("Update series - 400")
     void testUpdateSeriesBadRequest(String contentPath, String expectedResultPath) throws Exception {
         String content = readResourceAsString(contentPath);
         String expected = readResourceAsString(expectedResultPath);
 
-        performAsManager(
-            patch("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content)
-        )
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().isEqualTo(expected));
+        assertValidationFailed(
+            performAsManager(
+                patch("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(content)
+            ),
+            expected
+        );
     }
 
     @Test
@@ -120,17 +121,18 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
             "classpath:sql/series/insert.sql",
         }
     )
+    @DisplayName("Update series, cycle not found - 404")
     void testUpdateSeriesCycleNotFound() throws Exception {
         String content = readResourceAsString("json/series/request/add_cycle_not_found.json");
         String expected = readResourceAsString("json/series/response/cycle_not_found.json");
 
-        performAsManager(patch("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(content)
-        )
-            .andExpect(status().isNotFound())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().isEqualTo(expected));
+        assertNotFound(
+            performAsManager(patch("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content)
+            ),
+            expected
+        );
     }
 
     @ParameterizedTest
@@ -142,46 +144,48 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
             "classpath:sql/series/insert.sql",
         }
     )
+    @DisplayName("Update series - 200")
     void testUpdateSeriesOk(String contentPath, String expectedResultPath) throws Exception {
         String initial = readResourceAsString("json/series/request/series.json");
         String content = readResourceAsString(contentPath);
         String expected = readResourceAsString(expectedResultPath);
 
-        performNotAuthenticated(get("/v1/series/{id}", SERIES_ID)
-            .accept(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().isEqualTo(initial));
+        assertOk(
+            performNotAuthenticated(get("/v1/series/{id}", SERIES_ID)
+                .accept(MediaType.APPLICATION_JSON)
+            ),
+            initial
+        );
 
-        performAsManager(
-            patch("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content)
-        )
-            .andExpect(status().isNoContent());
+        assertNoContent(
+            performAsManager(
+                patch("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(content)
+            )
+        );
 
-        performNotAuthenticated(get("%s/{id}".formatted(SeriesController.SERIES_V1_PATH), SERIES_ID))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().isEqualTo(expected));
+        assertOk(
+            performNotAuthenticated(get("%s/{id}".formatted(SeriesController.SERIES_V1_PATH), SERIES_ID)),
+            expected
+        );
     }
 
     @Test
+    @DisplayName("Delete series - 404")
     void testDeleteSeriesNotFound() throws Exception {
         String expected = readResourceAsString("json/series/response/not_found.json");
 
-        performAsManager(
-            delete("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), TestConstants.START_UUID_VALUE)
-                .accept(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isNotFound())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().isEqualTo(expected));
+        assertNotFound(
+            performAsManager(
+                delete("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), TestConstants.START_UUID_VALUE)
+                    .accept(MediaType.APPLICATION_JSON)
+            ),
+            expected
+        );
     }
 
     @Test
-    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
     @Sql(
         value = {
             "classpath:sql/01.create_author.sql",
@@ -191,14 +195,16 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
             "classpath:sql/05.book_to_series.sql"
         }
     )
+    @DisplayName("Delete series - 409")
     void testDeleteSeriesConflict() throws Exception {
         String expected = readResourceAsString("json/conflict.json");
 
-        performAsManager(delete("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
-            .accept(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isConflict())
-            .andExpect(json().isEqualTo(expected));
+        assertConflict(
+            performAsManager(delete("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
+                .accept(MediaType.APPLICATION_JSON)
+            ),
+            expected
+        );
     }
 
     @Test
@@ -209,12 +215,14 @@ class SeriesServiceControllerTest extends AbstractIntegrationTest {
             "classpath:sql/03.create_series.sql"
         }
     )
+    @DisplayName("Delete series - 200")
     void testDeleteSeriesOk() throws Exception {
-        performAsManager(
-            delete("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
-                .accept(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isNoContent());
+        assertNoContent(
+            performAsManager(
+                delete("%s/{id}".formatted(SeriesServiceApi.SERIES_SERVICE_PATH), SERIES_ID)
+                    .accept(MediaType.APPLICATION_JSON)
+            )
+        );
     }
 
     private static Stream<Arguments> validationFailedArguments() {

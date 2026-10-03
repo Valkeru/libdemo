@@ -2,16 +2,12 @@ package ru.valkeru.libdemo.web.controller.v1;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlMergeMode;
 import ru.valkeru.libdemo.AbstractIntegrationTest;
 import ru.valkeru.libdemo.constants.TestConstants;
 
-import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 class AuthorControllerTest extends AbstractIntegrationTest {
@@ -26,13 +22,11 @@ class AuthorControllerTest extends AbstractIntegrationTest {
     void testGetAuthorOk() throws Exception {
         String expected = readResourceAsString("json/author/response/author.json");
 
-        matchExpectations(
+        assertOk(
             performNotAuthenticated(
                 get("/v1/author/{id}", "84c1599c-21e6-47f3-a03b-12f6071da20b")
             ),
-            status().isOk(),
-            content().contentType(MediaType.APPLICATION_JSON),
-            json().isEqualTo(expected)
+            expected
         );
     }
 
@@ -41,9 +35,10 @@ class AuthorControllerTest extends AbstractIntegrationTest {
     void testGetAuthorNotFound() throws Exception {
         String expected = readResourceAsString("json/author/response/not_found.json");
 
-        performNotAuthenticated(get("/v1/author/{id}", TestConstants.START_UUID_VALUE))
-            .andExpect(status().isNotFound())
-            .andExpect(json().isEqualTo(expected));
+        assertNotFound(
+            performNotAuthenticated(get("/v1/author/{id}", TestConstants.START_UUID_VALUE)),
+            expected
+        );
     }
 
     @Test
@@ -56,8 +51,9 @@ class AuthorControllerTest extends AbstractIntegrationTest {
     void testAuthorsListOk() throws Exception {
         String expected = readResourceAsString("json/author/response/list.json");
 
-        performNotAuthenticated(get("/v1/author"))
-            .andExpect(status().isOk())
-            .andExpect(json().isEqualTo(expected));
+        assertOk(
+            performNotAuthenticated(get("/v1/author")),
+            expected
+        );
     }
 }

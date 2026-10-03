@@ -18,6 +18,7 @@ public class JwtUtility {
     private static final String SCHEME = "Bearer";
 
     private Token librarianToken = null;
+    private Token managerToken = null;
     private Token adminToken = null;
     private Token userToken = null;
 
@@ -33,11 +34,11 @@ public class JwtUtility {
     }
 
     public String managerToken() {
-        if (isInvalidToken(librarianToken)) {
-            librarianToken = getToken("manager");
+        if (isInvalidToken(managerToken)) {
+            managerToken = getToken("manager");
         }
 
-        return tokenWithScheme(librarianToken);
+        return tokenWithScheme(managerToken);
     }
 
     public String adminToken() {

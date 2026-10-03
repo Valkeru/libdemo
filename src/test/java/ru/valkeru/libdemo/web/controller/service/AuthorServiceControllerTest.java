@@ -20,17 +20,15 @@ import ru.valkeru.libdemo.domain.repository.jpa.author.AuthorRepository;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.valkeru.libdemo.constants.TestConstants.AUTHOR_ID;
 import static ru.valkeru.libdemo.constants.TestConstants.START_UUID_VALUE;
 
+@SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 class AuthorServiceControllerTest extends AbstractIntegrationTest {
 
     @Autowired
@@ -43,13 +41,14 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
         String payload = readResourceAsString(payloadPath);
         String expected = readResourceAsString(expectedResultPath);
 
-        performAsManager(post("/service/author")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(payload)
-        )
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().when(Option.IGNORING_ARRAY_ORDER).isEqualTo(expected));
+        assertValidationFailed(
+            performAsManager(post("/service/author")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload)
+            ),
+            expected,
+            Option.IGNORING_ARRAY_ORDER
+        );
     }
 
     @Test
@@ -58,21 +57,46 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
         String payload = readResourceAsString("json/author/request/add_valid.json");
         String expected = readResourceAsString("json/author/response/created.json");
 
-        MvcResult result = performAsManager(post("/service/author")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(payload)
+        MvcResult result = assertCreated(
+            performAsManager(post("/service/author")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload)
+            )
         )
-            .andExpect(status().isCreated())
-            .andExpect(header().exists(HttpHeaders.LOCATION))
             .andReturn();
 
         String location = result.getResponse().getHeader(HttpHeaders.LOCATION);
         Assertions.assertNotNull(location);
 
-        performNotAuthenticated(get(location))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().isEqualTo(expected));
+        assertOk(performNotAuthenticated(get(location)), expected);
+    }
+
+    @Test
+    @DisplayName("Add an author, no user - 401")
+    void testCreateAuthorUnauthorized() throws Exception {
+        String payload = readResourceAsString("json/author/request/add_valid.json");
+
+        assertNotAuthorized(
+            performNotAuthenticated(
+                post("/service/author")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(payload)
+            )
+        );
+    }
+
+    @Test
+    @DisplayName("Add an author, lack of permissions - 403")
+    void testCreateAuthorForbidden() throws Exception {
+        String payload = readResourceAsString("json/author/request/add_valid.json");
+
+        assertForbidden(
+            performAsLibrarian(
+                post("/service/author")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(payload)
+            )
+        );
     }
 
     @Test
@@ -81,19 +105,18 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
         String payload = readResourceAsString("json/author/request/update_valid.json");
         String expected = readResourceAsString("json/author/response/not_found.json");
 
-        performAsManager(patch("/service/author/{id}", START_UUID_VALUE)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(payload)
-        )
-            .andExpect(status().isNotFound())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().isEqualTo(expected));
+        assertNotFound(
+            performAsManager(patch("/service/author/{id}", START_UUID_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload)
+            ),
+            expected
+        );
 
     }
 
     @ParameterizedTest
     @MethodSource("getBadRequestArguments")
-    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
     @Sql(
         value = {
             "classpath:sql/01.create_author.sql"
@@ -104,17 +127,17 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
         String payload = readResourceAsString(payloadPath);
         String expected = readResourceAsString(expectedResultPath);
 
-        performAsManager(patch("/service/author/{id}", AUTHOR_ID)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(payload)
-        )
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().when(Option.IGNORING_ARRAY_ORDER).isEqualTo(expected));
+        assertValidationFailed(
+            performAsManager(patch("/service/author/{id}", AUTHOR_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload)
+            ),
+            expected,
+            Option.IGNORING_ARRAY_ORDER
+        );
     }
 
     @Test
-    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
     @Sql(
         value = {
             "classpath:sql/01.create_author.sql"
@@ -128,27 +151,50 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
         performNotAuthenticated(get("/v1/author/{id}", AUTHOR_ID))
             .andExpect(status().isOk());
 
-        performAsManager(patch("/service/author/{id}", AUTHOR_ID)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(payload)
-        )
-            .andExpect(status().isNoContent());
+        assertNoContent(
+            performAsManager(patch("/service/author/{id}", AUTHOR_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload)
+            )
+        );
 
-        performNotAuthenticated(get("/v1/author/{id}", AUTHOR_ID))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(json().isEqualTo(expected));
+        assertOk(performNotAuthenticated(get("/v1/author/{id}", AUTHOR_ID)), expected);
+    }
+
+    @Test
+    @DisplayName("Update author info, not authenticated - 401")
+    void testUpdateAuthorUnauthorized() throws Exception {
+        String payload = readResourceAsString("json/author/request/update_valid.json");
+
+        assertNotAuthorized(
+            performNotAuthenticated(patch("/service/author/{id}", AUTHOR_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload)
+            )
+        );
+    }
+
+    @Test
+    @DisplayName("Update author info, lack of permissions - 403")
+    void testUpdateAuthorForbidden() throws Exception {
+        String payload = readResourceAsString("json/author/request/update_valid.json");
+
+        assertForbidden(
+            performAsLibrarian(patch("/service/author/{id}", AUTHOR_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload)
+            )
+        );
     }
 
     @Test
     @DisplayName("Delete author info - 404")
     void deleteAuthorNotFound() throws Exception {
-        performAsManager(delete("/service/author/{id}", START_UUID_VALUE))
-            .andExpect(status().isNotFound());
+        String expected = readResourceAsString("json/author/response/not_found.json");
+        assertNotFound(performAsManager(delete("/service/author/{id}", START_UUID_VALUE)), expected);
     }
 
     @Test
-    @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
     @Sql(
         value = {
             "classpath:sql/01.create_author.sql"
@@ -164,6 +210,18 @@ class AuthorServiceControllerTest extends AbstractIntegrationTest {
             .andExpect(status().isNoContent());
 
         Assert.assertFalse(authorRepository.existsById(id));
+    }
+
+    @Test
+    @DisplayName("Delete author info - 404")
+    void deleteAuthorUnauthorized() throws Exception {
+        assertNotAuthorized(performNotAuthenticated(delete("/service/author/{id}", START_UUID_VALUE)));
+    }
+
+    @Test
+    @DisplayName("Delete author info - 404")
+    void deleteAuthorForbidden() throws Exception {
+        assertForbidden(performAsLibrarian(delete("/service/author/{id}", START_UUID_VALUE)));
     }
 
     private static Stream<Arguments> getBadRequestArguments() {
