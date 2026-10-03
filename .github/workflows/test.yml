@@ -3,6 +3,12 @@ on:
   push:
     branches:
       - "*"
+    paths:
+      - "/src/**"
+      - "pom.xml"
+      - "mvnw"
+      - ".mvn/**"
+  workflow_dispatch:
 
 jobs:
   test:
