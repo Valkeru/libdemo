@@ -18,6 +18,8 @@ import ru.valkeru.libdemo.config.security.TokenValidationFilter;
 import ru.valkeru.libdemo.config.security.LibraryLogoutHandler;
 import ru.valkeru.libdemo.infrastructure.security.UserService;
 import ru.valkeru.libdemo.application.SecurityApplicationService;
+import ru.valkeru.libdemo.model.dto.error.ErrorDto;
+import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 @EnableWebSecurity
@@ -27,12 +29,19 @@ public class SecurityConfiguration {
 
     private final SecurityApplicationService securityApplicationService;
     private final UserService userService;
+    private final ObjectMapper mapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity security) {
         security
             .exceptionHandling(e -> e
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                .accessDeniedHandler(((request, response, accessDeniedException) -> {
+                    response.setStatus(HttpStatus.FORBIDDEN.value());
+
+                    ErrorDto dto = new ErrorDto(HttpStatus.FORBIDDEN, "Access denied");
+                    mapper.writeValue(response.getOutputStream(), dto);
+                }))
             )
             .csrf(AbstractHttpConfigurer::disable) // NOSONAR
             .authorizeHttpRequests(auth -> auth

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,6 +37,7 @@ public interface CycleServiceApi {
         }
     )
     @PostMapping
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).CYCLE_CREATE.name())")
     ResponseEntity<Void> addCycle(@RequestBody @Validated(CycleGroups.CycleCreateGroup.class) CycleDto cycleDto);
 
     @Operation(
@@ -50,7 +52,8 @@ public interface CycleServiceApi {
         }
     )
     @PatchMapping("/{id}")
-    ResponseEntity<Void> updateCycle(@PathVariable @Schema(description = "ID цикла") UUID id,
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).CYCLE_UPDATE.name())")
+    ResponseEntity<Void> updateCycle(@PathVariable @Schema(description = "Cycle ID") UUID id,
                                      @RequestBody @Validated(CycleGroups.CycleCreateGroup.class) CycleDto cycleDto);
 
     @Operation(
@@ -64,5 +67,6 @@ public interface CycleServiceApi {
         }
     )
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteCycle(@PathVariable @Schema(description = "ID цикла") UUID id);
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).CYCLE_DELETE.name())")
+    ResponseEntity<Void> deleteCycle(@PathVariable @Schema(description = "Cycle ID") UUID id);
 }

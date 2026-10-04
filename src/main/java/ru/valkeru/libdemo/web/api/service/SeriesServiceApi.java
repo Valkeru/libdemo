@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ public interface SeriesServiceApi {
         security = @SecurityRequirement(name = ApiConfig.ACCESS_TOKEN_SCHEME)
     )
     @PostMapping
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).SERIES_CREATE.name())")
     ResponseEntity<Void> createSeries(@Valid @RequestBody SeriesEditDto series);
 
     @Operation(
@@ -47,6 +49,7 @@ public interface SeriesServiceApi {
         security = @SecurityRequirement(name = ApiConfig.ACCESS_TOKEN_SCHEME)
     )
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).SERIES_UPDATE.name())")
     ResponseEntity<Void> updateSeries(@PathVariable @Schema(description = "Series ID") UUID id,
                                       @RequestBody @Valid SeriesEditDto series);
 
@@ -61,5 +64,6 @@ public interface SeriesServiceApi {
         security = @SecurityRequirement(name = ApiConfig.ACCESS_TOKEN_SCHEME)
     )
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority(T(ru.valkeru.libdemo.security.Permission).SERIES_DELETE.name())")
     ResponseEntity<Void> deleteSeries(@PathVariable @Schema(description = "Series ID") UUID id);
 }
