@@ -22,7 +22,7 @@ import java.util.UUID;
 @RequestMapping(BookApi.BOOK_V1_PATH)
 public interface BookApi {
 
-    String BOOK_V1_PATH = "/v1/books";
+    String BOOK_V1_PATH = "/v1/book";
 
     @Operation(
         summary = "Get books paged list",

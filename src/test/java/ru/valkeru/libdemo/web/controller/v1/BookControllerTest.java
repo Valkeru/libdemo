@@ -20,7 +20,7 @@ class BookControllerTest extends AbstractIntegrationTest {
 
         assertOk(
             performNotAuthenticated(
-                get("/v1/books")
+                get("/v1/book")
                     .accept(MediaType.APPLICATION_JSON)
             ),
             expected
@@ -42,7 +42,7 @@ class BookControllerTest extends AbstractIntegrationTest {
 
         assertOk(
             performNotAuthenticated(
-                get("/v1/books")
+                get("/v1/book")
                     .accept(MediaType.APPLICATION_JSON)
             ),
             expected
@@ -54,7 +54,7 @@ class BookControllerTest extends AbstractIntegrationTest {
     void testGetBookNotFound() throws Exception {
         assertNotFound(
             performNotAuthenticated(
-                get("/v1/books/{id}", CommonConstants.UUID_START_VALUE)
+                get("/v1/book/{id}", CommonConstants.UUID_START_VALUE)
                     .accept(MediaType.APPLICATION_JSON)
             ),
             readResourceAsString("json/book/response/service/not_found.json")
@@ -76,7 +76,7 @@ class BookControllerTest extends AbstractIntegrationTest {
 
         assertOk(
             performNotAuthenticated(
-                get("/v1/books/{id}", "989b056f-31ef-4682-8f64-a21743939aab")
+                get("/v1/book/{id}", "989b056f-31ef-4682-8f64-a21743939aab")
                     .accept(MediaType.APPLICATION_JSON)
             ),
             expected

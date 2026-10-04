@@ -37,7 +37,7 @@ public interface BookLendingApi {
             @ApiResponse(responseCode = "409", ref = ApiConfig.REF_INTEGRITY_VIOLATION_RESPONSE)
         }
     )
-    @PostMapping("/v1/book/{bookId}/lendings")
+    @PostMapping("/v1/book/{bookId}/lend")
     ResponseEntity<Void> reserveBook(@PathVariable UUID bookId, @AuthenticationPrincipal LibraryPrincipal principal);
 
     @Operation(
@@ -50,7 +50,7 @@ public interface BookLendingApi {
             @ApiResponse(responseCode = "404", ref = ApiConfig.REF_NOT_FOUND_RESPONSE)
         }
     )
-    @DeleteMapping("/v1/lendings/{id}")
+    @DeleteMapping("/v1/lending/{id}")
     ResponseEntity<Void> cancelReservation(@PathVariable UUID id, @AuthenticationPrincipal LibraryPrincipal principal);
 
     @Operation(
@@ -62,7 +62,7 @@ public interface BookLendingApi {
             @ApiResponse(responseCode = "403", ref = ApiConfig.REF_ACCESS_DENIED_RESPONSE),
         }
     )
-    @GetMapping("/v1/lendings")
+    @GetMapping("/v1/lending")
     ResponseEntity<Page<BookLendingListDto>> getLendingsList(@ParameterObject @PageableDefault Pageable pageable,
                                                              @AuthenticationPrincipal LibraryPrincipal principal);
 
@@ -77,7 +77,7 @@ public interface BookLendingApi {
             @ApiResponse(responseCode = "404", ref = ApiConfig.REF_NOT_FOUND_RESPONSE),
         }
     )
-    @GetMapping("/v1/lendings/{id}")
+    @GetMapping("/v1/lending/{id}")
     ResponseEntity<BookLendingDto> getLending(@PathVariable UUID id,
                                               @AuthenticationPrincipal LibraryPrincipal principal);
 }
