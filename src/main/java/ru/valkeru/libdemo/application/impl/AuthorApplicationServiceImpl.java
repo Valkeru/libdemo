@@ -63,6 +63,7 @@ public class AuthorApplicationServiceImpl implements AuthorApplicationService {
 
     @Transactional
     @Override
+    @CacheEvict("author")
     public void deleteAuthor(UUID id) {
         authorService.deleteAuthorById(id);
     }
