@@ -14,7 +14,7 @@
         <apache-http-client.version>4.5.14</apache-http-client.version>
         <elasticsearch-rest-client.version>8.18.8</elasticsearch-rest-client.version>
         <datasource-proxy.version>2.0.0</datasource-proxy.version>
-        <flyway.version>12.0.0</flyway.version>
+        <flyway.version>12.11.0</flyway.version>
         <fluentd-logger.version>0.3.4</fluentd-logger.version>
         <fluency.version>2.7.4</fluency.version>
         <hypersistence.version>3.15.1</hypersistence.version>
@@ -28,13 +28,17 @@
         <openapi-generator.version>7.19.0</openapi-generator.version>
         <openfeign-querydsl.version>7.1</openfeign-querydsl.version>
         <sonar-plugin.version>4.0.0.4121</sonar-plugin.version>
-        <springdoc.version>3.0.1</springdoc.version>
+        <springdoc.version>3.1.1</springdoc.version>
         <json-unit.version>5.1.0</json-unit.version>
         <apache-commons-collections.version>4.5.0</apache-commons-collections.version>
-        <rest-assured.version>6.0.1</rest-assured.version>
+        <jackson-2-bom.version>2.22.3</jackson-2-bom.version>
+        <jackson-bom.version>3.1.7</jackson-bom.version>
         <kotlin.version>2.4.20</kotlin.version>
+        <tomcat.version>11.0.26</tomcat.version>
+        <logback.version>1.6.5</logback.version>
+        <parsson.version>1.1.9</parsson.version>
 
-<!--        Путь по умолчанию к документации OpenAPI для генерации плана тестирования JMeter-->
+<!--        Default OpenAPI path to generate JMeter test plan -->
         <openapi.generator.maven.plugin.inputSpec>
             ${project.basedir}/jmeter/api-docs.yaml
         </openapi.generator.maven.plugin.inputSpec>
@@ -43,7 +47,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.0</version>
+        <version>4.1.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -208,6 +212,14 @@
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
 
+<!--        https://www.mend.io/vulnerability-database/CVE-2026-9563/ from the spring-boot-starter-data-elasticsearch -->
+        <dependency>
+            <groupId>org.eclipse.parsson</groupId>
+            <artifactId>parsson</artifactId>
+            <version>${parsson.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-flyway</artifactId>
@@ -292,29 +304,11 @@
             <version>2.0.5</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${io-utils.version}</version>
-        </dependency>
-
-<!--        Для отправки логов в fluentd-->
-        <dependency>
-            <groupId>com.sndyuk</groupId>
-            <artifactId>logback-more-appenders</artifactId>
-            <version>${logback-appenders.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.fluentd</groupId>
-            <artifactId>fluent-logger</artifactId>
-            <version>${fluentd-logger.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.komamitsu</groupId>
-            <artifactId>fluency-fluentd</artifactId>
-            <version>${fluency.version}</version>
         </dependency>
 
         <dependency>

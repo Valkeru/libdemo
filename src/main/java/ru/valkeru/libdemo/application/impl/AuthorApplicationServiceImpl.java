@@ -1,6 +1,7 @@
 package ru.valkeru.libdemo.application.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,7 @@ public class AuthorApplicationServiceImpl implements AuthorApplicationService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "author", key = "#dto.id")
     public void updateAuthor(AuthorDto dto) {
         UUID id = dto.getId();
 
